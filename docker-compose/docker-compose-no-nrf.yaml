@@ -148,6 +148,7 @@ services:
             - GW_ID=1
             - REALM=openairinterface.org
             - ENABLE_5G_FEATURES=yes
+            - GTP_EXTENSION_HEADER_PRESENT=yes
             - REGISTER_NRF=no
             - USE_FQDN_NRF=no
             - UPF_FQDN_5G=oai-spgwu
