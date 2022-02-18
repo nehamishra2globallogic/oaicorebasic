@@ -8,19 +8,19 @@ configuration:
       sst: 2
       sd: '2'
     nsiInformationList:
-      nrfId: http://192.168.70.136:80/nnrf-nfm/v1/nf-instances
+      nrfId: http://192.168.70.136:80/nnrf-disc/v1/nf-instances
       nsiId: '11'
   - snssai:
       sst: 3
       sd: '3'
     nsiInformationList:
-      nrfId: http://192.168.70.136:80/nnrf-nfm/v1/nf-instances
+      nrfId: http://192.168.70.136:80/nnrf-disc/v1/nf-instances
       nsiId: '12'
   - snssai:
       sst: 4
       sd: '4'
     nsiInformationList:
-      nrfId: http://192.168.70.137:80/nnrf-nfm/v1/nf-instances
+      nrfId: http://192.168.70.137:80/nnrf-disc/v1/nf-instances
       nsiId: '12'
   taInfoList:
   - tai:
