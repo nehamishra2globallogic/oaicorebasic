@@ -28,4 +28,5 @@ Welcome to the tutorial home page of OAI 5g Core project. Here you can find lot 
     - [Using Docker-Compose, perform a `basic` deployment and test with `UERANSIM`](./DEPLOY_SA5G_WITH_UERANSIM.md)
     - [Using Docker-Compose, perform a `basic` deployment and test with `Network Slicing`](./DEPLOY_SA5G_SLICING.md)
 - The Developer Corner
+    - [VPP-UPF DPDK setup with Amazon Web Services (AWS)](./VPP_UPF_DPDK_AWS.md)
     - [How to Deploy Developers Core Network and Basic Debugging](./DEBUG_5G_CORE.md)
