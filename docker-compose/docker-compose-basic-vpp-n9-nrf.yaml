@@ -253,6 +253,8 @@ services:
             - DNN_NI1=default
         extra_hosts:
             - "gw1.vppupf.node.5gcn.mnc95.mcc208.3gppnetwork.org:192.168.70.202"
+            - "gw2.vppupf.node.5gcn.mnc95.mcc208.3gppnetwork.org:192.168.70.203"
+            - "gw3.vppupf.node.5gcn.mnc95.mcc208.3gppnetwork.org:192.168.70.204"
         depends_on:
             - oai-amf
         volumes:
@@ -306,6 +308,92 @@ services:
                 ipv4_address: 192.168.72.134
             public_net_core:
                 ipv4_address: 192.168.73.134
+    i-vpp-upf:
+        image: oai-upf-vpp:latest
+        privileged: true
+        container_name: "i-vpp-upf"
+        environment:
+            - UPF_TYPE=I-UPF
+            - NWI_INGRESS=access.oai.org
+            - NWI_ENGRESS=core.oai.org
+            - GW_ID=2
+            - MNC03=95
+            - MCC=208
+            - REALM=3gppnetwork.org
+            - NETWORK_UE_IP=12.2.1.0/24
+            - N4_IPV4_ADDRESS_LOCAL=192.168.70.203
+#           - EGRESS_INT_ADDR_REMOTE=192.168.73.135 # EXT-DN (NAT Gateway) IP Address
+            - VPP_MAIN_CORE=0
+            - VPP_CORE_WORKER=1
+#           - VPP_PLUGIN_PATH=/usr/lib64/vpp_plugins/                # RHEL7
+            - VPP_PLUGIN_PATH=/usr/lib/x86_64-linux-gnu/vpp_plugins/ # Ubntu18.04
+            - INTERFACE_ACCESS=eth1
+            - INTERFACE_CORE=eth2
+            - INTERFACE_CP=eth0
+            - NSSAI_SD_0=124
+            - SST=222
+            - DNN=oai.mec
+            - REGISTER_NRF=yes
+            - NRF_IP_ADDR=192.168.70.130
+            - NRF_PORT=9090
+            - HTTP_VERSION=2
+        depends_on:
+            - oai-nrf
+        healthcheck:
+            test: /bin/bash -c "pgrep vpp"
+            interval: 10s
+            timeout: 5s
+            retries: 5
+        networks:
+            public_net:
+                ipv4_address: 192.168.70.144
+            public_net_access:
+                ipv4_address: 192.168.72.144
+            public_net_core_n9:
+                ipv4_address: 192.168.74.144
+    a-vpp-upf:
+        image: oai-upf-vpp:latest
+        privileged: true
+        container_name: "a-vpp-upf"
+        environment:
+            - UPF_TYPE=A-UPF
+            - NWI_INGRESS=access.oai.org
+            - NWI_ENGRESS=core.oai.org
+            - GW_ID=3
+            - MNC03=95
+            - MCC=208
+            - REALM=3gppnetwork.org
+            - NETWORK_UE_IP=12.2.1.0/24
+            - N4_IPV4_ADDRESS_LOCAL=192.168.70.204
+            - EGRESS_INT_ADDR_REMOTE=192.168.73.135 # EXT-DN (NAT Gateway) IP Address
+            - VPP_MAIN_CORE=0
+            - VPP_CORE_WORKER=1
+#           - VPP_PLUGIN_PATH=/usr/lib64/vpp_plugins/                # RHEL7
+            - VPP_PLUGIN_PATH=/usr/lib/x86_64-linux-gnu/vpp_plugins/ # Ubntu18.04
+            - INTERFACE_ACCESS=eth1
+            - INTERFACE_CORE=eth2
+            - INTERFACE_CP=eth0
+            - NSSAI_SD_0=124
+            - SST=222
+            - DNN=oai.mec
+            - REGISTER_NRF=yes
+            - NRF_IP_ADDR=192.168.70.130
+            - NRF_PORT=9090
+            - HTTP_VERSION=2
+        depends_on:
+            - oai-nrf
+        healthcheck:
+            test: /bin/bash -c "pgrep vpp"
+            interval: 10s
+            timeout: 5s
+            retries: 5
+        networks:
+            public_net:
+                ipv4_address: 192.168.70.145
+            public_net_core_n9:
+                ipv4_address: 192.168.74.145
+            public_net_core:
+                ipv4_address: 192.168.73.145
     oai-ext-dn:
         image: trf-gen-cn5g:latest
         privileged: true
@@ -342,3 +430,10 @@ networks:
                 - subnet: 192.168.73.0/24
         driver_opts:
             com.docker.network.bridge.name: "cn5g-core"
+    public_net_core_n9:
+        name: oai-public-core-n9
+        ipam:
+            config:
+                - subnet: 192.168.74.0/24
+        driver_opts:
+            com.docker.network.bridge.name: "cn5g-core-n9"
