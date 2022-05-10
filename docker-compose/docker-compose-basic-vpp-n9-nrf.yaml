@@ -166,7 +166,7 @@ services:
             - SST_0=222
             - SD_0=123
             - SST_1=1
-            - SD_1=12
+            - SD_1=1
             - AMF_INTERFACE_NAME_FOR_NGAP=eth0
             - AMF_INTERFACE_NAME_FOR_N11=eth0
             - SMF_INSTANCE_ID_0=1
@@ -218,7 +218,7 @@ services:
                 ipv4_address: 192.168.70.132
     oai-smf:
         container_name: "oai-smf"
-        image: oai-smf:latest
+        image: oai-cn5g-smf:n9
         environment:
             - TZ=Europe/Paris
             - INSTANCE=0
@@ -255,6 +255,7 @@ services:
             - "gw1.vppupf.node.5gcn.mnc95.mcc208.3gppnetwork.org:192.168.70.202"
             - "gw2.vppupf.node.5gcn.mnc95.mcc208.3gppnetwork.org:192.168.70.203"
             - "gw3.vppupf.node.5gcn.mnc95.mcc208.3gppnetwork.org:192.168.70.204"
+            - "gw4.vppupf.node.5gcn.mnc95.mcc208.3gppnetwork.org:192.168.70.205"
         depends_on:
             - oai-amf
         volumes:
@@ -321,7 +322,9 @@ services:
             - MCC=208
             - REALM=3gppnetwork.org
             - NETWORK_UE_IP=12.2.1.0/24
+            - EGRESS_INT_ADDR_LOCAL=192.168.74.203
             - N4_IPV4_ADDRESS_LOCAL=192.168.70.203
+            - INGRESS_INT_ADDR_LOCAL=192.168.72.203
 #           - EGRESS_INT_ADDR_REMOTE=192.168.73.135 # EXT-DN (NAT Gateway) IP Address
             - VPP_MAIN_CORE=0
             - VPP_CORE_WORKER=1
@@ -330,9 +333,9 @@ services:
             - INTERFACE_ACCESS=eth1
             - INTERFACE_CORE=eth2
             - INTERFACE_CP=eth0
-            - NSSAI_SD_0=124
-            - SST=222
-            - DNN=oai.mec
+            - NSSAI_SD_0=1
+            - SST=1
+            - DNN=oai
             - REGISTER_NRF=yes
             - NRF_IP_ADDR=192.168.70.130
             - NRF_PORT=9090
@@ -351,10 +354,10 @@ services:
                 ipv4_address: 192.168.72.144
             public_net_core_n9:
                 ipv4_address: 192.168.74.144
-    a-vpp-upf:
+    a-vpp-upf1:
         image: oai-upf-vpp:latest
         privileged: true
-        container_name: "a-vpp-upf"
+        container_name: "a-vpp-upf1"
         environment:
             - UPF_TYPE=A-UPF
             - NWI_INGRESS=access.oai.org
@@ -364,17 +367,19 @@ services:
             - MCC=208
             - REALM=3gppnetwork.org
             - NETWORK_UE_IP=12.2.1.0/24
+            - INGRESS_INT_ADDR_LOCAL=192.168.74.204
             - N4_IPV4_ADDRESS_LOCAL=192.168.70.204
+            - EGRESS_INT_ADDR_LOCAL=192.168.73.204
             - EGRESS_INT_ADDR_REMOTE=192.168.73.135 # EXT-DN (NAT Gateway) IP Address
             - VPP_MAIN_CORE=0
             - VPP_CORE_WORKER=1
 #           - VPP_PLUGIN_PATH=/usr/lib64/vpp_plugins/                # RHEL7
             - VPP_PLUGIN_PATH=/usr/lib/x86_64-linux-gnu/vpp_plugins/ # Ubntu18.04
-            - INTERFACE_ACCESS=eth1
-            - INTERFACE_CORE=eth2
+            - INTERFACE_ACCESS=eth2
+            - INTERFACE_CORE=eth1
             - INTERFACE_CP=eth0
-            - NSSAI_SD_0=124
-            - SST=222
+            - NSSAI_SD_0=1
+            - SST=1
             - DNN=oai.mec
             - REGISTER_NRF=yes
             - NRF_IP_ADDR=192.168.70.130
@@ -394,6 +399,51 @@ services:
                 ipv4_address: 192.168.74.145
             public_net_core:
                 ipv4_address: 192.168.73.145
+    a-vpp-upf2:
+        image: oai-upf-vpp:latest
+        privileged: true
+        container_name: "a-vpp-upf2"
+        environment:
+            - UPF_TYPE=A-UPF
+            - NWI_INGRESS=access.oai.org
+            - NWI_ENGRESS=core.oai.org
+            - GW_ID=4
+            - MNC03=95
+            - MCC=208
+            - REALM=3gppnetwork.org
+            - NETWORK_UE_IP=12.2.1.0/24
+            - INGRESS_INT_ADDR_LOCAL=192.168.74.205
+            - N4_IPV4_ADDRESS_LOCAL=192.168.70.205
+            - EGRESS_INT_ADDR_LOCAL=192.168.73.205
+            - EGRESS_INT_ADDR_REMOTE=192.168.73.135 # EXT-DN (NAT Gateway) IP Address
+            - VPP_MAIN_CORE=0
+            - VPP_CORE_WORKER=1
+#           - VPP_PLUGIN_PATH=/usr/lib64/vpp_plugins/                # RHEL7
+            - VPP_PLUGIN_PATH=/usr/lib/x86_64-linux-gnu/vpp_plugins/ # Ubntu18.04
+            - INTERFACE_ACCESS=eth2
+            - INTERFACE_CORE=eth1
+            - INTERFACE_CP=eth0
+            - NSSAI_SD_0=1
+            - SST=1
+            - DNN=oai
+            - REGISTER_NRF=yes
+            - NRF_IP_ADDR=192.168.70.130
+            - NRF_PORT=9090
+            - HTTP_VERSION=2
+        depends_on:
+            - oai-nrf
+        healthcheck:
+            test: /bin/bash -c "pgrep vpp"
+            interval: 10s
+            timeout: 5s
+            retries: 5
+        networks:
+            public_net:
+                ipv4_address: 192.168.70.146
+            public_net_core_n9:
+                ipv4_address: 192.168.74.146
+            public_net_core:
+                ipv4_address: 192.168.73.146
     oai-ext-dn:
         image: trf-gen-cn5g:latest
         privileged: true
