@@ -27,6 +27,7 @@ Welcome to the tutorial home page of OAI 5g Core project. Here you can find lot 
     - [Using Docker-Compose, perform a `basic` deployment and test with `OAI RF simulator`](https://gitlab.eurecom.fr/oai/openairinterface5g/-/tree/develop/ci-scripts/yaml_files/5g_rfsimulator)
     - [Using Docker-Compose, perform a `basic` deployment and test with `UERANSIM`](./DEPLOY_SA5G_WITH_UERANSIM.md)
     - [Using Docker-Compose, perform a `basic` deployment and test with `Network Slicing`](./DEPLOY_SA5G_SLICING.md)
+    - [Using Docker-Compose, perform a `basic` deployment and test with `srsRAN`](./DEPLOY_SA5G_WITH_SRSRAN.md)
     - [Using Docker-Compose, when testing with Commercial UE, troubleshoot traffic issues](./TROUBLESHOOT_COTS_UE_TRAFFIC.md)
 - The Developer Corner
     - [How to Deploy Developers Core Network and Basic Debugging](./DEBUG_5G_CORE.md)
