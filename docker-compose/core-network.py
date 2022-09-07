@@ -113,7 +113,10 @@ def deploy(file_name, ct, extra_interface=False):
         #   * `not port 2152`           --> When running w/ OAI RF simulator, remove all GTP packets
         #  - On oai-ext-dn container
         #   * `icmp`                    --> Only ping packets
-        cmd = f'nohup sudo tshark -i demo-oai -f "(not host 192.168.70.135 and not arp and not port 53 and not port 2152) or (host 192.168.70.135 and icmp)" -w {args.capture} > /dev/null 2>&1 &'
+        if "vpp" in file_name:
+            cmd = f'nohup sudo tshark -i demo-oai -i cn5g-access -f "(not host 192.168.70.135 and not arp and not port 53 and not port 2152) or (host 192.168.70.135 and icmp)" -w {args.capture} > /dev/null 2>&1 &'
+        else:
+            cmd = f'nohup sudo tshark -i demo-oai -f "(not host 192.168.70.135 and not arp and not port 53 and not port 2152) or (host 192.168.70.135 and icmp)" -w {args.capture} > /dev/null 2>&1 &'
         if extra_interface:
             cmd = re.sub('-i demo-oai', '-i demo-oai -i cn5g-core', cmd)
             cmd = re.sub('70', '73', cmd)
