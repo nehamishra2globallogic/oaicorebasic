@@ -115,7 +115,7 @@ def deploy(file_name, ct, extra_interface=False):
         #   * `icmp`                    --> Only ping packets
         cmd = f'nohup sudo tshark -i demo-oai -f "(not host 192.168.70.135 and not arp and not port 53 and not port 2152) or (host 192.168.70.135 and icmp)" -w {args.capture} > /dev/null 2>&1 &'
         if extra_interface:
-            cmd = re.sub('-i demo-oai', '-i demo-oai -i cn5g-core', cmd)
+            cmd = re.sub('-i demo-oai', '-i demo-oai -i cn5g-access -i cn5g-core', cmd)
             cmd = re.sub('70', '73', cmd)
         res = run_cmd(cmd, False)
         if res is None:
