@@ -148,7 +148,7 @@ services:
             - NRCellID=1
             - USE_FQDN=no
             - NGAPPeerAddr=192.168.70.138
-            - GTPuLocalAddr=192.168.70.156
+            - GTPuLocalAddr=192.168.72.156
             - GTPuIFname=eth0
         networks:
             public_net:

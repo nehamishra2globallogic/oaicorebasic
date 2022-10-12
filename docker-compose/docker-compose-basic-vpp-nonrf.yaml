@@ -189,7 +189,7 @@ services:
             - UDM_API_VERSION=v2
             - UDM_FQDN=oai-udm
             - UPF_IPV4_ADDRESS=192.168.70.202
-            - UPF_FQDN_0=gw1.vppupf.node.5gcn.mnc95.mcc208.3gppnetwork.org
+            - UPF_FQDN_0=vpp-upf.node.5gcn.mnc95.mcc208.3gppnetwork.org
             - NRF_IPV4_ADDRESS=192.168.70.130
             - NRF_PORT=80
             - NRF_API_VERSION=v1
@@ -203,34 +203,36 @@ services:
             - DNN_NI1=default
             - ENABLE_USAGE_REPORTING=yes
         extra_hosts:
-            - "gw1.vppupf.node.5gcn.mnc95.mcc208.3gppnetwork.org:192.168.70.202"
+            - "vpp-upf.node.5gcn.mnc95.mcc208.3gppnetwork.org:192.168.70.202"
         depends_on:
             - oai-amf
         networks:
             public_net:
                 ipv4_address: 192.168.70.133
     vpp-upf:
-        image: oai-upf-vpp:v1.4.0
+        image: oai-upf-vpp:develop # v1.4 does not support new configuration
         privileged: true
         container_name: "vpp-upf"
         environment:
-            - NWI_N3=access.oai.org
-            - NWI_N6=core.oai.org
-            - GW_ID=1
-            - MNC03=95
+            - IF_1_IP=192.168.70.202
+            - IF_1_TYPE=N4
+            - IF_2_IP=192.168.72.202
+            - IF_2_TYPE=N3
+            - IF_2_NWI=access.oai.org
+            - IF_3_IP=192.168.73.202
+            - IF_3_TYPE=N6
+            - IF_3_NWI=core.oai.org
+            - IF_3_IP_REMOTE=192.168.73.135 # EXT-DN IP Address
+            - NAME=VPP-UPF
+            - MNC=95
             - MCC=208
             - REALM=3gppnetwork.org
-            - NETWORK_UE_IP=12.1.1.0/24
-            - N6_IPV4_ADDRESS_REMOTE=192.168.73.135 # EXT-DN (NAT Gateway) IP Address
             - VPP_MAIN_CORE=0
             - VPP_CORE_WORKER=1
-#           - VPP_PLUGIN_PATH=/usr/lib64/vpp_plugins/                # RHEL7
-            - VPP_PLUGIN_PATH=/usr/lib/x86_64-linux-gnu/vpp_plugins/ # Ubntu18.04
-            - INTERFACE_ACCESS=eth1
-            - INTERFACE_CORE=eth2
-            - INTERFACE_CP=eth0
-            - NSSAI_SD_0=222
-            - SST=123
+            # - VPP_PLUGIN_PATH=/usr/lib64/vpp_plugins/                # RHEL7
+            - VPP_PLUGIN_PATH=/usr/lib/x86_64-linux-gnu/vpp_plugins/ # Ubuntu18.04
+            - SNSSAI_SD=123
+            - SNSSAI_SST=222
             - DNN=default
             - REGISTER_NRF=no
             - NRF_IP_ADDR=0.0.0.0
