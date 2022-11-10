@@ -86,6 +86,13 @@ services:
             - UDM_FQDN=localhost
         depends_on:
             - mysql
+        volumes:
+            - ./healthscripts/amf-healthcheck.sh:/openair-amf/bin/amf-healthcheck.sh
+        healthcheck:
+            test: /bin/bash -c "/openair-amf/bin/amf-healthcheck.sh"
+            interval: 10s
+            timeout: 15s
+            retries: 5
         networks:
             public_net:
                 ipv4_address: 192.168.70.132
@@ -152,6 +159,13 @@ services:
             - ENABLE_USAGE_REPORTING=no # Set yes if UE USAGE REPORTING is to be done at UPF
         depends_on:
             - oai-amf
+        volumes:
+            - ./healthscripts/smf-healthcheck.sh:/openair-smf/bin/smf-healthcheck.sh
+        healthcheck:
+            test: /bin/bash -c "/openair-smf/bin/smf-healthcheck.sh"
+            interval: 10s
+            timeout: 5s
+            retries: 5
         extra_hosts:
             - "oai-spgwu:192.168.70.134"
         networks:
@@ -207,6 +221,13 @@ services:
         cap_drop:
             - ALL
         privileged: true
+        volumes:
+            - ./healthscripts/spgwu-healthcheck.sh:/openair-spgwu-tiny/bin/spgwu-healthcheck.sh
+        healthcheck:
+            test: /bin/bash -c "/openair-spgwu-tiny/bin/spgwu-healthcheck.sh"
+            interval: 10s
+            timeout: 5s
+            retries: 5
         networks:
             public_net:
                 ipv4_address: 192.168.70.134
