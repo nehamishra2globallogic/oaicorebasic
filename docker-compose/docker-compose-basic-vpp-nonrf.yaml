@@ -137,13 +137,13 @@ services:
             - MYSQL_USER=root
             - MYSQL_PASS=linux
             - MYSQL_DB=oai_db
-            - EXTERNAL_NRF=no
-            - NF_REGISTRATION=no
+            - ENABLE_STATIC_NRF=no
+            - NRF_SELECTION=no
             - SMF_SELECTION=no
             - USE_FQDN_DNS=yes
             - EXTERNAL_AUSF=yes
             - EXTERNAL_UDM=no
-            - EXTERNAL_NSSF=no
+            - ENABLE_NSSF=no
             - USE_HTTP2=no 
             - NRF_IPV4_ADDRESS=0.0.0.0 # not used in this scenario, can't remove
             - NRF_PORT=80 # not used in this scenario, can't remove

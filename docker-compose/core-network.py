@@ -214,6 +214,7 @@ def check_config(file_name):
         if amf_registration_nrf is None or smf_registration_nrf is None or upf_registration_nrf is None or \
            ausf_registration_nrf is None or udm_registration_nrf is None or udr_registration_nrf is None:
              logging.error('\033[0;31m Registration problem with NRF, check the reason manually\033[0m....')
+             exit(-1)
         else:
             if file_name == BASIC_VPP_W_NRF or file_name == BASIC_W_NRF:
                 logging.debug('\033[0;32m AUSF, UDM, UDR, AMF, SMF and UPF are registered to NRF\033[0m....')
@@ -284,7 +285,8 @@ def check_config(file_name):
             cmd = "docker logs oai-smf | grep  'handle_receive(16 bytes)'"
             res = run_cmd(cmd)
             if res is None:
-               logging.error('\033[0;31m UPF not receiving heartbeats from SMF, re-trying\033[0m....')
+                logging.error('\033[0;31m UPF not receiving heartbeats from SMF, re-trying\033[0m....')
+                exit(-1)
             else:
                 status += 1
         if status > 2:

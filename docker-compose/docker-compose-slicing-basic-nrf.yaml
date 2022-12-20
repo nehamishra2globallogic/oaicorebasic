@@ -181,8 +181,8 @@ services:
             - OPERATOR_KEY=63bfa50ee6523365ff14c1f45f88737d
             - NRF_IPV4_ADDRESS=0.0.0.0
             - NRF_PORT=80
-            - EXTERNAL_NRF=no
-            - NF_REGISTRATION=no
+            - ENABLE_STATIC_NRF=no
+            - NRF_SELECTION=yes
             - SMF_SELECTION=yes
             - USE_FQDN_DNS=yes
             - EXTERNAL_AUSF=yes
@@ -196,8 +196,7 @@ services:
             - UDM_PORT=80
             - UDM_API_VERSION=v2
             - UDM_FQDN=oai_udm
-            - NRF_SELECTION=yes
-            - EXTERNAL_NSSF=yes
+            - ENABLE_NSSF=yes
             - NSSF_IPV4_ADDRESS=192.168.70.132
             - NSSF_PORT=80
             - NSSF_API_VERSION=v1

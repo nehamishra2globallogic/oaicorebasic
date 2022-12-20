@@ -395,6 +395,10 @@ pipeline {
   post {
     always {
       script {
+        // Cleanup volumes
+        sh 'docker volume prune --force'
+        // Cleanup temporary test images
+        sh 'docker rmi oai-spgwu-tiny:' + spgwuTag + ' || true'
         // Zipping all archived log files
         sh "zip -r -qq cn5g_fed_tutorials_logs.zip archives"
         if (fileExists('cn5g_fed_tutorials_logs.zip')) {
