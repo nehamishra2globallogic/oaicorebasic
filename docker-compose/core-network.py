@@ -35,6 +35,9 @@ logging.basicConfig(
     format="[%(asctime)s] %(name)s:%(levelname)s: %(message)s"
 )
 
+# docker compose command line command syntax
+dc_default_cmd = 'docker-compose'
+
 # Docker Compose files
 MINI_W_NRF = 'docker-compose-mini-nrf.yaml' 
 MINI_NO_NRF = 'docker-compose-mini-nonrf.yaml'
@@ -94,17 +97,17 @@ def deploy(file_name, extra_interface=False):
     logging.debug('\033[0;34m Starting 5gcn components... Please wait\033[0m....')
     # The assumption is that all services described in docker-compose files
     # have explicit or built-in health checks.
-    cmd = f'docker-compose -f {file_name} config --services | wc -l'
+    cmd = f'{dc_default_cmd} -f {file_name} config --services | wc -l'
     res = run_cmd(cmd, True)
     ct = int(res)
 
     if args.capture is None:
         # When no capture, just deploy all at once.
-        cmd = f'docker-compose -f {file_name} up -d'
+        cmd = f'{dc_default_cmd} -f {file_name} up -d'
         res = run_cmd(cmd, False)
     else:
         # First just deploy mysql container, all docker networks will be up.
-        cmd = f'docker-compose -f {file_name} up -d mysql'
+        cmd = f'{dc_default_cmd} -f {file_name} up -d mysql'
         res = run_cmd(cmd, False)
         if res is None:
             exit(f'\033[0;31m Incorrect/Unsupported executing command {cmd}')
@@ -128,7 +131,7 @@ def deploy(file_name, extra_interface=False):
         cmd = f'sleep 20; sudo chmod 666 {args.capture}'
         run_cmd(cmd)
         # Finally deploy the rest of the network functions.
-        cmd = f'docker-compose -f {file_name} up -d'
+        cmd = f'{dc_default_cmd} -f {file_name} up -d'
         res = run_cmd(cmd, False)
     # sometimes first try does not go through
     if args.capture is not None:
@@ -140,7 +143,7 @@ def deploy(file_name, extra_interface=False):
     logging.debug('\033[0;32m OAI 5G Core network started, checking the health status of the containers... takes few secs\033[0m....')
     notSilentForFirstTime = False
     for x in range(40):
-        cmd = f'docker-compose -f {file_name} ps -a'
+        cmd = f'{dc_default_cmd} -f {file_name} ps -a'
         res = run_cmd(cmd, notSilentForFirstTime)
         notSilentForFirstTime = True
         if res is None:
@@ -164,7 +167,7 @@ def undeploy(file_name):
         None
     """
     logging.debug('\033[0;34m UnDeploying OAI 5G core components\033[0m....')
-    cmd = f'docker-compose -f {file_name} down -t 0'
+    cmd = f'{dc_default_cmd} -f {file_name} down -t 0'
     res = run_cmd(cmd, False)
     if res is None:
         exit(f'\033[0;31m Incorrect/Unsupported executing command {cmd}')
@@ -296,14 +299,19 @@ def check_config(file_name):
             logging.debug('\033[0;32m UPF receiving heathbeats from SMF\033[0m....')
     logging.debug('\033[0;32m OAI 5G Core network is configured and healthy\033[0m....')
 
-def run_cmd(cmd, silent=True):
+def run_cmd(cmd, silent=True, captureStdErr=False):
     if not silent:
         logging.debug(cmd)
+    if captureStdErr:
+        cmdStdErr = subprocess.STDOUT
+    else:
+        cmdStdErr = None
     result = None
     try:
         res = subprocess.run(cmd,
                         shell=True, check=True,
                         stdout=subprocess.PIPE, 
+                        stderr=cmdStdErr,
                         universal_newlines=True)
         result = res.stdout.strip()
     except:
@@ -311,6 +319,12 @@ def run_cmd(cmd, silent=True):
     return result
 
 if __name__ == '__main__':
+    try:
+        res = run_cmd('docker compose version', True, True)
+        if res.count('Docker Compose version') > 0:
+            dc_default_cmd = 'docker compose'
+    except:
+        pass
 
     # Parse the arguments to get the deployment instruction
     args = _parse_args()
