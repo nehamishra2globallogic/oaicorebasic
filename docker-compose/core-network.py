@@ -85,13 +85,18 @@ def _parse_args() -> argparse.Namespace:
     )
     return parser.parse_args()
 
-def deploy(file_name, ct, extra_interface=False):
+def deploy(file_name, extra_interface=False):
     """Deploy the containers using the docker-compose template
 
     Returns:
         None
     """
     logging.debug('\033[0;34m Starting 5gcn components... Please wait\033[0m....')
+    # The assumption is that all services described in docker-compose files
+    # have explicit or built-in health checks.
+    cmd = f'docker-compose -f {file_name} config --services | wc -l'
+    res = run_cmd(cmd, True)
+    ct = int(res)
 
     if args.capture is None:
         # When no capture, just deploy all at once.
@@ -312,24 +317,24 @@ if __name__ == '__main__':
     if args.type == 'start-mini':
         # Mini function with NRF
         if args.scenario == '1':
-            deploy(MINI_W_NRF, 6)
+            deploy(MINI_W_NRF)
         # Mini function without NRF
         elif args.scenario == '2':
-            deploy(MINI_NO_NRF, 5)
+            deploy(MINI_NO_NRF)
     elif args.type == 'start-basic':
         # Basic function with NRF
         if args.scenario == '1':
-            deploy(BASIC_W_NRF, 9)
+            deploy(BASIC_W_NRF)
         # Basic function without NRF
         elif args.scenario == '2':
-            deploy(BASIC_NO_NRF, 8)
+            deploy(BASIC_NO_NRF)
     elif args.type == 'start-basic-vpp':
         # Basic function with NRF and VPP-UPF
         if args.scenario == '1':
-            deploy(BASIC_VPP_W_NRF, 9, True)
+            deploy(BASIC_VPP_W_NRF, True)
         # Basic function without NRF but with VPP-UPF
         elif args.scenario == '2':
-            deploy(BASIC_VPP_NO_NRF, 8, True)
+            deploy(BASIC_VPP_NO_NRF, True)
     elif args.type == 'stop-mini':
         if args.scenario == '1':
             undeploy(MINI_W_NRF)
