@@ -192,15 +192,38 @@ services:
             - NRF_IPV4_ADDRESS=192.168.70.130
             - NRF_PORT=80
             - NRF_API_VERSION=v1
+            - DEFAULT_CSCF_IPV4_ADDRESS=127.0.0.1 # only needed when ims is being used
+            - USE_LOCAL_SUBSCRIPTION_INFO=yes #Set to yes if SMF uses local subscription information instead of from an UDM
             - NRF_FQDN=unknown
             - REGISTER_NRF=no
             - DISCOVER_UPF=no
             - USE_FQDN_DNS=yes
             - USE_NETWORK_INSTANCE=yes
-            - DNN_RANGE1=12.1.1.2 - 12.1.1.128
-            - DNN_RANGE0=12.2.1.2 - 12.2.1.128
-            - DNN_NI1=default
             - ENABLE_USAGE_REPORTING=yes
+            - DNN_NI0=oai
+            - TYPE0=IPv4
+            - DNN_RANGE0=12.1.1.151 - 12.1.1.253
+            - NSSAI_SST0=1
+            - NSSAI_SD0=0xFFFFFF
+            - SESSION_AMBR_UL0=200Mbps
+            - SESSION_AMBR_DL0=400Mbps
+            - DNN_NI1=oai.ipv4
+            - TYPE1=IPv4
+            - DNN_RANGE1=12.1.1.51 - 12.1.1.150
+            - NSSAI_SST1=1
+            - NSSAI_SD1=1
+            - SESSION_AMBR_UL1=100Mbps
+            - SESSION_AMBR_DL1=200Mbps
+            - DNN_NI2=default
+            - TYPE2=IPv4
+            - DNN_RANGE2=12.1.1.2 - 12.1.1.50
+            - NSSAI_SST2=222
+            - NSSAI_SD2=123
+            - SESSION_AMBR_UL2=50Mbps
+            - SESSION_AMBR_DL2=100Mbps
+            - DNN_NI3=ims
+            - TYPE3=IPv4v6
+            - DNN_RANGE3=14.1.1.2 - 14.1.1.253
         extra_hosts:
             - "vpp-upf.node.5gcn.mnc95.mcc208.3gppnetwork.org:192.168.70.201"
         depends_on:

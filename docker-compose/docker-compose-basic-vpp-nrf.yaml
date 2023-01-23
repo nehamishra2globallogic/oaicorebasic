@@ -59,6 +59,8 @@ services:
             - UDM_NAME=OAI_UDM
             - SBI_IF_NAME=eth0
             - SBI_PORT=80
+            - SBI_HTTP2_PORT=8080
+            - USE_HTTP2=no
             - UDM_VERSION_NB=v1
             - USE_FQDN_DNS=yes
             - UDR_IP_ADDRESS=192.168.70.136
@@ -135,10 +137,12 @@ services:
             - PLMN_SUPPORT_MCC=208
             - PLMN_SUPPORT_MNC=95
             - PLMN_SUPPORT_TAC=0xa000
-            - SST_0=222
-            - SD_0=123
-            - SST_1=128
-            - SD_1=12
+            - SST_0=1
+            - SD_0=0xFFFFFF
+            - SST_1=1
+            - SD_1=1
+            - SST_2=222
+            - SD_2=123
             - AMF_INTERFACE_NAME_FOR_NGAP=eth0
             - AMF_INTERFACE_NAME_FOR_N11=eth0
             - SMF_INSTANCE_ID_0=1
@@ -261,8 +265,8 @@ services:
             - IF_2_NWI=access.oai.org
             - IF_3_IP=192.168.73.201
             - IF_3_TYPE=N6
+            - IF_3_NWI=core.oai.org
             - IF_3_IP_REMOTE=192.168.73.135 # EXT-DN IP Address
-            - IF_3_NWI=internet.oai.org
             - NAME=VPP-UPF
             - MNC=95
             - MCC=208
