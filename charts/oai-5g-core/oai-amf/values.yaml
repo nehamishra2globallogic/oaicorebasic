@@ -32,7 +32,7 @@ podSecurityContext:
 
 ## OPENSHIFT terminology
 securityContext:
-  privileged: false
+  privileged: true
 
 start:
   amf: true
