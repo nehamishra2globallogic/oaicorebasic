@@ -311,7 +311,7 @@ pipeline {
           dir ('ci-scripts') {
             // Tee will make the command always pass
             // Please use the same log name as the folder used in the tutorial
-            sh 'python3 ./checkTutorial.py --tutorial DEPLOY_SA5G_WITH_GNBSIM.md | tee ../archives/mini-gnbsim.log'
+            sh 'python3 ./checkTutorial.py --tutorial DEPLOY_SA5G_WITH_GNBSIM.md 2>&1 | tee ../archives/mini-gnbsim.log'
           }
           // Checking if FAIL appears
           try {
@@ -334,7 +334,7 @@ pipeline {
           dir ('ci-scripts') {
             // Tee will make the command always pass
             // Please use the same log name as the folder used in the tutorial
-            sh 'python3 ./checkTutorial.py --tutorial DEPLOY_SA5G_BASIC_STATIC_UE_IP.md | tee ../archives/static-ue-ip.log'
+            sh 'python3 ./checkTutorial.py --tutorial DEPLOY_SA5G_BASIC_STATIC_UE_IP.md 2>&1 | tee ../archives/static-ue-ip.log'
           }
           // Checking if FAIL appears
           try {
@@ -357,7 +357,7 @@ pipeline {
           dir ('ci-scripts') {
             // Tee will make the command always pass
             // Please use the same log name as the folder used in the tutorial
-            sh 'python3 ./checkTutorial.py --tutorial DEPLOY_SA5G_WITH_VPP_UPF.md | tee ../archives/vpp-upf-gnbsim.log'
+            sh 'python3 ./checkTutorial.py --tutorial DEPLOY_SA5G_WITH_VPP_UPF.md 2>&1 | tee ../archives/vpp-upf-gnbsim.log'
           }
           // Checking if FAIL appears
           try {
@@ -380,7 +380,7 @@ pipeline {
           dir ('ci-scripts') {
             // Tee will make the command always pass
             // Please use the same log name as the folder used in the tutorial
-            sh 'python3 ./checkTutorial.py --tutorial DEPLOY_SA5G_SLICING.md | tee ../archives/slicing-with-nssf.log'
+            sh 'python3 ./checkTutorial.py --tutorial DEPLOY_SA5G_SLICING.md 2>&1 | tee ../archives/slicing-with-nssf.log'
           }
           // Checking if FAIL appears
           try {
