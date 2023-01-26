@@ -213,19 +213,27 @@ pipeline {
 
           // On Ubuntu servers, we shall pull from private local registry
           if ((cn_ci_host == 'selfix') || (cn_ci_host == 'orion')) {
-            // Login
-            sh 'docker login -u oaicicd -p oaicicd selfix.sboai.cs.eurecom.fr > /dev/null 2>&1'
-            // SPGWU
-            if ((spgwuTag == 'develop') && (spgwuBranch == 'develop')) {
-              spgwuTag = sh returnStdout: true, script: './ci-scripts/retrieveLatestTagOnPrivateRepo.py --repo-name oai-spgwu-tiny'
-              spgwuTag = spgwuTag.trim()
-              echo "SPGWU_TAG will be ${spgwuTag}"
+            pullFromSelfix = true
+            try {
+              // Login
+              sh 'docker login -u oaicicd -p oaicicd selfix.sboai.cs.eurecom.fr > /dev/null 2>&1'
+            } catch (Exception e) {
+              echo 'Problem w/ selfix registry. Let see if a "old" `develop` image is there.'
+              pullFromSelfix = false
             }
-            sh 'docker pull selfix.sboai.cs.eurecom.fr/oai-spgwu-tiny:' + spgwuTag
-            sh 'docker image tag selfix.sboai.cs.eurecom.fr/oai-spgwu-tiny:' + spgwuTag + ' oai-spgwu-tiny:' + spgwuTag
-            sh 'docker rmi selfix.sboai.cs.eurecom.fr/oai-spgwu-tiny:' + spgwuTag
-            // Logout
-            sh 'docker logout selfix.sboai.cs.eurecom.fr > /dev/null 2>&1'
+            if (pullFromSelfix) {
+              // SPGWU
+              if ((spgwuTag == 'develop') && (spgwuBranch == 'develop')) {
+                spgwuTag = sh returnStdout: true, script: './ci-scripts/retrieveLatestTagOnPrivateRepo.py --repo-name oai-spgwu-tiny'
+                spgwuTag = spgwuTag.trim()
+                echo "SPGWU_TAG will be ${spgwuTag}"
+              }
+              sh 'docker pull selfix.sboai.cs.eurecom.fr/oai-spgwu-tiny:' + spgwuTag
+              sh 'docker image tag selfix.sboai.cs.eurecom.fr/oai-spgwu-tiny:' + spgwuTag + ' oai-spgwu-tiny:' + spgwuTag
+              sh 'docker rmi selfix.sboai.cs.eurecom.fr/oai-spgwu-tiny:' + spgwuTag
+              // Logout
+              sh 'docker logout selfix.sboai.cs.eurecom.fr > /dev/null 2>&1'
+            }
           }
 
           // Verify that the images are available
