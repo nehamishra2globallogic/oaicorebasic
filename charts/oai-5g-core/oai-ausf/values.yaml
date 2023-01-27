@@ -58,7 +58,7 @@ config:
   nrfFqdn: "oai-nrf-svc"
   registerNrf: "no"
 
-persistence:
+persistent:
   sharedvolume: false
   volumneName: managed-nfs-storage
   size: 1Gi

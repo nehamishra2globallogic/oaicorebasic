@@ -47,7 +47,7 @@ spec:
           - /bin/sleep
           - infinity
         {{- end}}
-        {{- if .Values.persistence.sharedvolume}}
+        {{- if .Values.persistent.sharedvolume}}
         volumeMounts:
         - mountPath: "/pcap"
           name: cn5g-pv
@@ -188,9 +188,9 @@ spec:
           - infinity
         {{- end}}
       volumes:
-      {{- if .Values.persistence.sharedvolume}}
+      {{- if .Values.persistent.sharedvolume}}
       - name: cn5g-pv
-        persistenceVolumeClaim:
+        persistentVolumeClaim:
           claimName: cn5g-pvc
       {{- end }}
       dnsPolicy: ClusterFirst
