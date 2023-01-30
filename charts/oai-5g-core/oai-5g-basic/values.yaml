@@ -106,8 +106,6 @@ oai-spgwu-tiny:
     pullPolicy: IfNotPresent
   imagePullSecrets:
     - name: "regcred"
-  securityContext:
-    privileged: false
   multus:
     create: false
     n3Ip: "172.21.6.201"
