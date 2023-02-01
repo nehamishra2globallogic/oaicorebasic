@@ -18,6 +18,71 @@ ${LOG_DIR}                      ${CURDIR}/logs/
 
 *** Test Cases ***
 
+VPP UPF DL Issue
+    Start GnbSIM
+    ${ip} =   Check Gnbsim IP
+
+    # DL unlimited
+    Start Iperf3 Server     gnbsim-vpp   bind_ip=${ip}
+    Start Iperf3 Client     oai-ext-dn-1  ${EXT_DN1_IP}  ${ip}
+    Wait And Verify Iperf3 Result    oai-ext-dn-1   1000
+    Stop Iperf3 Server    gnbsim-vpp
+
+    # DL 10
+    Start Iperf3 Server     gnbsim-vpp   bind_ip=${ip}
+    Start Iperf3 Client     oai-ext-dn-1  ${EXT_DN1_IP}  ${ip}  bandwidth=10
+    Wait And Verify Iperf3 Result    oai-ext-dn-1   10
+    Stop Iperf3 Server    gnbsim-vpp
+
+    # DL 20
+    Start Iperf3 Server     gnbsim-vpp   bind_ip=${ip}
+    Start Iperf3 Client     oai-ext-dn-1  ${EXT_DN1_IP}  ${ip}  bandwidth=20
+    Wait And Verify Iperf3 Result    oai-ext-dn-1   20
+    Stop Iperf3 Server    gnbsim-vpp
+
+    # DL 30
+    Start Iperf3 Server     gnbsim-vpp   bind_ip=${ip}
+    Start Iperf3 Client     oai-ext-dn-1  ${EXT_DN1_IP}  ${ip}  bandwidth=30
+    Wait And Verify Iperf3 Result    oai-ext-dn-1   30
+    Stop Iperf3 Server    gnbsim-vpp
+
+    # DL 40
+    Start Iperf3 Server     gnbsim-vpp   bind_ip=${ip}
+    Start Iperf3 Client     oai-ext-dn-1  ${EXT_DN1_IP}  ${ip}  bandwidth=40
+    Wait And Verify Iperf3 Result    oai-ext-dn-1   40
+    Stop Iperf3 Server    gnbsim-vpp
+
+    # DL 50
+    Start Iperf3 Server     gnbsim-vpp   bind_ip=${ip}
+    Start Iperf3 Client     oai-ext-dn-1  ${EXT_DN1_IP}  ${ip}  bandwidth=50
+    Wait And Verify Iperf3 Result    oai-ext-dn-1   50
+    Stop Iperf3 Server    gnbsim-vpp
+
+    # DL 100
+    Start Iperf3 Server     gnbsim-vpp   bind_ip=${ip}
+    Start Iperf3 Client     oai-ext-dn-1  ${EXT_DN1_IP}  ${ip}  bandwidth=100
+    Wait And Verify Iperf3 Result    oai-ext-dn-1   100
+    Stop Iperf3 Server    gnbsim-vpp
+
+    # DL 200
+    Start Iperf3 Server     gnbsim-vpp   bind_ip=${ip}
+    Start Iperf3 Client     oai-ext-dn-1  ${EXT_DN1_IP}  ${ip}  bandwidth=200
+    Wait And Verify Iperf3 Result    oai-ext-dn-1   200
+    Stop Iperf3 Server    gnbsim-vpp
+
+    # DL 500
+    Start Iperf3 Server     gnbsim-vpp   bind_ip=${ip}
+    Start Iperf3 Client     oai-ext-dn-1  ${EXT_DN1_IP}  ${ip}  bandwidth=500
+    Wait And Verify Iperf3 Result    oai-ext-dn-1   500
+    Stop Iperf3 Server    gnbsim-vpp
+
+    # DL 1000
+    Start Iperf3 Server     gnbsim-vpp   bind_ip=${ip}
+    Start Iperf3 Client     oai-ext-dn-1  ${EXT_DN1_IP}  ${ip}  bandwidth=1000
+    Wait And Verify Iperf3 Result    oai-ext-dn-1   1000
+    Stop Iperf3 Server    gnbsim-vpp
+
+
 Default QoS Session AMBR
     Configure Default Qos  5qi=9  session_ambr=50  # TODO
     Start GnbSIM
@@ -133,8 +198,8 @@ Wait and Verify Iperf3 Result
     Wait Until Keyword Succeeds    60s  1s   Iperf3 Is Finished    ${container}
     TRY
         Iperf3 Results Should Be    ${container}  ${mbits}
-    EXCEPT
-        Log   IPerf3 Results is wrong, ignored for now   level=ERROR
+    EXCEPT    AS   ${error_message}
+        Log   IPerf3 Results is wrong, ignored for now: ${error_message}   level=ERROR
     END
 
 Check gnbsim IP

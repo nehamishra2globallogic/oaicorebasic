@@ -94,5 +94,7 @@ class CNTestLib:
         min_b = bandwidth - (bandwidth * interval)
         max_b = bandwidth + (bandwidth * interval)
 
+        print(res)
+
         if bandwidth_receiver < min_b or bandwidth_receiver > max_b:
             raise Exception(f"Bandwidth should be in interval [{min_b}, {max_b}], but it is {bandwidth_receiver}")
