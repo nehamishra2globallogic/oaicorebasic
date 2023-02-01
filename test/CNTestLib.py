@@ -89,33 +89,10 @@ class CNTestLib:
         unit = last_line.split()[7]
 
         if "Gbit" in unit:
-            bandwidth_receiver = bandwidth * 1024
+            bandwidth_receiver = bandwidth_receiver * 1024
 
         min_b = bandwidth - (bandwidth * interval)
         max_b = bandwidth + (bandwidth * interval)
 
-        if bandwidth_receiver < min_b or bandwidth > max_b:
+        if bandwidth_receiver < min_b or bandwidth_receiver > max_b:
             raise Exception(f"Bandwidth should be in interval [{min_b}, {max_b}], but it is {bandwidth_receiver}")
-
-
-if __name__ == "__main__":
-    lib = CNTestLib()
-
-    lib.check_cn_health_status("docker-compose-qos-tests.yaml")
-
-    lib.start_iperf3_server("oai-ext-dn-1")
-    lib.start_iperf3_client("gnbsim-vpp", "12.1.1.2", "192.168.73.135", duration=3, bandwidth="10")
-
-    while True:
-        try:
-            lib.iperf3_is_finished("gnbsim-vpp")
-            break
-        except:
-            print("not yet")
-            time.sleep(1)
-
-    lib.stop_iperf3_server("oai-ext-dn-1")
-
-    lib.iperf3_results_should_be("gnbsim-vpp", 10)
-
-    lib.collect_all_logs("./logs", "docker-compose-qos-tests.yaml")
