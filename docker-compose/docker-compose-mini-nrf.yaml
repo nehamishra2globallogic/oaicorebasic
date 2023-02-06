@@ -99,7 +99,6 @@ services:
             - NRF_IPV4_ADDRESS=192.168.70.130
             - NRF_FQDN=oai-nrf
             - USE_LOCAL_SUBSCRIPTION_INFO=yes  #Set to yes if SMF uses local subscription information instead of from an UDM
-            - USE_NETWORK_INSTANCE=no  #Set yes if network instance is to be used for given UPF
             - REGISTER_NRF=yes
             - DISCOVER_UPF=yes
             - USE_FQDN_DNS=yes

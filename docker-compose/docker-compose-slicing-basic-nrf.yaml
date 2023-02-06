@@ -334,7 +334,6 @@ services:
             - NRF_PORT=80
             - NRF_API_VERSION=v1
             - NRF_FQDN=oai_nrf_slice3
-            - USE_NETWORK_INSTANCE=yes
             - REGISTER_NRF=yes
             - DISCOVER_UPF=yes
             - DISCOVER_PCF=no

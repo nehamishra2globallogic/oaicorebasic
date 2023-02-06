@@ -77,10 +77,8 @@ data:
           USE_FQDN_DNS = "{{ .Values.config.useFqdnDns }}";                  # Set to yes if AMF/UDM/NRF/UPF will relying on a DNS to resolve FQDN
           HTTP_VERSION = {{ .Values.config.httpVersion }};                    # Default: 1
           {{- if .Values.config.upfSpgwu}}
-          USE_NETWORK_INSTANCE    = "no"   # Set yes if network instance is to be used for given UPF
           ENABLE_USAGE_REPORTING = "no"   # Set yes if UE USAGE REPORTING is to be done at UPF
           {{- else }}
-          USE_NETWORK_INSTANCE    = "yes"   # Set yes if network instance is to be used for given UPF
           ENABLE_USAGE_REPORTING = "yes"   # Set yes if UE USAGE REPORTING is to be done at UPF
           {{- end }}
         }

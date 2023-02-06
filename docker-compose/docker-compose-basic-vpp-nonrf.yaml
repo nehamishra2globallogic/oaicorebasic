@@ -196,7 +196,6 @@ services:
             - REGISTER_NRF=no
             - DISCOVER_UPF=no
             - USE_FQDN_DNS=yes
-            - USE_NETWORK_INSTANCE=yes
             - DNN_RANGE1=12.1.1.2 - 12.1.1.128
             - DNN_RANGE0=12.2.1.2 - 12.2.1.128
             - DNN_NI1=default

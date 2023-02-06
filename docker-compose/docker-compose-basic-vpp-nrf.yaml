@@ -162,7 +162,6 @@ services:
             - REGISTER_NRF=yes
             - DISCOVER_UPF=yes
             - USE_FQDN_DNS=yes
-            - USE_NETWORK_INSTANCE=yes
             - ENABLE_USAGE_REPORTING=yes
             # Slice 0 (1, 0xFFFFFF)
             - DNN_NI0=oai

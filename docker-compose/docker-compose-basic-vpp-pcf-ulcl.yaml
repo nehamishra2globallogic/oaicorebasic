@@ -224,7 +224,6 @@ services:
             - DISCOVER_UPF=yes
             - DISCOVER_PCF=no
             - USE_FQDN_DNS=no # Issue with PCF DNS resolving
-            - USE_NETWORK_INSTANCE=yes
             - ENABLE_USAGE_REPORTING=yes
             - DNN_NI0=oai
             - TYPE0=IPv4
