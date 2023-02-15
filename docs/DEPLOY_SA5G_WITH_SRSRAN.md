@@ -72,6 +72,10 @@ For CI purposes please ignore this line
 docker-compose-host $: rm -rf /tmp/oai/vpp-upf-srsran
 ```
 -->
+* Update QFI Profile0 in SMF since srsran supports only QFI 9.
+```bash
+- QOS_PROFILE_5QI0=9
+```
 
 ``` shell
 docker-compose-host $: mkdir -p /tmp/oai/vpp-upf-srsran
@@ -143,7 +147,6 @@ More details in [section 5 of the `basic` vpp tutorial](https://gitlab.eurecom.f
 * Pull pre-built docker image 
 ``` console
 docker-compose-host $: docker pull rohankharade/srsran:latest
-docker-compose-host $: docker tag rohankharade/srsran:latest srsran:latest
 ```
 
 OR 
@@ -155,6 +158,73 @@ docker-compose-host $: cd srsRAN/
 docker-compose-host $: docker build --build-arg BASE_IMAGE=ubuntu:focal -f docker/Dockerfile --target srsran --tag srsran:latest .
 ```
 
+* Sample output logs
+```bash
+$ docker logs srsran -f
+Now setting these variables '@GNBID@ @GTPU_LOCAL_ADDR@ @MCC@ @MNC@ @NGAP_LOCAL_ADDR@ @NGAP_REMOTE_ADDR@'
+Now setting these variables '@TAC@'
+Now setting these variables '@DNN@ @IMSI@ @KEY@ @OPC@ @PDU_TYPE@'
+Done setting the configuration
+
+Running gNB Service 
+
+Active RF plugins: libsrsran_rf_zmq.so
+Inactive RF plugins: 
+---  Software Radio Systems LTE eNodeB  ---
+
+Couldn't open , trying /root/.config/srsran/enb.conf
+Reading configuration file /root/.config/srsran/enb.conf...
+Couldn't open sib.conf, trying /root/.config/srsran/sib.conf
+Couldn't open rr.conf, trying /root/.config/srsran/rr.conf
+Couldn't open rb.conf, trying /root/.config/srsran/rb.conf
+
+Built in Release mode using commit ce8a3cae1 on branch HEAD.
+
+Opening 1 channels in RF device=zmq with args=fail_on_disconnect=true,tx_port=tcp://*:2000,rx_port=tcp://localhost:2001,id=enb,base_srate=11.52e6
+Supported RF device list: zmq file
+CHx base_srate=11.52e6
+CHx id=enb
+Current sample rate is 1.92 MHz with a base rate of 11.52 MHz (x6 decimation)
+CH0 rx_port=tcp://localhost:2001
+CH0 tx_port=tcp://*:2000
+CH0 fail_on_disconnect=true
+NG connection successful
+
+==== eNodeB started ===
+Type <t> to view trace
+Current sample rate is 11.52 MHz with a base rate of 11.52 MHz (x1 decimation)
+Current sample rate is 11.52 MHz with a base rate of 11.52 MHz (x1 decimation)
+Setting frequency: DL=1842.5 Mhz, DL_SSB=1842.05 Mhz (SSB-ARFCN=368410), UL=1747.5 MHz for cc_idx=0 nof_prb=52
+Running UE Service 
+
+Active RF plugins: libsrsran_rf_zmq.so
+Inactive RF plugins: 
+Couldn't open , trying /root/.config/srsran/ue.conf
+Reading configuration file /root/.config/srsran/ue.conf...
+
+Built in Release mode using commit ce8a3cae1 on branch HEAD.
+
+Opening 1 channels in RF device=zmq with args=tx_port=tcp://*:2001,rx_port=tcp://localhost:2000,id=ue,base_srate=11.52e6
+Supported RF device list: zmq file
+CHx base_srate=11.52e6
+CHx id=ue
+Current sample rate is 1.92 MHz with a base rate of 11.52 MHz (x6 decimation)
+CH0 rx_port=tcp://localhost:2000
+CH0 tx_port=tcp://*:2001
+Current sample rate is 11.52 MHz with a base rate of 11.52 MHz (x1 decimation)
+Current sample rate is 11.52 MHz with a base rate of 11.52 MHz (x1 decimation)
+Waiting PHY to initialize ... Closing stdin thread.
+done!
+Attaching UE...
+Closing stdin thread.
+Random Access Transmission: prach_occasion=0, preamble_index=0, ra-rnti=0xf, tti=7691
+RACH:  slot=7691, cc=0, preamble=0, offset=0, temp_crnti=0x4601
+Random Access Complete.     c-rnti=0x4601, ta=0
+RRC Connected
+RRC NR reconfiguration successful.
+PDU Session Establishment successful. IP: 12.1.1.151
+RRC NR reconfiguration successful.
+```
 ## 7. Executing the `srsRAN` Scenario 
 
 * The configuration parameters, are preconfigured in [docker-compose-basic-vpp-nrf.yaml](../docker-compose/docker-compose-basic-vpp-nrf.yaml) and [docker-compose-srsran.yaml](../docker-compose/docker-compose-srsran.yaml) and one can modify it for test.
