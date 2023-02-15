@@ -1,20 +1,21 @@
 ---
 {{- if .Values.multus.create }}
 apiVersion: "k8s.cni.cncf.io/v1"
-kind: NetworkAttachmentDefinition 
+kind: NetworkAttachmentDefinition
 metadata:
-  name: {{ .Chart.Name }}-{{ .Values.namespace }}-n4-net1
+  name: {{ .Chart.Name }}-n4-net1
 spec:
-  config: '{ 
+  config: '{
       "cniVersion": "0.3.0",
       "type": "macvlan",
-      "master": "bond0",
+      "master": {{- cat .Values.multus.hostInterface | nospace | quote }},
       "mode": "bridge",
       "ipam": {
         "type": "static",
         "addresses": [
                 {
-                        "address": {{- cat .Values.multus.n4IPadd "/" .Values.multus.n4Netmask | nospace | quote }}
+                        "address": {{- cat .Values.multus.n4IPadd "/" .Values.multus.n4Netmask | nospace | quote }},
+                        "gateway": "{{ .Values.multus.n4Gateway }}"
                 }
         ]
       }

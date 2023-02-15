@@ -1,24 +1,23 @@
 # Reference:- TS 29.531 R16.0.0., Section- 6.1.6 Data Model 
 info:
-  version: 1.3.0
-  description: OAI-NSSF Release v1.3.0
+  version: 1.4.0
+  description: OAI-NSSF Release v1.4.0
 configuration:
   nsiInfoList:
     - snssai:
-        sst: 2
-        sd: '2'
+        sst: 128
+        sd: '128'
       nsiInformationList:
         nrfId: http://192.168.70.136:80/nnrf-disc/v1/nf-instances
         nsiId: '11'
     - snssai:
-        sst: 3
-        sd: '3'
+        sst: 1
       nsiInformationList:
         nrfId: http://192.168.70.136:80/nnrf-disc/v1/nf-instances
         nsiId: '12'
     - snssai:
-        sst: 4
-        sd: '4'
+        sst: 130
+        sd: '130'
       nsiInformationList:
         nrfId: http://192.168.70.137:80/nnrf-disc/v1/nf-instances
         nsiId: '12'
@@ -60,7 +59,7 @@ configuration:
       supportedSnssaiList:
       - sst: 222
         sd: '123'
-      - sst: 2
+      - sst: 128
   amfInfoList:
     - targetAmfSet: oai5gcn.mcc208.mnc95.regionid128.setid1.3gppnetwork.org
       nrfAmfSet: http://oai-cn5g-nrf.fr:8080/nnrf-disc/v1/nf-instances'
@@ -74,12 +73,11 @@ configuration:
                   mnc: 95
                 tac: 33456
               supportedSnssaiList:
-                - sst: 2
-                  sd: 2
-                - sst: 3
-                  sd: 3
-                - sst: 4
-                  sd: 4
+                - sst: 128
+                  sd: 128
+                - sst: 1
+                - sst: 130
+                  sd: 130
         - nfId: 405e8251-cc5a-45dd-a494-efb9eaf1cd68
           supportedNssaiAvailabilityData:
               tai:

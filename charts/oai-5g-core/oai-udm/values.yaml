@@ -1,22 +1,16 @@
-# Default values for oai-udm.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
-
-replicaCount: 1
+kubernetesType: Vanilla  #Vanilla for community kubernetes distribution
 
 nfimage:
-  registry: local
-  repository: docker.io/oaisoftwarealliance/oai-udm          ## oaisoftwarealliance/oai-udm # image name either locally present or in a public/private repository
-  version: develop                         ## latest/v1.1.2 stable and develop for experimental
+  repository: docker.io/oaisoftwarealliance/oai-udm         
+  version: v1.5.0                        #image tag, develop tag for experimental features 
   #pullPolicy: IfNotPresent or Never or Always
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
 
 tcpdumpimage:
-  registry: local
   repository: docker.io/corfr/tcpdump
   version: latest
   #pullPolicy: IfNotPresent or Never or Always
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
 
 ## good to use when pulling images from docker-hub mention 
 imagePullSecrets: 
@@ -25,8 +19,6 @@ imagePullSecrets:
 serviceAccount:
   # Specifies whether a service account should be created
   create: true
-  # Annotations to add to the service account
-  annotations: {}
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
   name: "oai-udm-sa"
@@ -35,12 +27,10 @@ podSecurityContext:
   runAsUser: 0
   runAsGroup: 0
 
+#service type is fixed to clusterIP, it is only support for non multus interface (eth0)
+
 securityContext:
   privileged: false
-
-service:
-  type: ClusterIP
-  httpPort: 80
 
 start:
   udm: true
@@ -48,21 +38,23 @@ start:
 
 config:
   tz: "Europe/Paris"
-  instance: "0"
+  instance: 0
   pidDirectory: "/var/run"
-  udmName: "OAI_UDM"
+  udmName: "oai-udm"
   sbiIfName: "eth0"
-  sbihttp1Port: "80"
-  sbihttp2Port: "9090"
-  udmVersionNb: "v1"
-  useFqdnDns: "yes"
+  sbiPortHttp1: "80"
+  sbiPortHttp2: "8080"
+  udmApiVersionNb: "v1"
+  useFqdnDns: "yes"       #yes to enable FQDN resoultion instead of ip-addresses but we still need to put some dummy ip-address in Ip-address field 
+  nfRegistration: "no"    #yes to register to NRF
+  useHttp2: "no"          #yes to enable http2
   udrIpAddress: "127.0.0.1"
   udrPort: "80"
-  udrVersionNb: "v1"
+  udrApiVersionNb: "v1"   #Nb means northbound
   udrFqdn: "oai-udr-svc"
   nrfIpAddress: "127.0.0.1"
   nrfPort: "80"
-  nrfVersion: "v1"
+  nrfApiVersionNb: "v1"   #Nb means northbound
   nrfFqdn: "oai-nrf-svc"
 
 persistence:
@@ -73,17 +65,25 @@ persistence:
 resources:
   define: false
   limits:
-    cpu: 100m
-    memory: 128Mi
+    tcpdump:
+      cpu: 100m
+      memory: 128Mi
+    nf:
+      cpu: 100m
+      memory: 128Mi
   requests:
-   cpu: 100m
-   memory: 256Mi
+    tcpdump:
+      cpu: 100m
+      memory: 128Mi
+    nf:
+      cpu: 100m
+      memory: 128Mi
 
 readinessProbe: true
 
-livenessProbe: true
+livenessProbe: false
 
-terminationGracePeriodSeconds: 30
+terminationGracePeriodSeconds: 5
 
 nodeSelector: {}
 

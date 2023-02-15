@@ -42,6 +42,7 @@ RUN apt-get update && \
       iperf \
       iproute2 \
       iputils-ping \
+      iptables \
       traceroute \
       tcpdump \
       iperf3 \

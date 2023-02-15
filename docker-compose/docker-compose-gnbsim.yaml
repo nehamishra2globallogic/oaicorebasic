@@ -170,6 +170,7 @@ services:
             interval: 10s
             timeout: 5s
             retries: 5
+## This version of gnbsim connects with AMF using, AMF FQDN not with AMF ip-addres (which is good for container world)
     gnbsim-fqdn:
         container_name: gnbsim-fqdn
         image: gnbsim:latest

@@ -49,6 +49,8 @@ def nssfBranch = params.nssfBranch
 def upfVppTag = params.upfVppTag
 def upfVppBranch = params.upfVppTag
 
+def ranTag = params.ranTag
+
 // means to shorten the pipeline
 def run_mini_gnbsim = true
 def run_static_ue_ip = true
@@ -202,6 +204,36 @@ pipeline {
           } else {
             sh "git clean -x -d -f > /dev/null 2>&1"
             sh "mkdir -p archives"
+            // For dev purpose, make it fast
+            run_mini_gnbsim = true
+            run_static_ue_ip = true
+            run_vpp_upf = true
+            run_slicing_w_nssf = true
+          }
+
+          // On Ubuntu servers, we shall pull from private local registry
+          if ((cn_ci_host == 'selfix') || (cn_ci_host == 'orion')) {
+            pullFromSelfix = true
+            try {
+              // Login
+              sh 'docker login -u oaicicd -p oaicicd selfix.sboai.cs.eurecom.fr > /dev/null 2>&1'
+            } catch (Exception e) {
+              echo 'Problem w/ selfix registry. Let see if a "old" `develop` image is there.'
+              pullFromSelfix = false
+            }
+            if (pullFromSelfix) {
+              // SPGWU
+              if ((spgwuTag == 'develop') && (spgwuBranch == 'develop')) {
+                spgwuTag = sh returnStdout: true, script: './ci-scripts/retrieveLatestTagOnPrivateRepo.py --repo-name oai-spgwu-tiny'
+                spgwuTag = spgwuTag.trim()
+                echo "SPGWU_TAG will be ${spgwuTag}"
+              }
+              sh 'docker pull selfix.sboai.cs.eurecom.fr/oai-spgwu-tiny:' + spgwuTag
+              sh 'docker image tag selfix.sboai.cs.eurecom.fr/oai-spgwu-tiny:' + spgwuTag + ' oai-spgwu-tiny:' + spgwuTag
+              sh 'docker rmi selfix.sboai.cs.eurecom.fr/oai-spgwu-tiny:' + spgwuTag
+              // Logout
+              sh 'docker logout selfix.sboai.cs.eurecom.fr > /dev/null 2>&1'
+            }
           }
 
           // Verify that the images are available
@@ -275,7 +307,7 @@ pipeline {
       when { expression {run_mini_gnbsim} }
       steps {
         script {
-          updateDockerCompose('docker-compose/docker-compose-mini-nrf.yaml', amfTag, nrfTag, smfTag, spgwuTag, ausfTag, udmTag, udrTag, nssfTag, upfVppTag)
+          updateDockerCompose('docker-compose/docker-compose-mini-nrf.yaml', amfTag, nrfTag, smfTag, spgwuTag, ausfTag, udmTag, udrTag, nssfTag, upfVppTag, ranTag)
           dir ('ci-scripts') {
             // Tee will make the command always pass
             // Please use the same log name as the folder used in the tutorial
@@ -298,7 +330,7 @@ pipeline {
       when { expression {run_static_ue_ip} }
       steps {
         script {
-          updateDockerCompose('docker-compose/docker-compose-basic-nrf.yaml', amfTag, nrfTag, smfTag, spgwuTag, ausfTag, udmTag, udrTag, nssfTag, upfVppTag)
+          updateDockerCompose('docker-compose/docker-compose-basic-nrf.yaml', amfTag, nrfTag, smfTag, spgwuTag, ausfTag, udmTag, udrTag, nssfTag, upfVppTag, ranTag)
           dir ('ci-scripts') {
             // Tee will make the command always pass
             // Please use the same log name as the folder used in the tutorial
@@ -321,7 +353,7 @@ pipeline {
       when { expression {run_vpp_upf} }
       steps {
         script {
-          updateDockerCompose('docker-compose/docker-compose-basic-vpp-nrf.yaml', amfTag, nrfTag, smfTag, spgwuTag, ausfTag, udmTag, udrTag, nssfTag, upfVppTag)
+          updateDockerCompose('docker-compose/docker-compose-basic-vpp-nrf.yaml', amfTag, nrfTag, smfTag, spgwuTag, ausfTag, udmTag, udrTag, nssfTag, upfVppTag, ranTag)
           dir ('ci-scripts') {
             // Tee will make the command always pass
             // Please use the same log name as the folder used in the tutorial
@@ -344,7 +376,7 @@ pipeline {
       when { expression {run_slicing_w_nssf} }
       steps {
         script {
-          updateDockerCompose('docker-compose/docker-compose-slicing-basic-nrf.yaml', amfTag, nrfTag, smfTag, spgwuTag, ausfTag, udmTag, udrTag, nssfTag, upfVppTag)
+          updateDockerCompose('docker-compose/docker-compose-slicing-basic-nrf.yaml', amfTag, nrfTag, smfTag, spgwuTag, ausfTag, udmTag, udrTag, nssfTag, upfVppTag, ranTag)
           dir ('ci-scripts') {
             // Tee will make the command always pass
             // Please use the same log name as the folder used in the tutorial
@@ -378,21 +410,30 @@ pipeline {
         }
       }
     }
+    cleanup {
+      script {
+        sh 'docker volume prune --force'
+      }
+    }
   }
 }
 
-def updateDockerCompose(filename, lAmfTag, lNrfTag, lSmfTag, lSpgwuTag, lAusfTag, lUdmTag, lUdrTag, lNssfTag, lUpfVppTag) {
-  sh 'sed -i -e "s@oai-amf:latest@oai-amf:' + lAmfTag + '@" ' + filename
-  sh 'sed -i -e "s@oai-nrf:latest@oai-nrf:' + lNrfTag + '@" ' + filename
-  sh 'sed -i -e "s@oai-smf:latest@oai-smf:' + lSmfTag + '@" ' + filename
-  sh 'sed -i -e "s@oai-spgwu-tiny:latest@oai-spgwu-tiny:' + lSpgwuTag + '@" ' + filename
-  sh 'sed -i -e "s@oai-ausf:latest@oai-ausf:' + lAusfTag + '@" ' + filename
-  sh 'sed -i -e "s@oai-udm:latest@oai-udm:' + lUdmTag + '@" ' + filename
-  sh 'sed -i -e "s@oai-udr:latest@oai-udr:' + lUdrTag + '@" ' + filename
-  sh 'sed -i -e "s@oai-nssf:latest@oai-nssf:' + lNssfTag + '@" ' + filename
-  sh 'sed -i -e "s@oai-upf-vpp:latest@oai-upf-vpp:' + lUpfVppTag + '@" ' + filename
+def updateDockerCompose(filename, lAmfTag, lNrfTag, lSmfTag, lSpgwuTag, lAusfTag, lUdmTag, lUdrTag, lNssfTag, lUpfVppTag, lRanTag) {
+  sh 'sed -i -e "s@oaisoftwarealliance/oai-amf:v1.5.0@oai-amf:' + lAmfTag + '@" ' + filename
+  sh 'sed -i -e "s@oaisoftwarealliance/oai-nrf:v1.5.0@oai-nrf:' + lNrfTag + '@" ' + filename
+  sh 'sed -i -e "s@oaisoftwarealliance/oai-smf:v1.5.0@oai-smf:' + lSmfTag + '@" ' + filename
+  sh 'sed -i -e "s@oaisoftwarealliance/oai-spgwu-tiny:v1.5.0@oai-spgwu-tiny:' + lSpgwuTag + '@" ' + filename
+  sh 'sed -i -e "s@oaisoftwarealliance/oai-ausf:v1.5.0@oai-ausf:' + lAusfTag + '@" ' + filename
+  sh 'sed -i -e "s@oaisoftwarealliance/oai-udm:v1.5.0@oai-udm:' + lUdmTag + '@" ' + filename
+  sh 'sed -i -e "s@oaisoftwarealliance/oai-udr:v1.5.0@oai-udr:' + lUdrTag + '@" ' + filename
+  sh 'sed -i -e "s@oaisoftwarealliance/oai-nssf:v1.5.0@oai-nssf:' + lNssfTag + '@" ' + filename
+  sh 'sed -i -e "s@oaisoftwarealliance/oai-upf-vpp:v1.5.0@oai-upf-vpp:' + lUpfVppTag + '@" ' + filename
+  sh 'sed -i -e "s@oaisoftwarealliance/trf-gen-cn5g:latest@trf-gen-cn5g:latest@" ' + filename
   // Using the develop variant of gnbsim
   sh 'sed -i -e "s@gnbsim:latest@gnbsim:develop@" docker-compose/docker-compose-gnbsim*.y*ml docker-compose/docker-compose*ransim.y*ml'
+  // Using a dedicated version of the OAI RAN images
+  sh 'sed -i -e "s@oaisoftwarealliance/oai-gnb:develop@oai-gnb:' + lRanTag + '@" docker-compose/docker-compose-slicing-ransim.yaml'
+  sh 'sed -i -e "s@oaisoftwarealliance/oai-nr-ue:develop@oai-nr-ue:' + lRanTag + '@" docker-compose/docker-compose-slicing-ransim.yaml'
 }
 
 def archivesArtifacts(filename,folder) {

@@ -5,37 +5,18 @@ metadata:
   labels:
     {{- include "oai-spgwu-tiny.labels" . | nindent 4 }}
 spec:
-  type: {{ .Values.service.pfcpServiceType }}
-  {{- if eq .Values.service.pfcpServiceType "ClusterIP" }}
+  type: ClusterIP
   clusterIP: None
-  {{ end }}
   ports:
-    - name: oai-spgwu-tiny
-      # Port accessible outside cluster
-      port: {{ .Values.service.pfcpPort }}
+    - name: pfcp
+      port: 8805
       # Port to forward to inside the pod
-      targetPort: {{ .Values.service.pfcpPort }}
+      targetPort: 8805
       protocol: UDP
-  selector:
-    {{- include "oai-spgwu-tiny.selectorLabels" . | nindent 4 }}
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: {{ .Chart.Name }}-gtpu-svc
-  labels:
-    {{- include "oai-spgwu-tiny.labels" . | nindent 4 }}
-spec:
-  type: {{ .Values.service.gtpuServiceType }} #LoadBalancer
-  {{- if eq .Values.service.gtpuServiceType "ClusterIP" }}
-  clusterIP: None
-  {{ end }}
-  ports:
-    - name: s1u
-      # Port accessible outside cluster
-      port: {{ .Values.service.gtpuPort }}
+    - name: http1
+      port: {{ if .Values.config.nrfPort }}{{ .Values.config.nrfPort }}{{ else }}80{{ end }}
       # Port to forward to inside the pod
-      targetPort: {{ .Values.service.gtpuPort }}
-      protocol: UDP
+      targetPort: {{ if .Values.config.nrfPort }}{{ .Values.config.nrfPort }}{{ else }}80{{ end }}
+      protocol: TCP
   selector:
     {{- include "oai-spgwu-tiny.selectorLabels" . | nindent 4 }}

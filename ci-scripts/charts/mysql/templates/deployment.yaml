@@ -178,10 +178,8 @@ spec:
           subPath: {{ $key }}
         {{- end -}}
         {{- end }}
-        {{- if .Values.initializationFiles }}
         - name: migrations
           mountPath: /docker-entrypoint-initdb.d
-        {{- end }}
         {{- if .Values.ssl.enabled }}
         - name: certificates
           mountPath: /ssl
@@ -237,11 +235,9 @@ spec:
         configMap:
           name: {{ template "mysql.fullname" . }}-configuration
       {{- end }}
-      {{- if .Values.initializationFiles }}
       - name: migrations
         configMap:
           name: {{ template "mysql.fullname" . }}-initialization
-      {{- end }}
       {{- if .Values.ssl.enabled }}
       - name: certificates
         secret:

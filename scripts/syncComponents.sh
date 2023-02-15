@@ -63,6 +63,12 @@ function usage {
     echo "    --nssf-branch ####"
     echo "    Specify the source branch for the OAI-UDR component"
     echo ""
+    echo "    --nef-branch ####"
+    echo "    Specify the source branch for the OAI-NEF component"
+    echo ""
+    echo "    --pcf-branch ####"
+    echo "    Specify the source branch for the OAI-PCF component"
+    echo ""
     echo "    --help OR -h"
     echo "    Print this help message."
     echo ""
@@ -77,6 +83,8 @@ UDM_BRANCH='master'
 UDR_BRANCH='master'
 UPF_VPP_BRANCH='master'
 NSSF_BRANCH='master'
+NEF_BRANCH='master'
+PCF_BRANCH='master'
 
 doDefault=1
 
@@ -144,6 +152,18 @@ case $key in
     shift
     shift
     ;;
+    --nef-branch)
+    NEF_BRANCH="$2"
+    doDefault=0
+    shift
+    shift
+    ;;
+    --pcf-branch)
+    PCF_BRANCH="$2"
+    doDefault=0
+    shift
+    shift
+    ;;
     *)
     echo "Syntax Error: unknown option: $key"
     echo ""
@@ -163,6 +183,8 @@ echo "OAI-UDM     component branch : ${UDM_BRANCH}"
 echo "OAI-UDR     component branch : ${UDR_BRANCH}"
 echo "OAI-UPF-VPP component branch : ${UPF_VPP_BRANCH}"
 echo "OAI-NSSF    component branch : ${NSSF_BRANCH}"
+echo "OAI-NEF     component branch : ${NEF_BRANCH}"
+echo "OAI-PCF     component branch : ${PCF_BRANCH}"
 echo "---------------------------------------------------------"
 
 # First do a clean-up
@@ -171,12 +193,14 @@ git submodule deinit --all --force > /dev/null 2>&1
 
 echo "git submodule init"
 git submodule init > /dev/null 2>&1
-echo "git submodule update"
-git submodule update  > /dev/null 2>&1
+echo "git submodule update --init --recursive"
+git submodule update --init --recursive > /dev/null 2>&1
 
 if [ $doDefault -eq 1 ]
 then
-    git submodule foreach 'git fetch --prune && git branch -D master&& git checkout -b master origin/master' > /dev/null 2>&1
+    # should be enough now.
+    exit
+    #git submodule foreach 'git fetch --prune && git branch -D master&& git checkout -b master origin/master && git submodule update --init --recursive' > /dev/null 2>&1
 else
     pushd component/oai-nrf
     git fetch --prune > /dev/null 2>&1
@@ -195,6 +219,7 @@ else
     else
         git checkout -b $AMF_BRANCH origin/$AMF_BRANCH > /dev/null 2>&1
     fi
+    git submodule update --init --recursive > /dev/null 2>&1
     popd
     pushd component/oai-smf
     git fetch --prune > /dev/null 2>&1
@@ -204,6 +229,7 @@ else
     else
         git checkout -b $SMF_BRANCH origin/$SMF_BRANCH > /dev/null 2>&1
     fi
+    git submodule update --init --recursive > /dev/null 2>&1
     popd
     pushd component/oai-upf-equivalent
     git fetch --prune > /dev/null 2>&1
@@ -213,6 +239,7 @@ else
     else
         git checkout -b $SPGWU_BRANCH origin/$SPGWU_BRANCH > /dev/null 2>&1
     fi
+    git submodule update --init --recursive > /dev/null 2>&1
     popd
     pushd component/oai-ausf
     git fetch --prune > /dev/null 2>&1
@@ -222,6 +249,7 @@ else
     else
         git checkout -b $AUSF_BRANCH origin/$AUSF_BRANCH > /dev/null 2>&1
     fi
+    git submodule update --init --recursive > /dev/null 2>&1
     popd
     pushd component/oai-udm
     git fetch --prune > /dev/null 2>&1
@@ -231,6 +259,7 @@ else
     else
         git checkout -b $UDM_BRANCH origin/$UDM_BRANCH > /dev/null 2>&1
     fi
+    git submodule update --init --recursive > /dev/null 2>&1
     popd
     pushd component/oai-udr
     git fetch --prune > /dev/null 2>&1
@@ -240,6 +269,7 @@ else
     else
         git checkout -b $UDR_BRANCH origin/$UDR_BRANCH > /dev/null 2>&1
     fi
+    git submodule update --init --recursive > /dev/null 2>&1
     popd
     pushd component/oai-upf-vpp
     git fetch --prune > /dev/null 2>&1
@@ -249,6 +279,7 @@ else
     else
         git checkout -b $UPF_VPP_BRANCH origin/$UPF_VPP_BRANCH > /dev/null 2>&1
     fi
+    git submodule update --init --recursive > /dev/null 2>&1
     popd
     pushd component/oai-nssf
     git fetch --prune > /dev/null 2>&1
@@ -258,5 +289,26 @@ else
     else
         git checkout -b $NSSF_BRANCH origin/$NSSF_BRANCH > /dev/null 2>&1
     fi
+    git submodule update --init --recursive > /dev/null 2>&1
+    popd
+    pushd component/oai-nef
+    git fetch --prune > /dev/null 2>&1
+    git branch -D $NEF_BRANCH > /dev/null 2>&1
+    if [[ $? -ne 0 ]]; then
+        git checkout $NEF_BRANCH > /dev/null 2>&1
+    else
+        git checkout -b $NEF_BRANCH origin/$NEF_BRANCH > /dev/null 2>&1
+    fi
+    git submodule update --init --recursive > /dev/null 2>&1
+    popd
+    pushd component/oai-pcf
+    git fetch --prune > /dev/null 2>&1
+    git branch -D $PCF_BRANCH > /dev/null 2>&1
+    if [[ $? -ne 0 ]]; then
+        git checkout $PCF_BRANCH > /dev/null 2>&1
+    else
+        git checkout -b $PCF_BRANCH origin/$PCF_BRANCH > /dev/null 2>&1
+    fi
+    git submodule update --init --recursive > /dev/null 2>&1
     popd
 fi

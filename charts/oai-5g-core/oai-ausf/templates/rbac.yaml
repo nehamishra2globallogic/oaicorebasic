@@ -1,4 +1,5 @@
 ---
+{{- if eq .Values.kubernetesType "Openshift" }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
@@ -6,8 +7,13 @@ metadata:
 rules:
 - apiGroups:
   - security.openshift.io
+{{- if .Values.securityContext.privileged  }}
+  resourceNames:
+  - privileged
+{{- else }}
   resourceNames:
   - anyuid
+{{- end }}
   resources:
   - securitycontextconstraints
   verbs:
@@ -25,3 +31,4 @@ roleRef:
   kind: Role
   name: {{ .Chart.Name }}-{{ .Release.Namespace }}-role
   apiGroup: rbac.authorization.k8s.io
+{{- end }}

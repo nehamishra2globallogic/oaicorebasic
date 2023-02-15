@@ -198,7 +198,7 @@ class HtmlReport():
 			if imageName == 'mysql':
 				self.file.write('     <tr>\n')
 				self.file.write('       <td>mysql</td>\n')
-				self.file.write('       <td>mysql:5.7.30</td>\n')
+				self.file.write('       <td>mysql:8.0</td>\n')
 				self.file.write('       <td>N/A</td>\n')
 				self.file.write('       <td>449MB</td>\n')
 				helmState = 'UNKNOW'

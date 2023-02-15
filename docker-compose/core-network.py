@@ -54,8 +54,8 @@ def _parse_args() -> argparse.Namespace:
         python3 core-network.py --type start-basic
         python3 core-network.py --type start-basic-vpp
         python3 core-network.py --type stop-mini
-        python3 core-network.py --type start-mini --fqdn no --scenario 1
-        python3 core-network.py --type start-basic --fqdn no --scenario 1'''
+        python3 core-network.py --type start-mini --scenario 2
+        python3 core-network.py --type start-basic --scenario 2'''
 
     parser = argparse.ArgumentParser(description='OAI 5G CORE NETWORK DEPLOY',
                                     epilog=example_text,
@@ -68,14 +68,6 @@ def _parse_args() -> argparse.Namespace:
         required=True,
         choices=['start-mini', 'start-basic', 'start-basic-vpp', 'stop-mini', 'stop-basic', 'stop-basic-vpp'],
         help='Functional type of 5g core network ("start-mini"|"start-basic"|"start-basic-vpp"|"stop-mini"|"stop-basic"|"stop-basic-vpp")',
-    )
-    # Deployment scenario with FQDN/IP based
-    parser.add_argument(
-        '--fqdn', '-fq',
-        action='store',
-        choices=['yes', 'no'],
-        default='yes',
-        help='Deployment scenario with FQDN ("yes"|"no")',
     )
     # Deployment scenario with NRF/ without NRF
     parser.add_argument(
@@ -93,20 +85,18 @@ def _parse_args() -> argparse.Namespace:
     )
     return parser.parse_args()
 
-def deploy(file_name, ct, extra_interface=False):
+def deploy(file_name, extra_interface=False):
     """Deploy the containers using the docker-compose template
 
     Returns:
         None
     """
-    # Before deploy adapting with fqdn/ip
-    if args.fqdn == 'no':
-        subprocess.run(f'sed -i -e "s#USE_FQDN_DNS=yes#USE_FQDN_DNS=no#g" {file_name}', shell=True)
-        subprocess.run(f'sed -i -e "s#USE_FQDN_NRF=yes#USE_FQDN_NRF=no#g" {file_name}', shell=True)
-    elif args.fqdn == 'yes':
-        subprocess.run(f'sed -i -e "s#USE_FQDN_DNS=no#USE_FQDN_DNS=yes#g" {file_name}', shell=True)
-        subprocess.run(f'sed -i -e "s#USE_FQDN_NRF=no#USE_FQDN_NRF=yes#g" {file_name}', shell=True)
     logging.debug('\033[0;34m Starting 5gcn components... Please wait\033[0m....')
+    # The assumption is that all services described in docker-compose files
+    # have explicit or built-in health checks.
+    cmd = f'docker-compose -f {file_name} config --services | wc -l'
+    res = run_cmd(cmd, True)
+    ct = int(res)
 
     if args.capture is None:
         # When no capture, just deploy all at once.
@@ -149,7 +139,7 @@ def deploy(file_name, ct, extra_interface=False):
     print(res)
     logging.debug('\033[0;32m OAI 5G Core network started, checking the health status of the containers... takes few secs\033[0m....')
     notSilentForFirstTime = False
-    for x in range(40):
+    for x in range(50):
         cmd = f'docker-compose -f {file_name} ps -a'
         res = run_cmd(cmd, notSilentForFirstTime)
         notSilentForFirstTime = True
@@ -174,7 +164,7 @@ def undeploy(file_name):
         None
     """
     logging.debug('\033[0;34m UnDeploying OAI 5G core components\033[0m....')
-    cmd = f'docker-compose -f {file_name} down'
+    cmd = f'docker-compose -f {file_name} down -t 0'
     res = run_cmd(cmd, False)
     if res is None:
         exit(f'\033[0;31m Incorrect/Unsupported executing command {cmd}')
@@ -202,7 +192,7 @@ def check_config(file_name):
         if smf_registration_nrf is not None:
             print(smf_registration_nrf)
         if file_name == BASIC_VPP_W_NRF:
-            cmd = 'curl -s -X GET http://192.168.70.130/nnrf-nfm/v1/nf-instances?nf-type="UPF" | grep -o "192.168.70.202"'
+            cmd = 'curl -s -X GET http://192.168.70.130/nnrf-nfm/v1/nf-instances?nf-type="UPF" | grep -o "192.168.70.201"'
         else:
             cmd = 'curl -s -X GET http://192.168.70.130/nnrf-nfm/v1/nf-instances?nf-type="UPF" | grep -o "192.168.70.134"'
         upf_registration_nrf = run_cmd(cmd, False)
@@ -237,7 +227,7 @@ def check_config(file_name):
         if file_name == BASIC_VPP_W_NRF:
             logging.debug('\033[0;34m Checking if SMF is able to connect with UPF\033[0m....')
             cmd1 = 'docker logs oai-smf | grep "Received N4 ASSOCIATION SETUP RESPONSE from an UPF"'
-            cmd2 = 'docker logs oai-smf | grep "Node ID Type FQDN: gw1"'
+            cmd2 = 'docker logs oai-smf | grep "Node ID Type FQDN: vpp-upf"'
             upf_logs1 = run_cmd(cmd1)
             upf_logs2 = run_cmd(cmd2)
             if upf_logs1 is None or upf_logs2 is None:
@@ -327,27 +317,24 @@ if __name__ == '__main__':
     if args.type == 'start-mini':
         # Mini function with NRF
         if args.scenario == '1':
-            deploy(MINI_W_NRF, 5)
+            deploy(MINI_W_NRF)
         # Mini function without NRF
         elif args.scenario == '2':
-            deploy(MINI_NO_NRF, 4)
+            deploy(MINI_NO_NRF)
     elif args.type == 'start-basic':
         # Basic function with NRF
         if args.scenario == '1':
-            deploy(BASIC_W_NRF, 8)
+            deploy(BASIC_W_NRF)
         # Basic function without NRF
         elif args.scenario == '2':
-            deploy(BASIC_NO_NRF, 7)
+            deploy(BASIC_NO_NRF)
     elif args.type == 'start-basic-vpp':
-        if args.fqdn == 'yes':
-            logging.error('Configuration not supported yet')
-            exit(-1)
         # Basic function with NRF and VPP-UPF
         if args.scenario == '1':
-            deploy(BASIC_VPP_W_NRF, 8, True)
+            deploy(BASIC_VPP_W_NRF, True)
         # Basic function without NRF but with VPP-UPF
         elif args.scenario == '2':
-            deploy(BASIC_VPP_NO_NRF, 7, True)
+            deploy(BASIC_VPP_NO_NRF, True)
     elif args.type == 'stop-mini':
         if args.scenario == '1':
             undeploy(MINI_W_NRF)

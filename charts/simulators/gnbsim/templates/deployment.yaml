@@ -5,7 +5,7 @@ metadata:
   labels:
     {{- include "gnbsim.labels" . | nindent 4 }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: 1
   selector:
     matchLabels:
       {{- include "gnbsim.selectorLabels" . | nindent 6 }}
@@ -61,27 +61,6 @@ spec:
         {{- end}}
         securityContext:
           {{- toYaml .Values.securityContext | nindent 12 }}
-        volumeMounts:
-        - mountPath: /scripts
-          name: scripts
-        {{- if .Values.readinessProbe}}
-        readinessProbe:
-          exec:
-            command:
-            - sh
-            - /scripts/live-ready.sh
-          initialDelaySeconds: 5
-          periodSeconds: 5
-        {{- end}}
-        {{- if .Values.livenessProbe}}
-        livenessProbe:
-          exec:
-            command:
-            - sh
-            - /scripts/live-ready.sh
-          initialDelaySeconds: 15
-          periodSeconds: 5
-        {{- end}}
         ports:
         - containerPort: {{ .Values.service.ngapPort }}
           name: ngap
@@ -206,15 +185,6 @@ spec:
               configMapKeyRef:
                 name: {{ .Chart.Name }}-configmap
                 key: gtpuifname
-      volumes:
-      {{- if .Values.persistent.sharedvolume}}
-      - name: cn5g-pvc
-        persistentVolumeClaim:
-          claimName: cn5g-pvc
-      {{- end }}
-      - name: scripts
-        configMap:
-          name: {{ .Chart.Name }}-health-cm
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       serviceAccountName: {{ .Values.serviceAccount.name }}

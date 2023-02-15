@@ -10,13 +10,6 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Chart.Name }}-health-cm
-data:
-  {{ (.Files.Glob "scripts/live-ready.sh").AsConfig | indent 2 | trim }}
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
   name: {{ .Chart.Name }}-yamlconfig
 data:
   {{ (.Files.Glob "scripts/nssf_slice_config.yaml").AsConfig | indent 2 | trim }}

@@ -1,12 +1,11 @@
-{{- if .Values.initializationFiles }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ template "mysql.fullname" . }}-initialization
   namespace: {{ .Release.Namespace }}
 data:
-{{- range $key, $val := .Values.initializationFiles }}
-  {{ $key }}: |-
-{{ $val | indent 4}}
+{{- if eq .Values.oai5gdatabase "mini" }}
+  {{ (.Files.Glob "initialization/oai_db-mini.sql").AsConfig | indent 2 | trim }}
+{{- else }}
+  {{ (.Files.Glob "initialization/oai_db-basic.sql").AsConfig | indent 2 | trim }}
 {{- end }}
-{{- end -}}

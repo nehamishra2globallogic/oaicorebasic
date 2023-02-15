@@ -1,19 +1,21 @@
-# Default values for oai-ausf.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
+kubernetesType: Openshift  #Vanilla for community kubernetes distribution
 
-replicaCount: 1
-
-namespace: "oaicicd-5gcn-tmp"
-
-image:
-  registry: local
-  repository: image-registry.openshift-image-registry.svc:5000/oaicicd-5gcn-tmp/oai-ausf
-  version: "TAG"
+nfimage:
+  repository: image-registry.openshift-image-registry.svc:5000/oaicicd-core/oai-ausf 
+  version: AUSF_TAG      #image tag, develop tag for experimental features 
   #pullPolicy: IfNotPresent or Never or Always
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
 
-imagePullSecrets: []
+tcpdumpimage:
+  repository: support-tools
+  version: 8.7-8
+  #pullPolicy: IfNotPresent or Never or Always
+  pullPolicy: IfNotPresent
+
+
+## good to use when pulling images from docker-hub mention 
+#imagePullSecrets: 
+#  - name: "regcred"
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -24,32 +26,23 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name: "oai-ausf-sa"
 
+#service type is fixed to clusterIP, it is only support for non multus interface (eth0)
+
 podSecurityContext:
   runAsUser: 0
   runAsGroup: 0
 
 securityContext:
+  capabilities:
+    add:
+     - NET_ADMIN
+    drop:
+     - ALL
   privileged: true
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
-
-service:
-  type: ClusterIP
-  httpPort: 80
 
 start:
   ausf: true
-  tcpdump: true
-
-multus:
-  create: false
-  n4IPadd: "192.168.101.131"
-  n4Netmask: "26"
-  n4Gw: "192.168.101.128"
+  tcpdump: true #start tcpdump collection to analyse but beware it will take a lot of space in the container/persistent volume
 
 config:
   tz: "Europe/Paris"
@@ -57,33 +50,48 @@ config:
   pidDirectory: "/var/run"
   ausfName: "OAI_AUSF"
   sbiIfName: "eth0"
-  sbiPort: "80"
+  sbiPortHttp1: "80"
+  sbiPortHttp2: "8080"
+  useHttp2: "no"          #If set to yes then HTTP2 will be used to talk to every other network function and HTTP server will be started
   useFqdnDns: "yes"
-  udmIpAddress: "192.168.101.130"
+  udmIpAddress: "127.0.0.1"
   udmPort: "80"
-  udmVersionNb: "v2"
+  udmVersionNb: "v1"
   udmFqdn: "oai-udm-svc"
+  nrfIpAddress: "127.0.0.1"
+  nrfPort: "80"
+  nrfApiVersion: "v1"
+  nrfFqdn: "oai-nrf-svc"
+  registerNrf: "no"
 
-persistence:
-  # make it true for the first time when you want to create persistance volume 
-  # and then false
-  enabled: false
-  
-resources: 
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  #requests:
-  #  cpu: 100m
-  #  memory: 256Mi
+persistent:
+  sharedvolume: true
+  volumeName: nfs-client
+  size: 1Gi
 
-nodeSelector:
-  env: dev
+resources:
+  define: false
+  limits:
+    tcpdump:
+      cpu: 100m
+      memory: 128Mi
+    nf:
+      cpu: 100m
+      memory: 128Mi
+  requests:
+    tcpdump:
+      cpu: 100m
+      memory: 128Mi
+    nf:
+      cpu: 100m
+      memory: 128Mi
 
-tolerations: []
+readinessProbe: true
 
-affinity: {}
+livenessProbe: false
+
+terminationGracePeriodSeconds: 5
+
+nodeSelector: {}
+
+nodeName: demophon

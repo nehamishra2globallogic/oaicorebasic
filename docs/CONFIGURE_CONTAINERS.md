@@ -12,6 +12,8 @@
   </tr>
 </table>
 
+**Caution**: We will remove this page in the next release, the configuration of network functions can be found on [wiki](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed/-/wikis/home)
+
 
 **TABLE OF CONTENTS**
 
@@ -20,7 +22,7 @@
 
 # 1. Configure the containers #
 
-- **Core Network Configuration**: The [docker-compose](../docker-compose/docker-compose.yaml) file has configuration parameters of all the core network components. The file is pre-configured with parameters related to an [example scenario](./DEPLOY_SA5G_WITH_DS_TESTER.md). The table contains the location of the configuration files. These files contains allowed configurable parameters. **Keep checking this file it is possible that we will add new parameters for new features.**  
+- **Core Network Configuration**: The [docker-compose-mini-nrf](../docker-compose/docker-compose-mini-nrf.yaml) file has configuration parameters for all the core network components. The file is pre-configured with parameters related to an [example scenario](./DEPLOY_SA5G_MINI_DEPLOYMENT.md). The table contains the location of the configuration files. These files contain allowed configurable parameters. **Keep checking this file up to date as it is possible that we will add new parameters for new features.**
 
     | File Name   | Repository                                   | Location        |
     |:----------- |:-------------------------------------------- |:--------------- |
@@ -33,7 +35,7 @@
     | ausf.conf   | (Gitlab) cn5g/oai-cn5g-ausf                  | [etc/ausf.conf](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-ausf/-/blob/master/etc/ausf.conf)   |
 
 - The PLMN, TAC, Operator Key should be properly configured in amf.conf according to gNB and UE
-- In case of a **COTS UE** by default there are two PDN sessions so check the smf.conf to configure the right names for the IMS. Currently some parameters can not be configured via docker-compose.yaml. We recommend you directly configure them in the conf file and mount the file in the docker during run time. 
+- In case of a **COTS UE** by default there are two PDN sessions so check the smf.conf to configure the right names for the IMS. Currently some parameters can not be configured via docker-compose.yaml. We recommend you directly configure them in the conf file and mount the file in the docker during runtime.
     ```
     ## Configure here
         DNN_LIST = (
@@ -46,30 +48,30 @@
         LOCAL_CONFIGURATION :
     {
       SESSION_MANAGEMENT_SUBSCRIPTION_LIST = (
-         { NSSAI_SST = 222, NSSAI_SD = "123", DNN = "<name-1>", DEFAULT_SESSION_TYPE = "IPV4", DEFAULT_SSC_MODE = 1, 
-           QOS_PROFILE_5QI = 6, QOS_PROFILE_PRIORITY_LEVEL = 1, QOS_PROFILE_ARP_PRIORITY_LEVEL = 1, QOS_PROFILE_ARP_PREEMPTCAP = "NOT_PREEMPT", 
+         { NSSAI_SST = 222, NSSAI_SD = "123", DNN = "<name-1>", DEFAULT_SESSION_TYPE = "IPV4", DEFAULT_SSC_MODE = 1,
+           QOS_PROFILE_5QI = 6, QOS_PROFILE_PRIORITY_LEVEL = 1, QOS_PROFILE_ARP_PRIORITY_LEVEL = 1, QOS_PROFILE_ARP_PREEMPTCAP = "NOT_PREEMPT",
            QOS_PROFILE_ARP_PREEMPTVULN = "NOT_PREEMPTABLE", SESSION_AMBR_UL = "20Mbps", SESSION_AMBR_DL = "22Mbps"},
-         { NSSAI_SST = 111; NSSAI_SD = "124", DNN = "<name-2>", DEFAULT_SESSION_TYPE = "IPV4", DEFAULT_SSC_MODE = 1, 
-           QOS_PROFILE_5QI = 7, QOS_PROFILE_PRIORITY_LEVEL = 1, QOS_PROFILE_ARP_PRIORITY_LEVEL = 1, QOS_PROFILE_ARP_PREEMPTCAP = "NOT_PREEMPT", 
+         { NSSAI_SST = 111; NSSAI_SD = "124", DNN = "<name-2>", DEFAULT_SESSION_TYPE = "IPV4", DEFAULT_SSC_MODE = 1,
+           QOS_PROFILE_5QI = 7, QOS_PROFILE_PRIORITY_LEVEL = 1, QOS_PROFILE_ARP_PRIORITY_LEVEL = 1, QOS_PROFILE_ARP_PREEMPTCAP = "NOT_PREEMPT",
            QOS_PROFILE_ARP_PREEMPTVULN = "NOT_PREEMPTABLE", SESSION_AMBR_UL = "10Mbps", SESSION_AMBR_DL = "11Mbps"}
-        );                 
-    };  
+        );
+    };
     ```
-- Incase NRF is not needed then it can be disabled in amf.conf,smf.conf and spgw_u.conf. 
+- In case NRF is not needed, then it can be disabled in amf.conf,smf.conf and spgw_u.conf.
 
     ```
     #smf.conf
     REGISTER_NRF = "no";  # Set to yes if SMF resgisters to an NRF
     DISCOVER_UPF = "no";  # Set to yes to enable UPF discovery and selection
-    
+
     #amf.conf
     NF_REGISTRATION = "no";  # Set to yes if AMF resgisters to an NRF
     SMF_SELECTION   = "no";  # Set to yes to enable SMF discovery and selection
-     
+
     #spgw_u.conf
     REGISTER_NRF = "no";
     ```
-- An new user subscription information should present in mysql database before trying to connect the UE . This can be done by adding the UE information in the oai_db.sql file
+- A new user subscription information should be present in the mysql database before trying to connect the UE . This can be done by adding the UE information in the oai_db.sql file
 
   ```
   replace the values with your values
@@ -77,7 +79,7 @@
     (imsi,msisdn,imei,NULL,'PURGED',50,40000000,100000000,47,0000000000,1,key,0,0,0x40,'ebd07771ace8677a',opc);
   ```
 
-- **Optional**: Incase, the user subscription entry is missing from oai_db.sql file then it can be added at run time using below commands,
+- **Optional**: In case the user subscription entry is missing from oai_db.sql file, then it can be added at runtime using the commands below,
 
     ```bash
     #Login to mysql container once the container is running
@@ -117,6 +119,5 @@
 
 Please don't deploy yet!
 
-- If you want to deploy a `minimalist` OAI 5GCN, checkout this [minimalist-deployment tutorial](./DEPLOY_SA5G_MINI_DS_TESTER_DEPLOYMENT.md).
-- If you want to deploy a `basic` OAI 5GCN, checkout this [basic-deployment tutorial](./DEPLOY_SA5G_BASIC_DS_TESTER_DEPLOYMENT.md).
-
+- If you want to deploy a `minimalist` OAI 5GCN, checkout this [minimalist-deployment tutorial](./DEPLOY_SA5G_MINI_DEPLOYMENT.md).
+- If you want to deploy a `basic` OAI 5GCN, checkout this [basic-deployment tutorial](./DEPLOY_SA5G_BASIC_DEPLOYMENT.md).

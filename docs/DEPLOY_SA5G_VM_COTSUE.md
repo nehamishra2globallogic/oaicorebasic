@@ -11,7 +11,12 @@
     </td>
   </tr>
 </table>
+
+
 ![SA COTSUE Demo](./images/virtual-machine/cots-ue/bupt/overall-architecture.png)
+
+
+**Caution**: This is a very old tutorial and it is not maintained anymore.
 
 **TABLE OF CONTENTS**
 
@@ -32,12 +37,12 @@ This tutorial shows how to use OAI 5g Core network in standalone deployment with
 - The core network is deployed in two Virtual Machines
 - The commercial gNB used for this tutorial is Amarisoft
 - The COTS UE used for this tutorial is Xiaomi K30i
-- [Openair-spgwu-tiny](https://github.com/OPENAIRINTERFACE/openair-spgwu-tiny/tree/gtp_extension_header) is choosen as the UPF for this tutorial
+- [Openair-spgwu-tiny](https://github.com/OPENAIRINTERFACE/openair-spgwu-tiny/tree/gtp_extension_header) is chosen as the UPF for this tutorial
 - Subscriber database is running as a process inside 5G CCP-VM
 
 ## 2. Pre-requisites
 
-The host machine hosting the virtual machines have the below configuration:
+The host machine hosting the virtual machines has the configuration below:
 
 | Params |                   Value |
 | :----- | ----------------------: |
@@ -52,8 +57,8 @@ The virtual machines are configured using KVM, though any other virtual machine 
 ~$ sudo apt-get install qemu-kvm
 ~$ sudo apt-get install qemu
 ~$ sudo apt-get install virt-manager
-~$ sudo apt-get install virt-viewer 
-~$ sudo apt-get install libvirt-bin 
+~$ sudo apt-get install virt-viewer
+~$ sudo apt-get install libvirt-bin
 ~$ sudo apt-get install bridge-utils
 ```
 
@@ -78,7 +83,7 @@ Create virtual machines by using virt-manager GUI:
 
 ## 3. Creating Virtual Machines
 
-Recommendation is to create two VMs with 4 Cores, 8GB memory, 40GB disk. First one for 5G Core control plane 5G-CCP, and the second for 5G User plane 5G-UP. 
+Recommendation is to create two VMs with 4 Cores, 8GB memory, 40GB disk. First one for 5G Core control plane 5G-CCP, and the second for 5G User plane 5G-UP.
 
 Network configuration for both the VMs
 
@@ -110,9 +115,9 @@ The branch commits used at the time of the demo are listed below:
 
 ### 4.1 Build AMF
 
-- Login to 5G-CCP VM and open the terminal to fetch, build and install the AMF. 
-- The build can be made in two modes Debug and Release. Debug mode will provide more logs for debuging but may effect the performance. 
-- To read more about amf build [checkout](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-amf/-/wikis/home) 
+- Login to 5G-CCP VM and open the terminal to fetch, build and install the AMF.
+- The build can be made in two modes Debug and Release. Debug mode will provide more logs for debuging but may affect performance.
+- To read more about amf build [checkout](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-amf/-/wikis/home)
 
 ``` bash=
 ~$ git clone -b bupt_amf https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-amf.git
@@ -125,8 +130,8 @@ The branch commits used at the time of the demo are listed below:
 ### 4.2 Build SMF
 
 - Remain logged in to the same virtual machine to compile and install SMF
-- The build can be made in two modes Debug and Release. Debug mode will provide more logs for debuging but may effect the performance.
-- To read more about smf build [checkout](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-smf/-/wikis/home) 
+- The build can be made in two modes Debug and Release. Debug mode will provide more logs for debuging but may affect performance.
+- To read more about smf build [checkout](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-smf/-/wikis/home)
 
 ``` bash=
 ~$ git clone -b develop https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-smf.git
@@ -139,9 +144,9 @@ The branch commits used at the time of the demo are listed below:
 ### 4.3 Build SPGWU
 
 - Login to 5G-UP VM and open a terminal to fetch, build and install SPGWU
-- The build can be made in two modes Debug and Release. Debug mode will provide more logs for debuging but may effect the performance.
+- The build can be made in two modes Debug and Release. Debug mode will provide more logs for debuging but may affect performance.
 
-``` bash= 
+``` bash=
 ~$ git clone -b gtp_extension_header https://github.com/OPENAIRINTERFACE/openair-spgwu-tiny.git
 ~$ cd ./openair-spgwu-tiny/
 ~$ sudo apt-get update && DEBIAN_FRONTEND=noninteractive apt-get upgrade --yes && DEBIAN_FRONTEND=noninteractive apt-get install --yes \
@@ -165,9 +170,9 @@ The branch commits used at the time of the demo are listed below:
 
 ### 5.1 AMF Configuration
 
-- Install and configure MYSQL database in the 5G-CCP Virtual Machine with the [database file](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-amf/-/blob/bupt_amf/etc/openxg.sql) 
+- Install and configure MYSQL database in the 5G-CCP Virtual Machine with the [database file](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-amf/-/blob/bupt_amf/etc/openxg.sql)
 
-- Configuration file used in setup can be find in the below link, it might differ with the one which is present in the current **develop branch**. For this case refer to the further points to understand the exact configuration changes which are important.  
+- The configuration file used in setup can be found in the link below, it might differ from the one which is present in the current **develop branch**. For this case refer to the next points to understand the exact configuration changes which are important.
 
 | File Name |                 Repository |                                                     Location |
 | --------- | -------------------------: | -----------------------------------------------------------: |
@@ -178,7 +183,7 @@ The branch commits used at the time of the demo are listed below:
 ```
 MCC = "460"  #Mobile Country Code
 MNC = "11"   #Mobile Network Code
-TAC = 100    #Type Allocation Code 
+TAC = 100    #Type Allocation Code
 SST = "1"    #Slice and service type of S-NSSAI
 SD  = "none" #S-NSSAI parameter slice, composition of service type and slice component
 ```
@@ -188,23 +193,23 @@ SD  = "none" #S-NSSAI parameter slice, composition of service type and slice com
 ```
   INTERFACES:
   {
-    # AMF binded interface for N1/N2 interface (NGAP) 
-    NGAP_AMF: 
+    # AMF binded interface for N1/N2 interface (NGAP)
+    NGAP_AMF:
     {
       INTERFACE_NAME = "ens9";  # YOUR NETWORK CONFIG HERE
       IPV4_ADDRESS   = "read";
       PORT           = 38412;                            # YOUR NETWORK CONFIG HERE
       PPID           = 60;                               # YOUR NETWORK CONFIG HERE
     };
-    
+
     # AMF binded interface for SBI (N11 (SMF)/N12 (AUSF), etc.)
     N11:
     {
       INTERFACE_NAME = "ens3";                           # YOUR NETWORK CONFIG HERE
-      IPV4_ADDRESS   = "read"; 
+      IPV4_ADDRESS   = "read";
       PORT           = 8282;                             # YOUR NETWORK CONFIG HERE
-      API_VERSION    = "v1"; 
-      
+      API_VERSION    = "v1";
+
       SMF_INSTANCES_POOL = (
         {SMF_INSTANCE_ID = 1; IPV4_ADDRESS = "192.168.122.197"; PORT = "8889"; VERSION = "v2"; SELECTED = "true"},   # YOUR SMF CONFIG HERE
         {SMF_INSTANCE_ID = 2; IPV4_ADDRESS = "192.168.122.2"; PORT = "80"; VERSION = "v1"; SELECTED = "false"} # YOUR SMF CONFIG HERE
@@ -239,7 +244,7 @@ SELECTED: true/false indicate whether SMF is selected or not
     MYSQL_user   = "root";   # Database server login
     MYSQL_pass   = "linux";   # Database server password
     MYSQL_db     = "OPENXG_DB";     # Your database name
-    
+
     ## OP
     OPERATOR_key = "63bfa50ee6523365ff14c1f45f88737d"; # OP key matching your database
     RANDOM = "true";
@@ -248,7 +253,7 @@ SELECTED: true/false indicate whether SMF is selected or not
 
 ### 5.2 SMF Configuration
 
-- Configuration file used in setup can be find in the below link, it might differ with the one which is present in the current **develop branch**. For this case refer to the further points to understand the exact configuration changes which are important.  
+- The configuration file used in setup can be found in the link below, it might differ from the one which is present in the current **develop branch**. For this case refer to the next points to understand the exact configuration changes which are important.
 
 | File Name |                 Repository |                                                     Location |
 | --------- | -------------------------: | -----------------------------------------------------------: |
@@ -263,7 +268,7 @@ SELECTED: true/false indicate whether SMF is selected or not
         {
             # SMF binded interface for N4 communication (UPF)
             INTERFACE_NAME = "ens3"; # YOUR NETWORK CONFIG HERE
-            IPV4_ADDRESS   = "read";                        
+            IPV4_ADDRESS   = "read";
          };
 
         SBI :
@@ -274,12 +279,12 @@ SELECTED: true/false indicate whether SMF is selected or not
             PORT           = 8889;       # YOUR NETWORK CONFIG HERE (default: 80)
             HTTP2_PORT     = 8890; # YOUR NETWORK CONFIG HERE
             API_VERSION    = "v2";                # YOUR SMF API VERSION CONFIG HERE
-         };                 
+         };
 
     };
 ```
 
-- The DNN configuration is based on the UE configuration these values should match with the UE
+- The DNN configuration is based on the UE configuration, these values should match with the UE
 
 ```
     DNN_LIST = (
@@ -309,13 +314,13 @@ IPV4_POOL/IPV6_POOL : Above this location in the configuration file, select the 
       PORT         = 8282;            # YOUR AMF CONFIG HERE (default: 80)
       API_VERSION  = "v2";   # YOUR AMF API VERSION FOR SBI CONFIG HERE
     };
-    
+
     UDM :
     {
       IPV4_ADDRESS = "192.168.122.197";  # YOUR UDM CONFIG HERE
       PORT         = 8181;            # YOUR UDM CONFIG HERE (default: 80)
       API_VERSION  = "v2";   # YOUR UDM API VERSION FOR SBI CONFIG HERE
-    };    
+    };
 
     NRF :
     {
@@ -323,28 +328,28 @@ IPV4_POOL/IPV6_POOL : Above this location in the configuration file, select the 
       PORT         = 80;            # YOUR NRF CONFIG HERE (default: 80)
       API_VERSION  = "v1";   # YOUR NRF API VERSION FOR SBI CONFIG HERE
     };
-        
+
     UPF_LIST = (
          {IPV4_ADDRESS = "192.168.199.126" ;}  # YOUR UPF CONFIG HERE
-    ); 
+    );
 
 ```
 
-- Configure some PDU session information and Qos parameter 
+- Configure some PDU session information and Qos parameter
 
 ```
     LOCAL_CONFIGURATION :
     {
       USE_LOCAL_CONFIGURATION = "yes";
       SESSION_MANAGEMENT_SUBSCRIPTION_LIST = (
-         { NSSAI_SST = 1, NSSAI_SD = "0", DNN = "IMS", DEFAULT_SESSION_TYPE = "IPV4V6", DEFAULT_SSC_MODE = 1, 
-           QOS_PROFILE_5QI = 5, QOS_PROFILE_PRIORITY_LEVEL = 1, QOS_PROFILE_ARP_PRIORITY_LEVEL = 1, QOS_PROFILE_ARP_PREEMPTCAP = "NOT_PREEMPT", 
+         { NSSAI_SST = 1, NSSAI_SD = "0", DNN = "IMS", DEFAULT_SESSION_TYPE = "IPV4V6", DEFAULT_SSC_MODE = 1,
+           QOS_PROFILE_5QI = 5, QOS_PROFILE_PRIORITY_LEVEL = 1, QOS_PROFILE_ARP_PRIORITY_LEVEL = 1, QOS_PROFILE_ARP_PREEMPTCAP = "NOT_PREEMPT",
            QOS_PROFILE_ARP_PREEMPTVULN = "NOT_PREEMPTABLE", SESSION_AMBR_UL = "20Mbps", SESSION_AMBR_DL = "22Mbps"},
-         { NSSAI_SST = 1; NSSAI_SD = "0", DNN = "ctnet", DEFAULT_SESSION_TYPE = "IPV4v6", DEFAULT_SSC_MODE = 1, 
-           QOS_PROFILE_5QI = 9, QOS_PROFILE_PRIORITY_LEVEL = 1, QOS_PROFILE_ARP_PRIORITY_LEVEL = 1, QOS_PROFILE_ARP_PREEMPTCAP = "NOT_PREEMPT", 
+         { NSSAI_SST = 1; NSSAI_SD = "0", DNN = "ctnet", DEFAULT_SESSION_TYPE = "IPV4v6", DEFAULT_SSC_MODE = 1,
+           QOS_PROFILE_5QI = 9, QOS_PROFILE_PRIORITY_LEVEL = 1, QOS_PROFILE_ARP_PRIORITY_LEVEL = 1, QOS_PROFILE_ARP_PREEMPTCAP = "NOT_PREEMPT",
            QOS_PROFILE_ARP_PREEMPTVULN = "NOT_PREEMPTABLE", SESSION_AMBR_UL = "1000Mbps", SESSION_AMBR_DL = "1100Mbps"}
-        );                 
-    }; 
+        );
+    };
 
 ```
 
@@ -416,14 +421,14 @@ IPV4_POOL/IPV6_POOL : Above this location in the configuration file, select the 
          { NSSAI_SST = 1, NSSAI_SD = "0", DNN = "ims"},
          ##{ NSSAI_SST = 222; NSSAI_SD = "123", DNN = "ctnet"}
          { NSSAI_SST = 1; NSSAI_SD = "0", DNN = "ctnet"}
-        );  
+        );
 ```
 
 - No NRF is used in this demo so REGISTER_NRF variable should be set to **no**
 
 ### 5.4 Configuring SIM card and database
 
-- User Subscprition Profile: The UE used in this demo and tutorial has  the below profile. If the user profile is different then the corresponding entry should be present in the mysql database. The database file is [OPENXG_DB.sql](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-amf/-/blob/bupt_amf/etc/openxg.sql) 
+- User Subscription Profile: The UE used in this demo and tutorial has the profile below. If the user profile is different then the corresponding entry should be present in the mysql database. The database file is [OPENXG_DB.sql](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-amf/-/blob/bupt_amf/etc/openxg.sql)
 
   ```
   IMSI - 460110000000001
@@ -456,15 +461,15 @@ IPV4_POOL/IPV6_POOL : Above this location in the configuration file, select the 
 
 ## 6. Starting Network Functions
 
-- Open two terminals on the host machine and login to 5G-CCP (AMF, SMF) and 5G-UP (SPGWU) virtual machines. Start taking pcaps at the respective interfaces to analyse them later. 
-- Execute the below commands in the respected virtual machines. 
+- Open two terminals on the host machine and login to 5G-CCP (AMF, SMF) and 5G-UP (SPGWU) virtual machines. Start taking pcaps at the respective interfaces to analyse them later.
+- Execute the commands below in the respective virtual machines.
 
 ### 6.1 Start AMF
 
 ```bash=
 ~$ sudo amf -c /etc/openxg/amf.conf -o --no-ausf
 [2021-04-20T11:56:06.526139] [AMF] [amf_app] [start] Options parsed!
-[2021-04-20T11:56:06.526232] [AMF] [amf_app] [debug] 
+[2021-04-20T11:56:06.526232] [AMF] [amf_app] [debug]
 Load AMF system configuration file(/etc/openxg/amf.conf)
 [2021-04-20T11:56:06.526660] [AMF] [amf_app] [error] SettingNotFoundException : AMF.INTERFACES.NGAP_AMF.SCHED_PARAMS, using defaults
 [2021-04-20T11:56:06.526716] [AMF] [amf_app] [error] SettingNotFoundException : AMF.INTERFACES.N11.SCHED_PARAMS, using defaults
@@ -473,16 +478,16 @@ Load AMF system configuration file(/etc/openxg/amf.conf)
 [2021-04-20T11:56:06.526804] [AMF] [configurations] [info ] - Instance ...........................................: 10
 [2021-04-20T11:56:06.526809] [AMF] [configurations] [info ] - PID dir ............................................: /var/run
 [2021-04-20T11:56:06.526814] [AMF] [configurations] [info ] - AMF NAME............................................: OAI-AMF
-[2021-04-20T11:56:06.526818] [AMF] [configurations] [info ] - GUAMI (MCC, MNC, Region ID, AMF Set ID, AMF pointer): 
+[2021-04-20T11:56:06.526818] [AMF] [configurations] [info ] - GUAMI (MCC, MNC, Region ID, AMF Set ID, AMF pointer):
 [2021-04-20T11:56:06.526823] [AMF] [configurations] [info ]    (460, 11, 128, 1, 1 )
-[2021-04-20T11:56:06.526828] [AMF] [configurations] [info ] - SERVED_GUAMI_LIST...................................: 
+[2021-04-20T11:56:06.526828] [AMF] [configurations] [info ] - SERVED_GUAMI_LIST...................................:
 [2021-04-20T11:56:06.526832] [AMF] [configurations] [info ]    (460, 11, 128 , 1, 1)
 [2021-04-20T11:56:06.526837] [AMF] [configurations] [info ] - RELATIVE_CAPACITY...................................: 30
-[2021-04-20T11:56:06.526841] [AMF] [configurations] [info ] - PLMN_SUPPORT_LIST...................................: 
-[2021-04-20T11:56:06.526846] [AMF] [configurations] [info ]    (MCC 460, MNC 11) 
+[2021-04-20T11:56:06.526841] [AMF] [configurations] [info ] - PLMN_SUPPORT_LIST...................................:
+[2021-04-20T11:56:06.526846] [AMF] [configurations] [info ]    (MCC 460, MNC 11)
 [2021-04-20T11:56:06.526850] [AMF] [configurations] [info ]    TAC: 100
-[2021-04-20T11:56:06.526854] [AMF] [configurations] [info ]    SLICE_SUPPORT_LIST (SST, SD) ....................: 
-[2021-04-20T11:56:06.526859] [AMF] [configurations] [info ]      (1, none) 
+[2021-04-20T11:56:06.526854] [AMF] [configurations] [info ]    SLICE_SUPPORT_LIST (SST, SD) ....................:
+[2021-04-20T11:56:06.526859] [AMF] [configurations] [info ]      (1, none)
 [2021-04-20T11:56:06.526863] [AMF] [configurations] [info ] - Emergency Support................... ...............: false
 [2021-04-20T11:56:06.526892] [AMF] [configurations] [info ] - MYSQL Server Addr...................................: 127.0.0.1
 [2021-04-20T11:56:06.526899] [AMF] [configurations] [info ] - MYSQL user .........................................: root
@@ -566,8 +571,8 @@ Load AMF system configuration file(/etc/openxg/amf.conf)
 
 ### 6.4 Start the gNB and turn on the UE
 
-- Start the gNB and turn on the mobile phone or change from airplane mode to signalling mode. 
-- Once the UE is successfully connected and receives an ip-address try to reach public site via internet and then stop all the core network components and gNB to analyze the pcaps, logs, etc. 
+- Start the gNB and turn on the mobile phone or change from airplane mode to signalling mode.
+- Once the UE is successfully connected and receives an ip-address, try to reach a public site via internet and then stop all the core network components and gNB to analyze the pcaps, logs, etc.
 
 ## 7. Analyzing the Results
 

@@ -14,7 +14,7 @@
 
 `COTS-UE` means `Commercial Off-The-Shelf UE`.
 
-Prior to `2022.w12` tag, if you were deploying a `minimalist` or `basic` OAI 5G CN, you see the following issue:
+Prior to `2022.w12` tag, if you were deploying a `minimalist` or `basic` OAI 5G CN, you would see the following issue:
 
 * Ping operations from `ext-dn` to `COTS-UE` or from `COTS-UE` to `ext-dn` were OK
 * `TCP` iperf traffic test was OK in `Downlink` and `Uplink`
@@ -23,7 +23,7 @@ Prior to `2022.w12` tag, if you were deploying a `minimalist` or `basic` OAI 5G 
 
 The issue is the `MTU` value affected to the interface on the UE.
 
-For example, we are using Quectel modules and it looked like this:
+For example, we are using Quectel modules and it looks like this:
 
 ```bash
 $ ifconfig wwan0

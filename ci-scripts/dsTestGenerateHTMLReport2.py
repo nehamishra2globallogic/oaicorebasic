@@ -240,7 +240,7 @@ class HtmlReport():
 				if os.path.isfile(cwd + '/DS-TEST-RESULTS/mvc.yaml'):		
 					self.file.write('     <tr>\n')
 					self.file.write('       <td>' + containerName + '</td>\n')
-					self.file.write('       <td>mysql:5.7</td>\n')
+					self.file.write('       <td>mysql:8.0</td>\n')
 					self.file.write('       <td>N/A</td>\n')
 					self.file.write('       <td>449MB</td>\n')
 					configState = 'KO'

@@ -175,7 +175,7 @@ pipeline {
               sh 'git checkout -f ' + upstreamTagToUse
               sh 'mkdir -p archives DS-TEST-RESULTS'
             }
-            imageTags = "mysql:5.7.30,oai-nrf:${nrfTag},oai-udr:${udrTag},oai-udm:${udmTag},oai-ausf:${ausfTag},oai-amf:${amfTag},oai-smf:${smfTag},oai-spgwu-tiny:${spgwuTag}"
+            imageTags = "mysql:8.0,oai-nrf:${nrfTag},oai-udr:${udrTag},oai-udm:${udmTag},oai-ausf:${ausfTag},oai-amf:${amfTag},oai-smf:${smfTag},oai-spgwu-tiny:${spgwuTag}"
           }
         }
       }

@@ -2,7 +2,7 @@ version: '3.8'
 services:
     cicd_mysql:
         container_name: cicd-mysql-svr
-        image: mysql:5.7
+        image: mysql:8.0
         ports:
              - 3306
         command: --init-file /docker-entrypoint-initdb.d/oai_db.sql

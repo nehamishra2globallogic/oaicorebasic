@@ -5,26 +5,20 @@ metadata:
   labels:
     {{- include "oai-gnb-cu.labels" . | nindent 4 }}
 spec:
-  type: {{ .Values.service.type }}
-{{- if  contains "ClusterIP" .Values.service.type }}
+  type: ClusterIP
   clusterIP: None
-{{- end }}
   ports:
-    - name: s1c
-      port: {{ .Values.service.s1cPort }}
-      targetPort: {{ .Values.service.s1cPort }}
+    - name: n2
+      port: 36412
+      targetPort: 36412
       protocol: SCTP
-    - name: s1u
-      port: {{ .Values.service.s1uPort }}
-      targetPort: {{ .Values.service.s1uPort }}
-      protocol: UDP
-    - name: x2c
-      port: {{ .Values.service.x2cPort }}
-      targetPort: {{ .Values.service.x2cPort }}
+    - name: n3
+      port: 2152
+      targetPort: 2152
       protocol: UDP
     - name: f1
-      port: {{ .Values.service.f1Port }}
-      targetPort: {{ .Values.service.f1Port }}
+      port: 2153
+      targetPort: 2153
       protocol: UDP
   selector:
     {{- include "oai-gnb-cu.selectorLabels" . | nindent 4 }}

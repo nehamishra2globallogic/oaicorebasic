@@ -5,16 +5,20 @@ metadata:
   labels:
     {{- include "oai-ausf.labels" . | nindent 4 }}
 spec:
-  type: {{ .Values.service.type }}
-  {{- if eq .Values.service.type "ClusterIP" }}
+  type: ClusterIP
   clusterIP: None
-  {{ end }}
   ports:
-    - name: http
+    - name: http1
       # Port accessible outside cluster
-      port: {{ .Values.service.httpPort }}
+      port: {{ .Values.config.sbiPortHttp1 }}
       # Port to forward to inside the pod
-      targetPort: {{ .Values.service.httpPort }}
+      targetPort: {{ .Values.config.sbiPortHttp1 }}
+      protocol: TCP
+    - name: htt2
+      # Port accessible outside cluster
+      port: {{ .Values.config.sbiPortHttp2 }}
+      # Port to forward to inside the pod
+      targetPort: {{ .Values.config.sbiPortHttp2 }}
       protocol: TCP
   selector:
     {{- include "oai-ausf.selectorLabels" . | nindent 4 }}

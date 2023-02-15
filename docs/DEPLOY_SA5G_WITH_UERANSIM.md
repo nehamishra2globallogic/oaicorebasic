@@ -24,7 +24,7 @@ Note: In case readers are interested in deploying debuggers/developers core netw
 **TABLE OF CONTENTS**
 
 1.  Pre-requisites
-2.  Building Container Images
+2.  [Building Container Images](./BUILD_IMAGES.md) or [Retrieving Container Images](./RETRIEVE_OFFICIAL_IMAGES.md)
 3.  Configuring Host Machines
 4.  Configuring OAI 5G Core Network Functions
 5.  Deploying OAI 5G Core Network
@@ -33,39 +33,39 @@ Note: In case readers are interested in deploying debuggers/developers core netw
 8.  [Analysing Scenario Results](#8-analysing-the-scenario-results)
 9.  [Trying some advanced stuff](#9-trying-some-advanced-stuff)
 
-* In this demo the image tags and commits which were used are listed below, follow the [Building images](./BUILD_IMAGES.md) to build images with below tags.
+* In this demo the image tags and commits which were used are listed below, follow [Building images](./BUILD_IMAGES.md) to build images with the tags below.
 
 | CNF Name    | Branch Name | Tag      | Ubuntu 18.04 | RHEL8 (UBI8)    |
 | ----------- | ----------- | -------- | ------------ | ----------------|
-| AMF         | `develop`   | `v1.2.0` | X            | X               |
-| SMF         | `develop`   | `v1.2.0` | X            | X               |
-| NRF         | `develop`   | `v1.2.0` | X            | X               |
-| VPP-UPF     | `develop`   | `v1.1.3` | X            | X               |
-| UDR         | `develop`   | `v1.2.0` | X            | X               |
-| UDM         | `develop`   | `v1.2.0` | X            | X               |
-| AUSF        | `develop`   | `v1.2.0` | X            | X               |
+| AMF         | `develop`   | `v1.5.0` | X            | X               |
+| SMF         | `develop`   | `v1.5.0` | X            | X               |
+| NRF         | `develop`   | `v1.5.0` | X            | X               |
+| VPP-UPF     | `develop`   | `v1.5.0` | X            | X               |
+| UDR         | `develop`   | `v1.5.0` | X            | X               |
+| UDM         | `develop`   | `v1.5.0` | X            | X               |
+| AUSF        | `develop`   | `v1.5.0` | X            | X               |
 
 <br/>
 
-This tutorial is an extension of a previous tutorial: [testing a `basic` deployment with dsTester](./DEPLOY_SA5G_BASIC_DS_TESTER_DEPLOYMENT.md). In previous tutorial, we have seen the advanced testing tool dsTester, which is useful for validating even more complex scenarios.
+This tutorial is an extension of a previous tutorial: [testing a `basic` deployment with dsTester](./DEPLOY_SA5G_BASIC_DEPLOYMENT.md). In previous tutorial, we have seen the advanced testing tool dsTester, which is useful for validating even more complex scenarios.
 
 Moreover, there are various other opensource gnb/ue simulator tools that are available for SA5G test. In this tutorial, we use an opensource simulator tool called `UERANSIM`. With the help of `UERANSIM` tool, we can perform very basic SA5G test by simulating one gnb and multiple ues.
 
-##### About UERANSIM -
+##### About UERANSIM - #####
 
-[UERANSIM](https://github.com/aligungr/UERANSIM) is the open-source state-of-the-art 5G UE and RAN (gNodeB) implementation. It can be considered as a 5G mobile phone and a base station in basic terms. The project can be used for testing 5G Core Network and studying 5G System. UERANSIM can simulate multiple UEs and it also aims to simulate radio. Moreover for detailed feature set, please refer its [official page.](https://github.com/aligungr/UERANSIM/wiki/Feature-Set)
+[UERANSIM](https://github.com/aligungr/UERANSIM) is the open-source state-of-the-art 5G UE and RAN (gNodeB) implementation. It can be considered as a 5G mobile phone and a base station in basic terms. The project can be used for testing 5G Core Network and studying 5G System. UERANSIM can simulate multiple UEs and it also aims to simulate radio. Moreover for the detailed feature set, please refer its [official page.](https://github.com/aligungr/UERANSIM/wiki/Feature-Set)
 
 Let's begin !!
 
-* Steps 1 to 5 are similar as previous [tutorial on vpp-upf](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed/-/blob/master/docs/DEPLOY_SA5G_WITH_VPP_UPF.md#5-deploying-oai-5g-core-network). Please follow these steps to deploy OAI 5G core network components.
-* We deploy ueransim docker service on same host as of core network, so there is no need to create additional route as
+* Steps 1 to 5 are similar to this previous [tutorial on vpp-upf](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed/-/blob/master/docs/DEPLOY_SA5G_WITH_VPP_UPF.md#5-deploying-oai-5g-core-network). Please follow these steps to deploy OAI 5G core network components.
+* We deploy ueransim docker service on the same host as for core network, so there is no need to create additional route as
 we did for dsTest-host.
 * Before we proceed further for end-to-end SA5G test, make sure you have healthy docker services for OAI cn5g
 
-#### NOTE: #### 
+#### NOTE: ####
 UERANSIM currently does not support integraty and ciphering algorithm NIA0, NEA0 repectively. Hence we have to update AMF config in the docker-compose as below -
 
-##### IMPORTANT: Add following parameters in oai-amf service of docker-compose, before deploying core network.
+##### IMPORTANT: Add following parameters in oai-amf service of docker-compose, before deploying core network. #####
 
 ```bash
             - INT_ALGO_LIST=["NIA1" , "NIA2"]
@@ -99,7 +99,7 @@ fb3249a5ade7   ubuntu:bionic        "/bin/bash -c ' apt …"   51 seconds ago   
 4f114039c218   oai-udm:latest       "/bin/bash /openair-…"   51 seconds ago   Up 49 seconds (healthy)   80/tcp                         oai-udm
 c0838aff8796   oai-udr:latest       "/bin/bash /openair-…"   51 seconds ago   Up 50 seconds (healthy)   80/tcp                         oai-udr
 99ab1b23862c   oai-upf-vpp:latest   "/openair-upf/bin/en…"   51 seconds ago   Up 50 seconds (healthy)   2152/udp, 8085/udp             vpp-upf
-3469f853e26d   mysql:5.7            "docker-entrypoint.s…"   52 seconds ago   Up 51 seconds (healthy)   3306/tcp, 33060/tcp            mysql
+3469f853e26d   mysql:8.0            "docker-entrypoint.s…"   52 seconds ago   Up 51 seconds (healthy)   3306/tcp, 33060/tcp            mysql
 ab06bd3104ef   oai-nrf:latest       "/bin/bash /openair-…"   52 seconds ago   Up 51 seconds (healthy)   80/tcp, 9090/tcp               oai-nrf
 ```
 
@@ -126,7 +126,7 @@ docker image tag rohankharade/ueransim:latest ueransim:latest
 
 ## 7. Executing the `UERANSIM` Scenario ##
 
-* The configuration parameters, are preconfigured in [docker-compose-basic-vpp-nrf.yaml](../docker-compose/docker-compose-basic-vpp-nrf.yaml) and [docker-compose.yaml OF UERANSIM](../docker-compose/docker-compose-ueransim-vpp.yaml) and one can modify it for test.
+* The configuration parameters are preconfigured in [docker-compose-basic-vpp-nrf.yaml](../docker-compose/docker-compose-basic-vpp-nrf.yaml) and [docker-compose.yaml OF UERANSIM](../docker-compose/docker-compose-ueransim-vpp.yaml) and one can modify it for testing purposes.
 * Launch ueransim docker service
 ```bash
 oai-cn5g-fed/docker-compose$ docker-compose -f docker-compose-ueransim-vpp.yaml up -d
@@ -144,7 +144,7 @@ fb3249a5ade7   ubuntu:bionic        "/bin/bash -c ' apt …"   About a minute ag
 4f114039c218   oai-udm:latest       "/bin/bash /openair-…"   About a minute ago   Up About a minute (healthy)   80/tcp                         oai-udm
 c0838aff8796   oai-udr:latest       "/bin/bash /openair-…"   About a minute ago   Up About a minute (healthy)   80/tcp                         oai-udr
 99ab1b23862c   oai-upf-vpp:latest   "/openair-upf/bin/en…"   About a minute ago   Up About a minute (healthy)   2152/udp, 8085/udp             vpp-upf
-3469f853e26d   mysql:5.7            "docker-entrypoint.s…"   About a minute ago   Up About a minute (healthy)   3306/tcp, 33060/tcp            mysql
+3469f853e26d   mysql:8.0            "docker-entrypoint.s…"   About a minute ago   Up About a minute (healthy)   3306/tcp, 33060/tcp            mysql
 ab06bd3104ef   oai-nrf:latest       "/bin/bash /openair-…"   About a minute ago   Up About a minute (healthy)   80/tcp, 9090/tcp               oai-nrf
 ```
 We can verify it using UERANSIM container logs as below -
@@ -227,24 +227,24 @@ rtt min/avg/max/mdev = 5.119/6.606/7.515/1.064 ms
 Here we do iperf traffic test between UERANSIM UE and external DN node. We can make any node as iperf server/client.<br/>
 Running iperf server on external DN container
 ```bash
-$ docker exec -it oai-ext-dn iperf3 -s 
+$ docker exec -it oai-ext-dn iperf3 -s
 -----------------------------------------------------------
 Server listening on 5201
 -----------------------------------------------------------
 Accepted connection from 12.2.1.2, port 49925
 [  5] local 192.168.73.135 port 5201 connected to 12.2.1.2 port 58455
 [ ID] Interval           Transfer     Bandwidth
-[  5]   0.00-1.00   sec  4.13 MBytes  34.6 Mbits/sec                  
-[  5]   1.00-2.00   sec  2.33 MBytes  19.5 Mbits/sec                  
-[  5]   2.00-3.00   sec  2.68 MBytes  22.5 Mbits/sec                  
-[  5]   3.00-4.00   sec  2.10 MBytes  17.6 Mbits/sec                  
-[  5]   4.00-5.00   sec  2.26 MBytes  19.0 Mbits/sec                  
-[  5]   5.00-6.00   sec  2.14 MBytes  17.9 Mbits/sec                  
-[  5]   6.00-7.00   sec  2.71 MBytes  22.8 Mbits/sec                  
-[  5]   7.00-8.00   sec  2.19 MBytes  18.4 Mbits/sec                  
-[  5]   8.00-9.00   sec  2.12 MBytes  17.8 Mbits/sec                  
-[  5]   9.00-10.00  sec  2.53 MBytes  21.2 Mbits/sec                  
-[  5]  10.00-10.00  sec  0.00 Bytes  0.00 bits/sec                  
+[  5]   0.00-1.00   sec  4.13 MBytes  34.6 Mbits/sec
+[  5]   1.00-2.00   sec  2.33 MBytes  19.5 Mbits/sec
+[  5]   2.00-3.00   sec  2.68 MBytes  22.5 Mbits/sec
+[  5]   3.00-4.00   sec  2.10 MBytes  17.6 Mbits/sec
+[  5]   4.00-5.00   sec  2.26 MBytes  19.0 Mbits/sec
+[  5]   5.00-6.00   sec  2.14 MBytes  17.9 Mbits/sec
+[  5]   6.00-7.00   sec  2.71 MBytes  22.8 Mbits/sec
+[  5]   7.00-8.00   sec  2.19 MBytes  18.4 Mbits/sec
+[  5]   8.00-9.00   sec  2.12 MBytes  17.8 Mbits/sec
+[  5]   9.00-10.00  sec  2.53 MBytes  21.2 Mbits/sec
+[  5]  10.00-10.00  sec  0.00 Bytes  0.00 bits/sec
 - - - - - - - - - - - - - - - - - - - - - - - - -
 [ ID] Interval           Transfer     Bandwidth
 [  5]   0.00-10.00  sec  0.00 Bytes  0.00 bits/sec                  sender
@@ -259,16 +259,16 @@ $ docker exec -it ueransim iperf3 -c 192.168.73.135 -B 12.2.1.2
 Connecting to host 192.168.73.135, port 5201
 [  4] local 12.2.1.2 port 58455 connected to 192.168.73.135 port 5201
 [ ID] Interval           Transfer     Bandwidth       Retr  Cwnd
-[  4]   0.00-1.00   sec  5.07 MBytes  42.5 Mbits/sec  318   34.2 KBytes       
-[  4]   1.00-2.00   sec  2.34 MBytes  19.7 Mbits/sec  268   22.4 KBytes       
-[  4]   2.00-3.00   sec  2.72 MBytes  22.8 Mbits/sec  276   34.2 KBytes       
-[  4]   3.00-4.00   sec  2.10 MBytes  17.6 Mbits/sec  234   38.2 KBytes       
-[  4]   4.00-5.00   sec  2.22 MBytes  18.6 Mbits/sec  303   13.2 KBytes       
-[  4]   5.00-6.00   sec  2.16 MBytes  18.1 Mbits/sec  240   38.2 KBytes       
-[  4]   6.00-7.00   sec  2.72 MBytes  22.8 Mbits/sec  307   60.6 KBytes       
-[  4]   7.00-8.00   sec  2.16 MBytes  18.1 Mbits/sec  325   35.5 KBytes       
-[  4]   8.00-9.00   sec  2.16 MBytes  18.1 Mbits/sec  223   56.6 KBytes       
-[  4]   9.00-10.00  sec  2.47 MBytes  20.7 Mbits/sec  349   26.3 KBytes       
+[  4]   0.00-1.00   sec  5.07 MBytes  42.5 Mbits/sec  318   34.2 KBytes
+[  4]   1.00-2.00   sec  2.34 MBytes  19.7 Mbits/sec  268   22.4 KBytes
+[  4]   2.00-3.00   sec  2.72 MBytes  22.8 Mbits/sec  276   34.2 KBytes
+[  4]   3.00-4.00   sec  2.10 MBytes  17.6 Mbits/sec  234   38.2 KBytes
+[  4]   4.00-5.00   sec  2.22 MBytes  18.6 Mbits/sec  303   13.2 KBytes
+[  4]   5.00-6.00   sec  2.16 MBytes  18.1 Mbits/sec  240   38.2 KBytes
+[  4]   6.00-7.00   sec  2.72 MBytes  22.8 Mbits/sec  307   60.6 KBytes
+[  4]   7.00-8.00   sec  2.16 MBytes  18.1 Mbits/sec  325   35.5 KBytes
+[  4]   8.00-9.00   sec  2.16 MBytes  18.1 Mbits/sec  223   56.6 KBytes
+[  4]   9.00-10.00  sec  2.47 MBytes  20.7 Mbits/sec  349   26.3 KBytes
 - - - - - - - - - - - - - - - - - - - - - - - - -
 [ ID] Interval           Transfer     Bandwidth       Retr
 [  4]   0.00-10.00  sec  26.1 MBytes  21.9 Mbits/sec  2843             sender
@@ -276,7 +276,7 @@ Connecting to host 192.168.73.135, port 5201
 
 iperf Done.
 ```
-* Note:- The iperf test is just for illustration purpose and results of the test may vary based on resources available for the docker services
+* Note:- The iperf test is just for illustration purposes and results of the test may vary based on resources available for the docker services
 
 ## 8. Analysing the Scenario Results ##
 
@@ -285,12 +285,12 @@ iperf Done.
 | [5gcn-deployment-ueransim.pcap](./results/UERANSIM/pcap/5gcn-deployment-ueransim.pcap)                  |
 
 
-* For detailed analysis of messages, please refer previous tutorial of [testing with dsTester](./docs/DEPLOY_SA5G_WITH_DS_TESTER.md).
+* For detailed analysis of messages, please refer to this [previous tutorial](./docs/DEPLOY_SA5G_MINI_DEPLOYMENT.md).
 ## 9. Trying Some Advanced Stuff ##
 
 Here we try some scaling test with ueransim. There are additional IMSIs added into database (208950000000031-208950000000131).
-Now we register 100 UEs using ueransim. 
-#### Note: We have to update `NUMBER_OF_UE` parameter in docker-compose of ueransim.
+Now we register 100 UEs using ueransim.
+#### Note: We have to update `NUMBER_OF_UE` parameter in docker-compose of ueransim. ####
 ```bash
 NUMBER_OF_UE=100
 ```
@@ -302,13 +302,13 @@ Creating ueransim ... done
 Wait a bit <br/>
 Now we can verify that all UEs are successfully registered from AMF or SMF logs.
 ```bash
-[2021-12-23T22:14:40.065414] [AMF] [amf_app] [info ] 
+[2021-12-23T22:14:40.065414] [AMF] [amf_app] [info ]
 [2021-12-23T22:14:40.065442] [AMF] [amf_app] [info ] |----------------------------------------------------------------------------------------------------------------|
 [2021-12-23T22:14:40.065447] [AMF] [amf_app] [info ] |----------------------------------------------------gNBs' information-------------------------------------------|
 [2021-12-23T22:14:40.065450] [AMF] [amf_app] [info ] |    Index    |      Status      |       Global ID       |       gNB Name       |               PLMN             |
-[2021-12-23T22:14:40.065457] [AMF] [amf_app] [info ] |      1      |    Connected     |         0x1       |         UERANSIM-gnb-208-95-1        |            208, 95             | 
+[2021-12-23T22:14:40.065457] [AMF] [amf_app] [info ] |      1      |    Connected     |         0x1       |         UERANSIM-gnb-208-95-1        |            208, 95             |
 [2021-12-23T22:14:40.065460] [AMF] [amf_app] [info ] |----------------------------------------------------------------------------------------------------------------|
-[2021-12-23T22:14:40.065463] [AMF] [amf_app] [info ] 
+[2021-12-23T22:14:40.065463] [AMF] [amf_app] [info ]
 [2021-12-23T22:14:40.065465] [AMF] [amf_app] [info ] |----------------------------------------------------------------------------------------------------------------|
 [2021-12-23T22:14:40.065468] [AMF] [amf_app] [info ] |----------------------------------------------------UEs' information--------------------------------------------|
 [2021-12-23T22:14:40.065471] [AMF] [amf_app] [info ] | Index |      5GMM state      |      IMSI        |     GUTI      | RAN UE NGAP ID | AMF UE ID |  PLMN   |Cell ID|
@@ -331,8 +331,8 @@ Now we can verify that all UEs are successfully registered from AMF or SMF logs.
 [2021-12-23T22:14:40.066182] [AMF] [amf_app] [info ] |     99|       5GMM-REGISTERED|   208950000000129|               |              85|         85| 208, 95 |    256|
 [2021-12-23T22:14:40.066189] [AMF] [amf_app] [info ] |    100|       5GMM-REGISTERED|   208950000000130|               |              93|         93| 208, 95 |    256|
 [2021-12-23T22:14:40.066194] [AMF] [amf_app] [info ] |----------------------------------------------------------------------------------------------------------------|
-[2021-12-23T22:14:40.066199] [AMF] [amf_app] [info ] 
-[2021-12-23T22:15:00.065577] [AMF] [amf_app] [info ] 
+[2021-12-23T22:14:40.066199] [AMF] [amf_app] [info ]
+[2021-12-23T22:15:00.065577] [AMF] [amf_app] [info ]
 
 ```
 
@@ -356,7 +356,7 @@ PING 12.2.1.88 (12.2.1.88) 56(84) bytes of data.
 2 packets transmitted, 2 received, 0% packet loss, time 1001ms
 rtt min/avg/max/mdev = 0.687/0.832/0.977/0.145 ms
 ```
-* DIY: You can further investigate usage and help information for sub-commands with the help of UE console.([Refer official page](https://github.com/aligungr/UERANSIM/wiki/Usage))
+* DIY: You can further investigate usage and help information for sub-commands with the help of UE console.([Refer to the official page](https://github.com/aligungr/UERANSIM/wiki/Usage))
 ```bash
 $ docker exec -it ueransim ./nr-cli imsi-208950000000130
 --------------------------------------------------------------------------------------------
@@ -392,5 +392,3 @@ oai-cn5g-fed/docker-compose$  python3 ./core-network.py --type stop-basic-vpp --
 ...
 [2021-09-14 16:47:44,070] root:DEBUG:  OAI 5G core components are UnDeployed....
 ```
-
-

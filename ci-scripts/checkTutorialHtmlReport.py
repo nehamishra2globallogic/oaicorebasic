@@ -177,7 +177,7 @@ class HtmlReport():
 		self.file.write('	   <th>Image Creation Date</th>\n')
 		self.file.write('	   <th>Used Image Size</th>\n')
 		self.file.write('	 </tr>\n')
-		for (cName,iTag,iDate,iSize) in deployedContainerImages:
+		for (cName,iTag,iSize,iDate) in deployedContainerImages:
 			self.file.write('	 <tr>\n')
 			self.file.write('	   <td>' + cName + '</td>\n')
 			self.file.write('	   <td>' + iTag + '</td>\n')

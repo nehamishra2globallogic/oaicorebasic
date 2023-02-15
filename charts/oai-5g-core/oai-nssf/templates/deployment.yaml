@@ -5,7 +5,7 @@ metadata:
   labels:
     {{- include "oai-nssf.labels" . | nindent 4 }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: 1
   selector:
     matchLabels:
       {{- include "oai-nssf.selectorLabels" . | nindent 6 }}
@@ -24,6 +24,15 @@ spec:
       - name: tcpdump
         image: "{{ .Values.tcpdumpimage.repository }}:{{ .Values.tcpdumpimage.version }}"
         imagePullPolicy: {{ .Values.tcpdumpimage.pullPolicy }}
+        {{- if .Values.resources.define}}
+        resources:
+          requests:
+            memory: {{ .Values.resources.tcpdump.requests.memory | quote }}
+            cpu: {{ .Values.resources.tcpdump.requests.cpu | quote }}
+          limits:
+            memory: {{ .Values.resources.tcpdump.limits.memory | quote }}
+            cpu: {{ .Values.resources.tcpdump.limits.cpu | quote }}
+        {{- end}}
         {{- if .Values.start.tcpdump}}
         command:
           - /bin/sh
@@ -45,15 +54,13 @@ spec:
         {{- if .Values.resources.define}}
         resources:
           requests:
-            memory: {{ .Values.resources.requests.memory | quote }}
-            cpu: {{ .Values.resources.requests.cpu | quote }}
+            memory: {{ .Values.resources.nf.requests.memory | quote }}
+            cpu: {{ .Values.resources.nf.requests.cpu | quote }}
           limits:
-            memory: {{ .Values.resources.limits.memory | quote }}
-            cpu: {{ .Values.resources.limits.cpu | quote }}
+            memory: {{ .Values.resources.nf.limits.memory | quote }}
+            cpu: {{ .Values.resources.nf.limits.cpu | quote }}
         {{- end}}
         volumeMounts:
-        - mountPath: /scripts
-          name: scripts
         - mountPath: /tmp/
           name: nssf-slice-config
         {{- if .Values.readinessProbe}}
@@ -61,7 +68,7 @@ spec:
           exec:
             command:
             - sh
-            - /scripts/live-ready.sh
+            - /openair-nssf/bin/healthcheck.sh
           initialDelaySeconds: 5
           periodSeconds: 5
         {{- end}}
@@ -70,16 +77,16 @@ spec:
           exec:
             command:
             - sh
-            - /scripts/live-ready.sh
+            - /openair-nssf/bin/healthcheck.sh
           initialDelaySeconds: 10
           periodSeconds: 5
         {{- end}}
         securityContext:
           {{- toYaml .Values.securityContext | nindent 12 }}
         ports:
-        - containerPort: {{ .Values.service.http1Port }}
+        - containerPort: {{ .Values.config.sbiPortHttp1 }}
           name: http1
-        - containerPort: {{ .Values.service.http2Port }}
+        - containerPort: {{ .Values.config.sbiPortHttp2 }}
           name: http2
         {{- if .Values.start.nssf}}
         {{- else}}
@@ -150,9 +157,6 @@ spec:
         persistenceVolumeClaim:
           claimName: cn5g-pvc
       {{- end }}
-      - name: scripts
-        configMap:
-          name: {{ .Chart.Name }}-health-cm
       - name: nssf-slice-config
         configMap:
           name: {{ .Chart.Name }}-yamlconfig
@@ -162,7 +166,8 @@ spec:
       serviceAccountName: {{ .Values.serviceAccount.name }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       {{- if .Values.nodeSelector}}
-      nodeSelector: {{- toYaml .Values.nodeSelector | nindent 4 }}
+      nodeSelector: 
+         {{- toYaml .Values.nodeSelector | nindent 12 }}
       {{- end }}
       {{- if .Values.nodeName}}
       nodeName: {{ .Values.nodeName }}

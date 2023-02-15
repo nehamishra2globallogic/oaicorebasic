@@ -1,24 +1,19 @@
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
-
-replicaCount: 1
+kubernetesType: Vanilla  #Vanilla for community kubernetes distribution
 
 nfimage:  # image name either locally present or in a public/private repository
-  registry: local
   repository: docker.io/oaisoftwarealliance/oai-amf           ## The image will be pulled from dockerhub
-  version: develop                                    ## The branch to be used to pull from dockerhub
+  version: v1.5.0                                    #image tag, develop tag for experimental features 
   # pullPolicy: IfNotPresent or Never or Always
   pullPolicy: IfNotPresent
 
 tcpdumpimage:
-  registry: local
   repository: docker.io/corfr/tcpdump
   version: latest
   #pullPolicy: IfNotPresent or Never or Always
   pullPolicy: IfNotPresent
 
 ## good to use when pulling images from docker-hub mention 
-imagePullSecrets: 
+imagePullSecrets:
   - name: "regcred"
 
 serviceAccount:
@@ -26,9 +21,9 @@ serviceAccount:
   create: true
   # Annotations to add to the service account
   annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
   name: "oai-amf-sa"
+
+#service type is fixed to clusterIP, it is only support for non multus interface (eth0)
 
 ## OPENSHIFT terminology
 podSecurityContext:
@@ -37,22 +32,13 @@ podSecurityContext:
 
 ## OPENSHIFT terminology
 securityContext:
-  privileged: true
-
-servicehttp:
-  type: ClusterIP
-  http1Port: 80
-  http2Port: 9090
-
-servicesctp:
-  type: ClusterIP #LoadBalancer
-  sctpPort: 38412
+  privileged: false
 
 start:
   amf: true
   tcpdump: false # WARNING: start tcpdump collection to analyse but beware it will take a lot of space in the container/persistent volume
 
-# AMF needs two seperate interface one for http and other one for SCTP (N1/N2) to communicate with gNB. 
+# AMF needs two seperate interface one for http (for SBI) and other one for SCTP (N1/N2) to communicate with gNB. 
 # But for experimentation only one interface can be used. 
 # When you need multus:
 # 1. you want seperate interface for N1/N2 and Namf 
@@ -62,65 +48,40 @@ start:
 
 multus:
   create: false
-  n1IPadd: "172.21.10.6"
-  n1Netmask: "22"
-  n1Gateway: "172.21.11.254"
-  hostInterface: "ens2f0np0"      # Interface of the host machine on which this pod will be scheduled
+  n2IPadd: "172.21.10.6"
+  n2Netmask: "22"
+  n2Gateway: "172.21.11.254"
+  hostInterface: "bond0"      # Interface of the host machine on which this pod will be scheduled
+
+## Incase the pod is not able to resolve the FQDN of other network functions example nrf then you can disable useFqdnDns feature this way AMF will talk to other network functions using their ip-address. 
 
 config:
-  instance: "0"
-  pidDirectory: "/var/run"
-  mcc: "208"
-  mnc: "99"
+  mcc: "001"
+  mnc: "01"
   regionId: "128"
-  amfsetId: "1"
-  servedGuamiMcc0: "208"
-  servedGuamiMnc0: "99"
-  servedGuamiRegionId0: "128"
-  servedGuamiAmfSetId0: "1"
-  servedGuamiMcc1: "460"
-  servedGuamiMnc1: "11"
-  servedGuamiRegionId1: "10"
-  servedGuamiAmfSetId1: "1"
-  plmnSupportMcc: "208"
-  plmnSupportMnc: "99"
-  plmnSupportTac: "0x0001"
+  amfSetId: "1"
+  tac: "0x0001"
   sst0: "1"
-  sd0: "1"
-  sst1: "111"
-  sd1: "124"
+  sd0: "0xFFFFFF"
+  sst1: "1"
+  sd1: "1"
   amfInterfaceNameForNGAP: "eth0" # If multus creation is true then net1 else eth0
-  amfInterfaceNameForN11: "eth0"  # Service based interface
-  useFqdnDns: "yes"  # If yes then only network functions FQDN name will be used instead of their ip-address
-  smfInstanceId0: "1"  # Only configure if not using NRF
-  smfIpv4Addr0: "0.0.0.0" # Only configure if not using NRF       
-  smfHttpVersion0: "v1" # Only configure if not using NRF
-  smfFqdn0: "oai-smf-svc" # Only configure if not using NRF
-  smfInstanceId1: "2"  # Currently disabled in the amf.conf no need to configure
-  smfIpv4Addr1: "0.0.0.0" # Currently disabled in the amf.conf no need to configure
-  smfHttpVersion1: "v1" # Currently disabled in the amf.conf no need to configure
-  smfFqdn1: "localhost" # Currently disabled in the amf.conf no need to configure
-  nrfIpv4Addr: "0.0.0.0" 
-  nrfPort: 80
-  nrfApiVersion: "v1"
+  amfInterfaceNameForSBI: "eth0"  # Service based interface
+  amfInterfaceSBIHTTPPort: 80  # Service based interface
+  amfInterfaceSBIHTTP2Port: 8080  # Service based interface
+  smfFqdn: "oai-smf-svc"
   nrfFqdn: "oai-nrf-svc"  # amf communicates using FQDN
-  ausfFqdn: "oai-ausf-svc"
-  ausfIpv4Addr: "127.0.0.1" # configure only if there is an external AUSF else it will communicate with mysql directly
-  ausfPort: 80
-  ausfApiVersion: "v1"  
-  nssfFqdn: "oai-nssf-svc"
-  nssfIpv4Addr: "127.0.0.1" # configure only if there is an external AUSF else it will communicate with mysql directly
-  nssfPort: 80
-  nssfApiVersion: "v1"
-  nfRegistration: "yes" 
+  ausfFqdn: "oai-ausf-svc"   #only needed if ausf is used and externalAusf is true else internal ausf will be used
+  nfRegistration: "yes"
   nrfSelection: "no"
-  smfSelection: "yes" 
+  smfSelection: "yes"
   externalAusf: "yes"
   externalUdm: "no"
+  externalNrf: "no"
+  externalNssf: "no"
   useHttp2: "no"
-  intAlgoList: '[ "NIA0" , "NIA1" , "NIA2" ]'
-  ciphAlgoList: '[ "NEA0" , "NEA1" , "NEA2" ]'
-  operatorKey: "c42449363bbad02b66d16bc975d77cc1"  # should be same as in susbcriber database
+  intAlgoList: '[ "NIA1" , "NIA1" , "NIA2" ]'
+  ciphAlgoList: '[ "NEA1" , "NEA1" , "NEA2" ]'
   mySqlServer: "mysql" # OPTIONAL: used only if not using AUSF
   mySqlUser: "root" # OPTIONAL: used only if not using AUSF
   mySqlPass: "linux" # OPTIONAL: used only if not using AUSF
@@ -135,18 +96,26 @@ persistent:
 resources:
   define: false
   limits:
-    cpu: 100m
-    memory: 128Mi
+    tcpdump:
+      cpu: 100m
+      memory: 128Mi
+    nf:
+      cpu: 100m
+      memory: 128Mi
   requests:
-   cpu: 100m
-   memory: 256Mi
+    tcpdump:
+      cpu: 100m
+      memory: 128Mi
+    nf:
+      cpu: 100m
+      memory: 128Mi
 
 readinessProbe: true
 
-livenessProbe: true
+livenessProbe: false
 
-terminationGracePeriodSeconds: 30
+terminationGracePeriodSeconds: 5
 
 nodeSelector: {}
 
-nodeName: 
+nodeName:

@@ -1,18 +1,12 @@
-# Default values for oai-gnb.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
-
-replicaCount: 1
+kubernetesType: Vanilla  #Vanilla for community kubernetes distribution
 
 nfimage:   # image name either locally present or in a public/private repository
-  registry: local
   repository: docker.io/oaisoftwarealliance/oai-gnb           ## dockerhub oaisoftwarealliance/oai-gnb  
   version: develop # image tag
   # pullPolicy: IfNotPresent or Never or Always
   pullPolicy: IfNotPresent
 
 tcpdumpimage:
-  registry: local
   repository: docker.io/corfr/tcpdump
   version: latest
   #pullPolicy: IfNotPresent or Never or Always
@@ -44,12 +38,6 @@ securityContext:
   # runAsNonRoot: true
   # runAsUser: 1000
 
-service:
-  type: ClusterIP
-  s1uPort: 2152
-  s1cPort: 36412
-  x2cPort: 36422 
-  f1Port: 2153
 
 start:
   gnbcu: true
@@ -64,31 +52,24 @@ start:
  
 multus:    # needed when gnB service will run on another interface rather than traditional eth0
   create: false
-  n2IPadd: "172.21.10.16"
-  n2Netmask: "22"
-  n2Gateway: "172.21.11.254"
+  IPadd: "172.21.10.16"
+  Netmask: "22"
+  defaultGateway: "172.21.11.254"
   hostInterface: "ens2f0np0"      # Interface of the host machine on which this pod will be scheduled
-  n3IPadd: "172.21.10.17"
-  n3Netmask: "22"
-  n3Gateway: "172.21.11.254"
-  f1IPadd: "172.21.10.17"
-  f1Netmask: "22"
-  f1Gateway: "172.21.11.254"
-
 
 config:
+  mountConfig: false          #If config file is mounted then please edit mount.conf in configmap.yaml properly 
   timeZone: "Europe/Paris"
   rfSimulator: "server" 
   gnbcuName: "oai-cu-rfsim"
-  usesacu: "yes"
-  mcc: "208"   # check the information with AMF, SMF, UPF/SPGWU
-  mnc: "99"    # check the information with AMF, SMF, UPF/SPGWU
+  useSAcu: "yes"
+  mcc: "001"   # check the information with AMF, SMF, UPF/SPGWU
+  mnc: "01"    # check the information with AMF, SMF, UPF/SPGWU
   mncLength: "2" # check the information with AMF, SMF, UPF/SPGWU
   tac: "1"     # check the information with AMF
   nssaiSst: "1"  #currently only 4 standard values are allowed 1,2,3,4 
-  nssaiSd0: "0027db"    #values in hexa-decimal format
-  nssaiSd1: "112233"
-  amfIpAddress: "172.17.0.5"  # amf ip-address or service-name
+  nssaiSd0: "ffffff"    #values in hexa-decimal format
+  amfIpAddress: "oai-amf-svc"  # amf ip-address
   gnbNgaIfName: "eth0"            # net1 in case multus create is true that means another interface is created for ngap interface, n2 to communicate with amf
   gnbNgaIpAddress: "status.podIP" # n2IPadd in case multus create is true
   gnbNguIfName: "eth0"   #net2 in case multus create is true gtu interface for upf/spgwu
@@ -98,12 +79,8 @@ config:
   f1duIpAddress: "127.0.0.1"
   f1cuPort: "2153"
   f1duPort: "2153"
-  useAdditionalOptions: "--sa -E --rfsim --log_config.global_log_options level,nocolor,time"
+  useAdditionalOptions: "--sa --rfsim --log_config.global_log_options level,nocolor,time"
 
-persistence:
-  sharedvolume: false
-  volumneName: managed-nfs-storage
-  size: 1Gi
 
 resources:
   define: false
@@ -119,7 +96,7 @@ tolerations: []
 
 affinity: {}
 
-terminationGracePeriodSeconds: 30
+terminationGracePeriodSeconds: 5
 
 nodeSelector: {}
 

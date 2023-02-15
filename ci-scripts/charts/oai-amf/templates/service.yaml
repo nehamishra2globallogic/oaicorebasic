@@ -5,26 +5,16 @@ metadata:
   labels:
     {{- include "oai-amf.labels" . | nindent 4 }}
 spec:
-  type: {{ .Values.service.type }}
+  type: ClusterIP
+  clusterIP: None
   ports:
-    - name: oai-amf
-      # Port accessible outside cluster
-      port: {{ .Values.service.sctpPort }}
-      # Port to forward to inside the pod
-      targetPort: {{ .Values.service.sctpPort }}
-      protocol: SCTP
     - name: http1
-      # Port accessible outside cluster
-      port: {{ .Values.service.http1Port }}
-      # Port to forward to inside the pod
-      targetPort: {{ .Values.service.http1Port }}
+      port: {{ .Values.config.amfInterfaceSBIHTTPPort }}
+      targetPort: {{ .Values.config.amfInterfaceSBIHTTPPort }}
       protocol: TCP
     - name: http2
-      # Port accessible outside cluster
-      port: {{ .Values.service.http2Port }}
-      # Port to forward to inside the pod
-      targetPort: {{ .Values.service.http2Port }}
+      port: {{ .Values.config.amfInterfaceSBIHTTP2Port }}
+      targetPort: {{ .Values.config.amfInterfaceSBIHTTP2Port }}
       protocol: TCP
-      #
   selector:
     {{- include "oai-amf.selectorLabels" . | nindent 4 }}
