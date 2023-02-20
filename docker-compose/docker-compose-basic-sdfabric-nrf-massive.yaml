@@ -145,7 +145,8 @@ services:
                 ipv4_address: 192.168.70.132
     oai-smf:
         container_name: "oai-smf"
-        image: oaisoftwarealliance/oai-smf:develop
+        #image: oaisoftwarealliance/oai-smf:develop
+        image: oai-smf:n3_teid_ip_fix
         environment:
             - TZ=Europe/Paris
             - SMF_INTERFACE_NAME_FOR_N4=eth0
@@ -195,7 +196,7 @@ services:
             - NSSAI_SD3=0xFFFFFF
             - DNN_NI3=ims
             - TYPE3=IPv4
-            - DNN_RANGE3=12.2.1.2 - 12.2.1.253
+            - DNN_RANGE3=12.2.1.182 - 12.2.1.253
             - DEFAULT_CSCF_IPV4_ADDRESS=127.0.0.1  # only needed when ims is being used
             - ENABLE_USAGE_REPORTING=no # Set yes if UE USAGE REPORTING is to be done at UPF
             # SDFabric config
