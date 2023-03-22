@@ -145,7 +145,8 @@ services:
                 ipv4_address: 192.168.70.132
     oai-smf:
         container_name: "oai-smf"
-        image: oaisoftwarealliance/oai-smf:v1.5.0
+        #image: oaisoftwarealliance/oai-smf:develop
+        image: oai-smf:n3_teid_ip_fix
         environment:
             - TZ=Europe/Paris
             - SMF_INTERFACE_NAME_FOR_N4=eth0
@@ -194,22 +195,24 @@ services:
             - NSSAI_SST3=1
             - NSSAI_SD3=0xFFFFFF
             - DNN_NI3=ims
-            - TYPE3=IPv4v6
-            - DNN_RANGE3=12.2.1.2 - 12.2.1.253
+            - TYPE3=IPv4
+            - DNN_RANGE3=12.2.1.182 - 12.2.1.253
             - DEFAULT_CSCF_IPV4_ADDRESS=127.0.0.1  # only needed when ims is being used
             - ENABLE_USAGE_REPORTING=no # Set yes if UE USAGE REPORTING is to be done at UPF
             # SDFabric config
             - ENABLE_DL_PDR_IN_PFCP_SESS_ESTAB=yes
-            - N3_LOCAL_IPV4_ADDRESS=192.168.70.134
+            - N3_LOCAL_IPV4_ADDRESS=172.21.23.12
         depends_on:
             - oai-nrf
             - oai-amf
         networks:
             public_net:
                 ipv4_address: 192.168.70.133
+        extra_hosts:
+            - "sdfabric-upf:192.168.70.129"
     oai-spgwu:
         container_name: "oai-spgwu"
-        image: oaisoftwarealliance/oai-spgwu-tiny:v1.5.0
+        image: oaisoftwarealliance/oai-spgwu-tiny:develop
         environment:
             - TZ=Europe/Paris
             - SGW_INTERFACE_NAME_FOR_S1U_S12_S4_UP=eth0
@@ -252,8 +255,8 @@ services:
         privileged: true
         environment:
             - SST_0=1
-            - SD_0=1
-            - DNN=oai
+            - SD_0=0xFFFFFF
+            - DNN=ims
             - FQDN=sdfabric-upf
             - REGISTER_NRF=yes
             - NRF_IP_ADDR=192.168.70.130
@@ -262,7 +265,7 @@ services:
             - NWI_N3=access.oai.org
             - NWI_N6=internet.oai.org
             - N3_IPV4_ADDRESS_LOCAL=172.21.23.12
-            - N4_IPV4_ADDRESS_LOCAL=192.168.70.1
+            - N4_IPV4_ADDRESS_LOCAL=192.168.70.129
             - N6_IPV4_ADDRESS_LOCAL=172.21.23.12
         volumes:
             - ./upf.json:/conf/upf.json
