@@ -241,9 +241,16 @@ pipeline {
           tcList = sh returnStdout: true, script: "grep ' TC' archives/test-list.log | awk {'print \$4'}"
           String[] testScenarios = tcList.split("\\n")
           for (testCase in testScenarios) {
-            echo "testCase is ${testCase}"
+            echo "Test-Case is ${testCase}"
+            timeout(2) {
+              try {
+                sh "docker exec ngap-tester /bin/sh -c './ngap-tester run -o ${testCase}' > archives/${testCase}.log 2>&1"
+                echo "Test-Case #${testCase} seems to have PASSED!"
+              } catch (Exception e) {
+                echo "Test-Case #${testCase} seems to have FAILED!"
+              }
+            }
           }
-          //retrieveGnbsimLogs('archives', 'ci-scripts/docker-compose/load-test-gnbsim')
           dir ('ci-scripts/docker-compose/ngap-tester') {
             sh 'docker-compose -f docker-compose-ngap-tester.yaml down -t 0'
           }
@@ -252,7 +259,6 @@ pipeline {
       post {
         unsuccessful {
           script {
-            //retrieveGnbsimLogs('archives', 'ci-scripts/docker-compose/load-test-gnbsim')
             dir ('ci-scripts/docker-compose/ngap-tester') {
               sh 'docker-compose -f docker-compose-ngap-tester.yaml down -t 0'
               sh 'docker-compose -f docker-compose-basic-nrf.yaml stop -t 3'
@@ -288,7 +294,8 @@ pipeline {
       script {
         // Zipping all archived log files
         sh "zip -r -qq cn5g_fed_ngap_test.zip archives"
-        sh "cp cn5g_fed_ngap_test.zip ~/ngap-tester-logs/cn5g_fed-${JOB_NAME}-${BUILD_ID}.zip"
+        sh "chmod 666 cn5g_fed_ngap_test.zip archives"
+        sh "cp cn5g_fed_ngap_test.zip /opt/ngap-tester-logs/cn5g_fed-${JOB_NAME}-${BUILD_ID}.zip"
       }
     }
     cleanup {
