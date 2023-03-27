@@ -295,7 +295,7 @@ pipeline {
       script {
         // Zipping all archived log files
         sh "zip -r -qq cn5g_fed_ngap_test.zip archives"
-        sh "chmod 666 cn5g_fed_ngap_test.zip archives"
+        sh "chmod 666 cn5g_fed_ngap_test.zip"
         sh "cp cn5g_fed_ngap_test.zip /opt/ngap-tester-logs/cn5g_fed-${JOB_NAME}-${BUILD_ID}.zip"
         sh './ci-scripts/checkLoadTestHtmlReport.py --job_name ' + JOB_NAME + ' --job_id ' + BUILD_ID + ' --job_url ' + BUILD_URL
         if (fileExists('test_results_oai_cn5g_ngap_tester.html')) {
