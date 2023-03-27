@@ -56,6 +56,7 @@ config:
   nrfPort: "80"
   nrfApiVersionNb: "v1"   #Nb means northbound
   nrfFqdn: "oai-nrf-svc"
+  logLevel: "info"
 
 persistence:
   sharedvolume: false

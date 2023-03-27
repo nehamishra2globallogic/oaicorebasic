@@ -62,6 +62,7 @@ config:
   mySqlUser: "root"
   mySqlPass: "linux"
   mySqlDb: "oai_db"
+  logLevel: "info"
 
 persistence:
   sharedvolume: false
