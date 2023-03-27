@@ -238,7 +238,7 @@ pipeline {
             sh 'docker-compose -f docker-compose-ngap-tester.yaml up -d'
           }
           sh 'docker logs ngap-tester > archives/ngap-tester.log 2>&1'
-          sh 'docker exec ngap-tester /bin/sh -c "./ngap-tester list -a" 2>&1 | tee archives/test-list.log'
+          sh 'docker exec ngap-tester /bin/sh -c "./ngap-tester list -a" > archives/test-list.log 2>&1'
           tcList = sh returnStdout: true, script: "grep ' TC' archives/test-list.log | awk {'print \$4'}"
           String[] testScenarios = tcList.split("\\n")
           for (testCase in testScenarios) {
@@ -295,9 +295,11 @@ pipeline {
       script {
         // Zipping all archived log files
         sh "zip -r -qq cn5g_fed_ngap_test.zip archives"
+        // Currently no public artifacting on the logs and pcap
         sh "chmod 666 cn5g_fed_ngap_test.zip"
         sh "cp cn5g_fed_ngap_test.zip /opt/ngap-tester-logs/cn5g_fed-${JOB_NAME}-${BUILD_ID}.zip"
-        sh './ci-scripts/checkLoadTestHtmlReport.py --job_name ' + JOB_NAME + ' --job_id ' + BUILD_ID + ' --job_url ' + BUILD_URL
+        // We still generate HTML report
+        sh './ci-scripts/checkNgapTesterHtmlReport.py --job_name ' + JOB_NAME + ' --job_id ' + BUILD_ID + ' --job_url ' + BUILD_URL
         if (fileExists('test_results_oai_cn5g_ngap_tester.html')) {
           archiveArtifacts artifacts: 'test_results_oai_cn5g_ngap_tester.html'
         }
