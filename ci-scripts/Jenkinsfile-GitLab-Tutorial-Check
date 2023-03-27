@@ -46,7 +46,8 @@ upstreamJobs = [false, false, false, false, false, false, false, false, false, f
 pulledImages = [false, false, false, false, false, false, false, false, false, false]
 
 // Which RAN TAG to use
-def ranTag = params.ranTag
+ranTag = params.ranTag
+upstreamTagToUse = params.upstreamTagToUse
 
 // means to shorten the pipeline
 run_mini_gnbsim = true

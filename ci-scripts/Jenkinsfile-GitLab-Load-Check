@@ -44,6 +44,7 @@ pulledImages = [false, false, false, false, false, false, false]
 
 // Which OMEC-GNBSIM TAG to use
 gnbsimTag = params.gnbsimTag
+upstreamTagToUse = params.upstreamTagToUse
 
 // Flags
 doTsharkCaptureRegistration = true
