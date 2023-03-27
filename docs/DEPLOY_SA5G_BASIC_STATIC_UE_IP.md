@@ -189,7 +189,7 @@ docker-compose-host $: python3 core-network.py --type start-basic --scenario 2
     <!---
     For CI purposes please ignore this line
     ``` shell
-    docker-compose-host $: sleep 30
+    docker-compose-host $: ../ci-scripts/checkContainerStatus.py --container_name gnbsim --timeout 30
     ```
     -->
 

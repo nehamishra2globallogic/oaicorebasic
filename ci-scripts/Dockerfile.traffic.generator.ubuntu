@@ -28,7 +28,8 @@
 #---------------------------------------------------------------------
 # TARGET IMAGE
 #---------------------------------------------------------------------
-FROM ubuntu:bionic as trf-gen-cn5g
+ARG BASE_IMAGE=ubuntu:bionic
+FROM $BASE_IMAGE as trf-gen-cn5g
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=Europe/Paris
 # We install some debug tools for the moment in addition of mandatory libraries

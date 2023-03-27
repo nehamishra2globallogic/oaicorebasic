@@ -155,6 +155,7 @@ def deploy(file_name, extra_interface=False):
         logging.error('\033[0;31m Core network is un-healthy, please see below for more details\033[0m....')
         print(res)
         exit(-1)
+    time.sleep(10)
     check_config(file_name)
 
 def undeploy(file_name):

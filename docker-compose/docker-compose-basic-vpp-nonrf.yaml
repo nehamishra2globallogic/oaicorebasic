@@ -22,21 +22,14 @@ services:
                 ipv4_address: 192.168.70.131
     oai-udr:
         container_name: "oai-udr"
-        image: oaisoftwarealliance/oai-udr:v1.5.0
+        image: oaisoftwarealliance/oai-udr:develop
         environment:
             - TZ=Europe/Paris
-            - INSTANCE=0
-            - PID_DIRECTORY=/var/run
             - UDR_NAME=OAI_UDR
             - UDR_INTERFACE_NAME_FOR_NUDR=eth0
-            - UDR_INTERFACE_PORT_FOR_NUDR=80
-            - UDR_INTERFACE_HTTP2_PORT_FOR_NUDR=8080
-            - USE_HTTP2=no
-            - UDR_API_VERSION=v1
             - MYSQL_IPV4_ADDRESS=192.168.70.131
             - MYSQL_USER=test
             - MYSQL_PASS=test
-            - DB_CONNECTION_TIMEOUT=300 # Reset the connection to the DB after expiring the timeout (in second) currently can't be changed
             - MYSQL_DB=oai_db
             - WAIT_MYSQL=120
             - USE_FQDN_DNS=yes
@@ -48,23 +41,15 @@ services:
                 ipv4_address: 192.168.70.136
     oai-udm:
         container_name: "oai-udm"
-        image: oaisoftwarealliance/oai-udm:v1.5.0
+        image: oaisoftwarealliance/oai-udm:develop
         environment:
             - TZ=Europe/Paris
-            - INSTANCE=0
-            - PID_DIRECTORY=/var/run
             - UDM_NAME=OAI_UDM
             - SBI_IF_NAME=eth0
-            - SBI_PORT=80
-            - SBI_HTTP2_PORT=8080
-            - USE_HTTP2=no
-            - UDM_VERSION_NB=v1
+            - REGISTER_NRF=no
             - USE_FQDN_DNS=yes
             - UDR_IP_ADDRESS=192.168.70.136
-            - UDR_PORT=80
-            - UDR_VERSION_NB=v1
             - UDR_FQDN=oai-udr
-            - REGISTER_NRF=no
         depends_on:
             - oai-udr
         networks:
@@ -72,22 +57,15 @@ services:
                 ipv4_address: 192.168.70.137
     oai-ausf:
         container_name: "oai-ausf"
-        image: oaisoftwarealliance/oai-ausf:v1.5.0
+        image: oaisoftwarealliance/oai-ausf:develop
         environment:
             - TZ=Europe/Paris
-            - INSTANCE_ID=0
-            - PID_DIR=/var/run
             - AUSF_NAME=OAI_AUSF
             - SBI_IF_NAME=eth0
-            - SBI_PORT=80
-            - USE_HTTP2=no
-            - SBI_HTTP2_PORT=8080
             - USE_FQDN_DNS=yes
-            - UDM_IP_ADDRESS=192.168.70.137
-            - UDM_PORT=80
-            - UDM_VERSION_NB=v1
-            - UDM_FQDN=oai-udm
             - REGISTER_NRF=no
+            - UDM_IP_ADDRESS=192.168.70.137
+            - UDM_FQDN=oai-udm
         depends_on:
             - oai-udm
         networks:
@@ -95,11 +73,9 @@ services:
                 ipv4_address: 192.168.70.138
     oai-amf:
         container_name: "oai-amf"
-        image: oaisoftwarealliance/oai-amf:v1.5.0
+        image: oaisoftwarealliance/oai-amf:develop
         environment:
-            - TZ=Europe/paris
-            - INSTANCE=0
-            - PID_DIRECTORY=/var/run
+            - TZ=Europe/Paris
             - MCC=208
             - MNC=95
             - REGION_ID=128
@@ -115,47 +91,28 @@ services:
             - PLMN_SUPPORT_MCC=208
             - PLMN_SUPPORT_MNC=95
             - PLMN_SUPPORT_TAC=0xa000
-            - SST_0=1
-            - SD_0=0xFFFFFF
-            - SST_1=1
-            - SD_1=1
-            - SST_2=222
-            - SD_2=123
+            # Slice 0 (222, 123)
+            - SST_0=222
+            - SD_0=123
+            # Slice 0 (128, 12)
+            - SST_1=128
+            - SD_1=12
             - AMF_INTERFACE_NAME_FOR_NGAP=eth0
             - AMF_INTERFACE_NAME_FOR_N11=eth0
+            # One single SMF instance
             - SMF_INSTANCE_ID_0=1
             - SMF_FQDN_0=oai-smf
             - SMF_IPV4_ADDR_0=192.168.70.133
-            - SMF_HTTP_VERSION_0=v1
             - SELECTED_0=true
-            - SMF_INSTANCE_ID_1=2
-            - SMF_FQDN_1=oai-smf
-            - SMF_IPV4_ADDR_1=0.0.0.0
-            - SMF_HTTP_VERSION_1=v1
-            - SELECTED_1=false
-            - MYSQL_SERVER=192.168.70.131
-            - MYSQL_USER=root
-            - MYSQL_PASS=linux
-            - MYSQL_DB=oai_db
-            - EXTERNAL_NRF=no
             - NF_REGISTRATION=no
             - SMF_SELECTION=no
             - USE_FQDN_DNS=yes
             - EXTERNAL_AUSF=yes
             - EXTERNAL_UDM=no
             - EXTERNAL_NSSF=no
-            - USE_HTTP2=no 
-            - NRF_IPV4_ADDRESS=0.0.0.0 # not used in this scenario, can't remove
-            - NRF_PORT=80 # not used in this scenario, can't remove
-            - NRF_API_VERSION=v1 # not used in this scenario, can't remove
-            - NRF_FQDN=localhost # not used in this scenario, can't remove
             - AUSF_IPV4_ADDRESS=192.168.70.138
-            - AUSF_PORT=80
-            - AUSF_API_VERSION=v1
             - AUSF_FQDN=oai-ausf
             - UDM_IPV4_ADDRESS=192.168.70.137
-            - UDM_PORT=80
-            - UDM_API_VERSION=v2
             - UDM_FQDN=oai-udm
         depends_on:
             - mysql
@@ -167,39 +124,53 @@ services:
                 ipv4_address: 192.168.70.132
     oai-smf:
         container_name: "oai-smf"
-        image: oaisoftwarealliance/oai-smf:v1.5.0
+        image: oaisoftwarealliance/oai-smf:develop
         environment:
             - TZ=Europe/Paris
-            - INSTANCE=0
-            - PID_DIRECTORY=/var/run
             - SMF_INTERFACE_NAME_FOR_N4=eth0
             - SMF_INTERFACE_NAME_FOR_SBI=eth0
-            - SMF_INTERFACE_PORT_FOR_SBI=80
-            - SMF_INTERFACE_HTTP2_PORT_FOR_SBI=9090
-            - SMF_API_VERSION=v1
             - DEFAULT_DNS_IPV4_ADDRESS=172.21.3.100
             - DEFAULT_DNS_SEC_IPV4_ADDRESS=8.8.8.8
             - AMF_IPV4_ADDRESS=192.168.70.132
-            - AMF_PORT=80
-            - AMF_API_VERSION=v1
             - AMF_FQDN=oai-amf
             - UDM_IPV4_ADDRESS=192.168.70.137
-            - UDM_PORT=80
-            - UDM_API_VERSION=v2
             - UDM_FQDN=oai-udm
             - UPF_IPV4_ADDRESS=192.168.70.201
             - UPF_FQDN_0=vpp-upf.node.5gcn.mnc95.mcc208.3gppnetwork.org
             - NRF_IPV4_ADDRESS=192.168.70.130
-            - NRF_PORT=80
-            - NRF_API_VERSION=v1
-            - NRF_FQDN=unknown
+            - DEFAULT_CSCF_IPV4_ADDRESS=127.0.0.1  # only needed when ims is being used
+            - USE_LOCAL_SUBSCRIPTION_INFO=yes  #Set to yes if SMF uses local subscription information instead of from an UDM
             - REGISTER_NRF=no
             - DISCOVER_UPF=no
             - USE_FQDN_DNS=yes
-            - DNN_RANGE1=12.1.1.2 - 12.1.1.128
-            - DNN_RANGE0=12.2.1.2 - 12.2.1.128
-            - DNN_NI1=default
             - ENABLE_USAGE_REPORTING=yes
+            # Slice 0 (1, 0xFFFFFF)
+            - DNN_NI0=oai
+            - TYPE0=IPv4
+            - DNN_RANGE0=12.1.1.151 - 12.1.1.253
+            - NSSAI_SST0=1
+            - SESSION_AMBR_UL0=200Mbps
+            - SESSION_AMBR_DL0=400Mbps
+            # Slice 1 (1, 1)
+            - DNN_NI1=oai.ipv4
+            - TYPE1=IPv4
+            - DNN_RANGE1=12.1.1.51 - 12.1.1.150
+            - NSSAI_SST1=1
+            - NSSAI_SD1=1
+            - SESSION_AMBR_UL1=100Mbps
+            - SESSION_AMBR_DL1=200Mbps
+            # Slice 2 (222, 123)
+            - DNN_NI2=default
+            - TYPE2=IPv4
+            - DNN_RANGE2=12.1.1.2 - 12.1.1.50
+            - NSSAI_SST2=222
+            - NSSAI_SD2=123
+            - SESSION_AMBR_UL2=50Mbps
+            - SESSION_AMBR_DL2=100Mbps
+            # Slice 3 for ims
+            - DNN_NI3=ims
+            - TYPE3=IPv4v6
+            - DNN_RANGE3=14.1.1.2 - 14.1.1.253
         extra_hosts:
             - "vpp-upf.node.5gcn.mnc95.mcc208.3gppnetwork.org:192.168.70.201"
         depends_on:
@@ -210,7 +181,7 @@ services:
     vpp-upf:
         privileged: true
         container_name: "vpp-upf"
-        image: oaisoftwarealliance/oai-upf-vpp:v1.5.0
+        image: oaisoftwarealliance/oai-upf-vpp:develop
         environment:
             - IF_1_IP=192.168.70.201
             - IF_1_TYPE=N4
@@ -219,23 +190,20 @@ services:
             - IF_2_NWI=access.oai.org
             - IF_3_IP=192.168.73.201
             - IF_3_TYPE=N6
-            - IF_3_NWI=core.oai.org
             - IF_3_IP_REMOTE=192.168.73.135 # EXT-DN IP Address
+            - IF_3_NWI=core.oai.org
             - NAME=VPP-UPF
             - MNC=95
             - MCC=208
             - REALM=3gppnetwork.org
             - VPP_MAIN_CORE=0
             - VPP_CORE_WORKER=1
-            # - VPP_PLUGIN_PATH=/usr/lib64/vpp_plugins/                # RHEL7
-            - VPP_PLUGIN_PATH=/usr/lib/x86_64-linux-gnu/vpp_plugins/ # Ubuntu18.04
+#           - VPP_PLUGIN_PATH=/usr/lib64/vpp_plugins/                # RHEL7
+            - VPP_PLUGIN_PATH=/usr/lib/x86_64-linux-gnu/vpp_plugins/ # Ubntu18.04
             - SNSSAI_SD=123
             - SNSSAI_SST=222
             - DNN=default
-            - REGISTER_NRF=no # not used in this scenario, can't remove
-            - NRF_IP_ADDR=0.0.0.0 # not used in this scenario, can't remove
-            - NRF_PORT=80 # not used in this scenario, can't remove
-            - HTTP_VERSION=2 # not used in this scenario, can't remove
+            - REGISTER_NRF=no
         healthcheck:
             test: /bin/bash -c "pgrep vpp"
             interval: 10s

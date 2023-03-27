@@ -5,7 +5,7 @@ metadata:
   labels:
     {{- include "oai-nrf.labels" . | nindent 4 }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: 1
   selector:
     matchLabels:
       {{- include "oai-nrf.selectorLabels" . | nindent 6 }}
@@ -20,53 +20,78 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
     {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
+        {{ toYaml .Values.imagePullSecrets | indent 8 }}
     {{- end }}
       containers:
       - name: tcpdump
-        image: image-registry.openshift-image-registry.svc:5000/oai/tcpdump-internal:latest
+        image: "{{ .Values.tcpdumpimage.repository }}:{{ .Values.tcpdumpimage.version }}"
+        securityContext:
+          {{- toYaml .Values.securityContext | nindent 12 }}
+        imagePullPolicy: {{ .Values.tcpdumpimage.pullPolicy }}
+        {{- if .Values.resources.define}}
+        resources:
+          requests:
+            memory: {{ .Values.resources.tcpdump.requests.memory | quote }}
+            cpu: {{ .Values.resources.tcpdump.requests.cpu | quote }}
+          limits:
+            memory: {{ .Values.resources.tcpdump.limits.memory | quote }}
+            cpu: {{ .Values.resources.tcpdump.limits.cpu | quote }}
+        {{- end}}
         {{- if .Values.start.tcpdump}}
         command:
           - /bin/sh
           - -c
-          - /usr/sbin/tcpdump -i any -w /pcap/oai-nrf_`date +%Y-%m-%d_%H_%M-%S-%Z`.pcap
+          - /usr/sbin/tcpdump -i any -w /pcap/{{ .Chart.Name }}_`date +%Y-%m-%d_%H_%M-%S-%Z`.pcap
         {{- else}}
         command:
           - /bin/sleep
           - infinity
         {{- end}}
+        {{- if .Values.persistent.sharedvolume}}
         volumeMounts:
         - mountPath: "/pcap"
-          name: cn5g-pv
+          name: cn5g-pvc
+        {{- end}}
       - name: nrf
-        image: "{{ .Values.image.repository }}:{{ .Values.image.version }}"
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        image: "{{ .Values.nfimage.repository }}:{{ .Values.nfimage.version }}"
+        imagePullPolicy: {{ .Values.nfimage.pullPolicy }}
+        {{- if .Values.resources.define}}
+        resources:
+          requests:
+            memory: {{ .Values.resources.nf.requests.memory | quote }}
+            cpu: {{ .Values.resources.nf.requests.cpu | quote }}
+          limits:
+            memory: {{ .Values.resources.nf.limits.memory | quote }}
+            cpu: {{ .Values.resources.nf.limits.cpu | quote }}
+        {{- end}}
         securityContext:
           {{- toYaml .Values.securityContext | nindent 12 }}
+        {{- if .Values.readinessProbe}}
+        readinessProbe:
+          exec:
+            command:
+            - /bin/bash
+            - /openair-nrf/bin/healthcheck.sh
+          initialDelaySeconds: 2
+          periodSeconds: 3
+        {{- end}}
+        {{- if .Values.livenessProbe}}
+        livenessProbe:
+          exec:
+            command:
+            - /bin/bash
+            - /openair-nrf/bin/healthcheck.sh
+          initialDelaySeconds: 15
+          periodSeconds: 5
+        {{- end}}
         ports:
-        - containerPort: {{ .Values.service.http1Port }}
+        - containerPort: {{ .Values.config.nrfInterfacePortForSBI }}
           name: http1
           protocol: TCP
-        - containerPort: {{ .Values.service.http2Port }}
+        - containerPort: {{ .Values.config.nrfInterfaceHttp2PortForSBI }}
           name: http2
           protocol: TCP
-        {{- if .Values.start.nrf}}
-        {{- else}}
-        command:
-          - /bin/sleep
-          - infinity
-        {{- end}}
         env:
-          - name: INSTANCE
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: instance
-          - name: PID_DIRECTORY
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: pidDirectory
           - name: NRF_INTERFACE_NAME_FOR_SBI
             valueFrom:
               configMapKeyRef:
@@ -87,17 +112,26 @@ spec:
               configMapKeyRef:
                 name: {{ .Chart.Name }}-configmap
                 key: nrfApiVersion
+          - name: LOG_LEVEL
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Chart.Name }}-configmap
+                key: logLevel
       volumes:
-      - name: cn5g-pv
+      {{- if .Values.persistent.sharedvolume}}
+      - name: cn5g-pvc
         persistentVolumeClaim:
           claimName: cn5g-pvc
-      {{- if .Values.nodeSelector }}
-      nodeSelector:
-{{ toYaml .Values.nodeSelector | indent 8 }}
       {{- end }}
       dnsPolicy: ClusterFirst
       restartPolicy: Always
-      schedulerName: default-scheduler
       serviceAccountName: {{ .Values.serviceAccount.name }}
-      terminationGracePeriodSeconds: 15
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      {{- if .Values.nodeSelector}}
+      nodeSelector: 
+         {{- toYaml .Values.nodeSelector | nindent 12 }}
+      {{- end }}
+      {{- if .Values.nodeName}}
+      nodeName: {{ .Values.nodeName }}
+      {{- end }}
 

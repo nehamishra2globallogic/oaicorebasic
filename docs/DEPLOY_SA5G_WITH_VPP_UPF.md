@@ -285,7 +285,7 @@ Creating gnbsim-vpp ... done
 <!---
 For CI purposes please ignore this line
 ``` shell
-docker-compose-host $: sleep 20
+docker-compose-host $: ../ci-scripts/checkContainerStatus.py --container_name gnbsim-vpp --timeout 30
 ```
 -->
 
@@ -433,7 +433,7 @@ docker-compose-host $: docker exec gnbsim-vpp wget --tries=2 --timeout=30 --bind
 ## 7. Recover the logs
 
 <!---
-For CI purposes please ignore this line
+For CI purposes please ignore these lines
 ``` shell
 docker-compose-host $: docker-compose -f docker-compose-gnbsim-vpp.yaml stop -t 2
 docker-compose-host $: docker-compose -f docker-compose-basic-vpp-nrf.yaml stop -t 2

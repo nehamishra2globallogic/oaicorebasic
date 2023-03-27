@@ -1,129 +1,126 @@
-# Default values for oai-amf.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
+kubernetesType: Openshift  #Vanilla for community kubernetes distribution
 
-replicaCount: 1
-
-namespace: "oaicicd-5gcn-tmp"
-
-image:
-  registry: local
-  repository: image-registry.openshift-image-registry.svc:5000/oaicicd-5gcn-tmp/oai-amf
-  version: "TAG"
+nfimage:  # image name either locally present or in a public/private repository
+  repository: image-registry.openshift-image-registry.svc:5000/oaicicd-core/oai-amf  ## The image will be pulled from dockerhub
+  version: AMF_TAG                                    #image tag, develop tag for experimental features 
   # pullPolicy: IfNotPresent or Never or Always
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
 
-imagePullSecrets: []
+tcpdumpimage:
+  repository: support-tools
+  version: 8.7-8
+  #pullPolicy: IfNotPresent or Never or Always
+  pullPolicy: IfNotPresent
+
+## good to use when pulling images from docker-hub mention 
+#imagePullSecrets:
+#  - name: "regcred"
 
 serviceAccount:
   # Specifies whether a service account should be created
   create: true
   # Annotations to add to the service account
   annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
-  name: "oai-amf-svc"
+  name: "oai-amf-sa"
 
+#service type is fixed to clusterIP, it is only support for non multus interface (eth0)
+
+## OPENSHIFT terminology
 podSecurityContext:
   runAsUser: 0
   runAsGroup: 0
 
+## OPENSHIFT terminology
 securityContext:
+  capabilities:
+    add: 
+     - NET_ADMIN
+    drop: 
+     - ALL
   privileged: true
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
-
-service:
-  type: ClusterIP
-  sctpPort: 38412
-  http1Port: 80
-  http2Port: 9090
 
 start:
   amf: true
-  tcpdump: true
+  tcpdump: true # WARNING: start tcpdump collection to analyse but beware it will take a lot of space in the container/persistent volume
+
+# AMF needs two seperate interface one for http (for SBI) and other one for SCTP (N1/N2) to communicate with gNB. 
+# But for experimentation only one interface can be used. 
+# When you need multus:
+# 1. you want seperate interface for N1/N2 and Namf 
+# 2. Your gnB is outside the cluster and the host machine can communicate but pods can not then you can provide ip-address in the same range as your host machine
+# 3. You want static ip-address for N1/N2 interface, Namf can be discovered by its service name
+
 
 multus:
-  ngapIPadd: "192.168.18.177"
-  ngapNetmask: "24"
-  ngapGateway: "192.168.18.129"
+  create: true
+  n2IPadd: "172.21.6.200"
+  n2Netmask: "22"
+  n2Gateway: "172.21.7.254"
+  hostInterface: "bond0"      # Interface of the host machine on which this pod will be scheduled
+
+## Incase the pod is not able to resolve the FQDN of other network functions example nrf then you can disable useFqdnDns feature this way AMF will talk to other network functions using their ip-address. 
 
 config:
-  instance: "0"
-  pidDirectory: "/var/run"
-  mcc: "208"
-  mnc: "95"
+  mcc: "001"
+  mnc: "01"
   regionId: "128"
-  amfsetId: "1"
-  servedGuamiMcc0: "208"
-  servedGuamiMnc0: "95"
-  servedGuamiRegionId0: "128"
-  servedGuamiAmfSetId0: "1"
-  servedGuamiMcc1: "460"
-  servedGuamiMnc1: "11"
-  servedGuamiRegionId1: "10"
-  servedGuamiAmfSetId1: "1"
-  plmnSupportMcc: "208"
-  plmnSupportMnc: "95"
-  plmnSupportTac: "0xa000"
-  sst0: "222"
-  sd0: "123"
+  amfSetId: "1"
+  tac: "0x0001"
+  sst0: "1"
+  sd0: "0xFFFFFF"
   sst1: "1"
-  sd1: "12"
-  amfInterfaceNameForNGAP: "net1"
-  amfInterfaceNameForN11: "eth0"
-  smfInstanceId0: "1"
-  smfIpv4Addr0: "0.0.0.0"
-  smfHttpVersion0: "v1"
-  smfFqdn0: "oai-amf-svc"
-  selected0: "true"
-  smfInstanceId1: "2"
-  smfIpv4Addr1: "127.0.0.1"
-  smfHttpVersion1: "v1"
-  smfFqdn1: "oai-amf-svc"
-  selected1: "false"
-  nrfIpv4Addr: "192.168.18.178"
-  nrfPort: 80
-  nrfApiVersion: "v1"
-  nrfFqdn: "oai-nrf-svc"
-  ausfIpv4Addr: "127.0.0.1"
-  ausfPort: 80
-  ausfApiVersion: "v1"
-  ausfFqdn: "oai-ausf-svc"
+  sd1: "1"
+  amfInterfaceNameForNGAP: "net1" # If multus creation is true then net1 else eth0
+  amfInterfaceNameForSBI: "eth0"  # Service based interface
+  amfInterfaceSBIHTTPPort: 80  # Service based interface
+  amfInterfaceSBIHTTP2Port: 8080  # Service based interface
+  smfFqdn: "oai-smf-svc"
+  nrfFqdn: "oai-nrf-svc"  # amf communicates using FQDN
+  ausfFqdn: "oai-ausf-svc"   #only needed if ausf is used and externalAusf is true else internal ausf will be used
   nfRegistration: "yes"
+  nrfSelection: "no"
   smfSelection: "yes"
-  useFqdnDns: "yes"
   externalAusf: "yes"
-  mySqlServer: "mysql"
-  mySqlUser: "root"
-  mySqlPass: "linux"
-  mySqlDb: "oai_db"
-  operatorKey: "63bfa50ee6523365ff14c1f45f88737d"
+  externalUdm: "no"
+  externalNrf: "no"
+  externalNssf: "no"
+  useHttp2: "no"
+  intAlgoList: '[ "NIA1" , "NIA1" , "NIA2" ]'
+  ciphAlgoList: '[ "NEA0" , "NEA1" , "NEA2" ]'
+  mySqlServer: "mysql" # OPTIONAL: used only if not using AUSF
+  mySqlUser: "root" # OPTIONAL: used only if not using AUSF
+  mySqlPass: "linux" # OPTIONAL: used only if not using AUSF
+  mySqlDb: "oai_db" # OPTIONAL: used only if not using AUSF
+  logLevel: "info"
 
-persistence:
-  # make it true for the first time when you want to create persistance volume 
-  # and then false
-  enabled: false
+persistent:
+  sharedvolume: true
+  volumneName: nfs-client
+  size: 1Gi
 
-resources: 
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
+resources:
+  define: false
+  limits:
+    tcpdump:
+      cpu: 100m
+      memory: 128Mi
+    nf:
+      cpu: 100m
+      memory: 128Mi
   requests:
-    cpu: 100m
-    memory: 256Mi
+    tcpdump:
+      cpu: 100m
+      memory: 128Mi
+    nf:
+      cpu: 100m
+      memory: 128Mi
 
-nodeSelector:
-  env: dev
+readinessProbe: false
 
-tolerations: []
+livenessProbe: false
 
-affinity: {}
+terminationGracePeriodSeconds: 5
+
+nodeSelector: {}
+
+nodeName: dedale

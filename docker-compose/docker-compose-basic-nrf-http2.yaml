@@ -22,7 +22,7 @@ services:
                 ipv4_address: 192.168.70.131
     oai-udr:
         container_name: "oai-udr"
-        image: oaisoftwarealliance/oai-udr:v1.5.0
+        image: oaisoftwarealliance/oai-udr:develop
         expose:
             - 80/tcp
             - 8080/tcp
@@ -39,8 +39,9 @@ services:
             - REGISTER_NRF=yes
             - NRF_IPV4_ADDRESS=192.168.70.130
             - NRF_FQDN=oai-nrf
-            # change for HTTP2
+            # changes for HTTP2
             - USE_HTTP2=yes
+            - NRF_PORT=8080
         depends_on:
             - mysql
             - oai-nrf
@@ -49,7 +50,7 @@ services:
                 ipv4_address: 192.168.70.136
     oai-udm:
         container_name: "oai-udm"
-        image: oaisoftwarealliance/oai-udm:v1.5.0
+        image: oaisoftwarealliance/oai-udm:develop
         expose:
             - 80/tcp
             - 8080/tcp
@@ -63,10 +64,10 @@ services:
             - UDR_FQDN=oai-udr
             - REGISTER_NRF=yes
             - NRF_IPV4_ADDRESS=192.168.70.130
-            - NRF_PORT=8080
             - NRF_FQDN=oai-nrf
-            # change for HTTP2
+            # changes for HTTP2
             - USE_HTTP2=yes
+            - NRF_PORT=8080
         depends_on:
             - oai-udr
         networks:
@@ -74,7 +75,7 @@ services:
                 ipv4_address: 192.168.70.137
     oai-ausf:
         container_name: "oai-ausf"
-        image: oaisoftwarealliance/oai-ausf:v1.5.0
+        image: oaisoftwarealliance/oai-ausf:develop
         expose:
             - 80/tcp
             - 8080/tcp
@@ -84,14 +85,14 @@ services:
             - SBI_IF_NAME=eth0
             - USE_FQDN_DNS=yes
             - UDM_IP_ADDRESS=192.168.70.137
-            - UDM_PORT=8080
             - UDM_FQDN=oai-udm
             - REGISTER_NRF=yes
             - NRF_IPV4_ADDRESS=192.168.70.130
-            - NRF_PORT=8080
             - NRF_FQDN=oai-nrf
-            #change for HTTP2
+            # changes for HTTP2
             - USE_HTTP2=yes
+            - UDM_PORT=8080
+            - NRF_PORT=8080
         depends_on:
             - oai-udm
         networks:
@@ -99,11 +100,12 @@ services:
                 ipv4_address: 192.168.70.138
     oai-nrf:
         container_name: "oai-nrf"
-        image: oaisoftwarealliance/oai-nrf:v1.5.0
+        image: oaisoftwarealliance/oai-nrf:develop
         expose:
             - 80/tcp
             - 8080/tcp
         environment:
+            - TZ=Europe/Paris
             - NRF_INTERFACE_NAME_FOR_SBI=eth0
             # The default HTTP2 port is 8080 for all network functions
             # It is shown here as example.
@@ -114,13 +116,13 @@ services:
                 ipv4_address: 192.168.70.130
     oai-amf:
         container_name: "oai-amf"
-        image: oaisoftwarealliance/oai-amf:v1.5.0
+        image: oaisoftwarealliance/oai-amf:develop
         expose:
             - 80/tcp
             - 8080/tcp
             - 38412/sctp
         environment:
-            - TZ=Europe/paris
+            - TZ=Europe/Paris
             - MCC=208
             - MNC=95
             - REGION_ID=128
@@ -154,19 +156,20 @@ services:
             - SMF_HTTP_VERSION_0=v2
             - SELECTED_0=true
             - NRF_IPV4_ADDRESS=192.168.70.130
-            - NRF_PORT=8080
             - NF_REGISTRATION=yes
             - USE_FQDN_DNS=yes
             - EXTERNAL_AUSF=yes
+            - EXTERNAL_UDM=no
             - NRF_FQDN=oai-nrf
             - AUSF_IPV4_ADDRESS=192.168.70.138
-            - AUSF_PORT=8080
             - AUSF_FQDN=oai-ausf
             - UDM_IPV4_ADDRESS=192.168.70.137
-            - UDM_PORT=8080
             - UDM_FQDN=oai-udm
-            #change for HTTP2
+            # changes for HTTP2
             - USE_HTTP2=yes
+            - NRF_PORT=8080
+            - AUSF_PORT=8080
+            - UDM_PORT=8080
         depends_on:
             - mysql
             - oai-nrf
@@ -176,7 +179,7 @@ services:
                 ipv4_address: 192.168.70.132
     oai-smf:
         container_name: "oai-smf"
-        image: oaisoftwarealliance/oai-smf:v1.5.0
+        image: oaisoftwarealliance/oai-smf:develop
         expose:
             - 80/tcp
             - 8080/tcp
@@ -188,21 +191,22 @@ services:
             - DEFAULT_DNS_IPV4_ADDRESS=172.21.3.100
             - DEFAULT_DNS_SEC_IPV4_ADDRESS=8.8.8.8
             - AMF_IPV4_ADDRESS=192.168.70.132
-            - AMF_PORT=8080
             - AMF_FQDN=oai-amf
             - UDM_IPV4_ADDRESS=192.168.70.137
-            - UDM_PORT=8080
             - UDM_FQDN=oai-udm
             - UPF_IPV4_ADDRESS=192.168.70.134
             - UPF_FQDN_0=oai-spgwu
             - NRF_IPV4_ADDRESS=192.168.70.130
-            - NRF_PORT=8080
             - USE_LOCAL_SUBSCRIPTION_INFO=yes
             - NRF_FQDN=oai-nrf
             - REGISTER_NRF=yes
             - DISCOVER_UPF=yes
             - USE_FQDN_DNS=yes
+            # changes for HTTP2
             - HTTP_VERSION=2
+            - AMF_PORT=8080
+            - UDM_PORT=8080
+            - NRF_PORT=8080
             - UE_MTU=1500
             # Slice 0 (1, 0xFFFFFF)
             - DNN_NI0=oai
@@ -241,7 +245,7 @@ services:
                 ipv4_address: 192.168.70.133
     oai-spgwu:
         container_name: "oai-spgwu"
-        image: oaisoftwarealliance/oai-spgwu-tiny:v1.5.0
+        image: oaisoftwarealliance/oai-spgwu-tiny:develop
         expose:
             - 2152/udp
             - 8805/udp

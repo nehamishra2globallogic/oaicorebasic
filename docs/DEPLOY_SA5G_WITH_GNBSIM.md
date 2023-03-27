@@ -146,7 +146,17 @@ docker image tag rohankharade/gnbsim:latest gnbsim:latest
 ``` shell
 docker-compose-host $: docker-compose -f docker-compose-gnbsim.yaml up -d gnbsim
 Creating gnbsim ... done
-docker-compose-host $: sleep 40
+```
+
+Wait a bit for all `gnbsim` container to be healthy.
+<!---
+For CI purposes please ignore this line
+``` shell
+docker-compose-host $: ../ci-scripts/checkContainerStatus.py --container_name gnbsim --timeout 30
+```
+-->
+
+``` shell
 docker-compose-host $: docker-compose -f docker-compose-gnbsim.yaml ps -a
 Name               Command                  State       Ports
 --------------------------------------------------------------
@@ -298,13 +308,46 @@ Here we try some scaling testing with gnbsim. There are additional IMSIs added i
 ``` shell
 docker-compose-host $: docker-compose -f docker-compose-gnbsim.yaml up -d gnbsim2
 Creating gnbsim2 ... done
+```
+<!---
+For CI purposes please ignore this line
+``` shell
+docker-compose-host $: ../ci-scripts/checkContainerStatus.py --container_name gnbsim2 --timeout 40
+```
+-->
+``` shell
 docker-compose-host $: docker-compose -f docker-compose-gnbsim.yaml up -d gnbsim3
 Creating gnbsim3 ... done
+```
+<!---
+For CI purposes please ignore this line
+``` shell
+docker-compose-host $: ../ci-scripts/checkContainerStatus.py --container_name gnbsim3 --timeout 40
+```
+-->
+``` shell
 docker-compose-host $: docker-compose -f docker-compose-gnbsim.yaml up -d gnbsim4
 Creating gnbsim4 ... done
+```
+<!---
+For CI purposes please ignore this line
+``` shell
+docker-compose-host $: ../ci-scripts/checkContainerStatus.py --container_name gnbsim4 --timeout 40
+```
+-->
+``` shell
 docker-compose-host $: docker-compose -f docker-compose-gnbsim.yaml up -d gnbsim5
 Creating gnbsim5 ... done
-docker-compose-host $: sleep 40
+```
+Wait a bit for all `gnbsim` containers to be healthy.
+<!---
+For CI purposes please ignore this line
+``` shell
+docker-compose-host $: ../ci-scripts/checkContainerStatus.py --container_name gnbsim5 --timeout 40
+```
+-->
+
+``` shell
 docker-compose-host $: docker-compose -f docker-compose-gnbsim.yaml ps -a
 docker-compose-host $: docker logs gnbsim2 2>&1 | grep "UE address:"
 [gnbsim]2022/09/14 16:45:41.584271 example.go:329: UE address: 12.1.1.3

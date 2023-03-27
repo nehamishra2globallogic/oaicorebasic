@@ -123,9 +123,15 @@ Creating mysql            ... done
 
 We capture the packets on the docker networks with a complex filter --> smaller PCAP file.
 ``` shell
-docker-compose-host $: nohup sudo tshark -i demo-oai -f '(not host 192.168.70.145 and not host 192.168.70.154) or (host 192.168.70.145 and icmp)' -w /tmp/oai/slicing-with-nssf/slicing-with-nssf.pcap > /dev/null 2>&1 &
-docker-compose-host $: sleep 30
+docker-compose-host $: nohup sudo tshark -i demo-oai -f '(not host 192.168.70.145 and not host 192.168.70.154) or (host 192.168.70.145 and icmp)' -w /tmp/oai/slicing-with-nssf/slicing-with-nssf.pcap > /tmp/oai/slicing-with-nssf/slicing-with-nssf.log 2>&1 &
 ```
+
+<!---
+For CI purposes please ignore this line
+``` shell
+docker-compose-host $: ../ci-scripts/checkTsharkCapture.py --log_file /tmp/oai/slicing-with-nssf/slicing-with-nssf.log --timeout 30
+```
+-->
 
 ``` shell
 docker-compose-host $: docker-compose -f docker-compose-slicing-basic-nrf.yaml up -d
@@ -147,9 +153,16 @@ Creating oai-spgwu-slice1 ... done
 ```
 
 ``` shell
-docker-compose-host $: sudo chmod 666 /tmp/oai/slicing-with-nssf/slicing-with-nssf.pcap
-docker-compose-host $: sleep 90
+docker-compose-host $: sudo chmod 666 /tmp/oai/slicing-with-nssf/slicing-with-nssf.*
 ```
+
+<!---
+For CI purposes please ignore this line
+``` shell
+docker-compose-host $: ../ci-scripts/checkContainerStatus.py --container_name mysql --timeout 120
+docker-compose-host $: ../ci-scripts/checkContainerStatus.py --container_name oai-spgwu-slice1 --timeout 30
+```
+-->
 
 * Make sure all services are healthy -
 
@@ -200,30 +213,39 @@ Deploy ran simulator for slice 1
 docker-compose-host $: docker-compose -f docker-compose-slicing-ransim.yaml up -d ueransim
 Creating ueransim             ... done
 ```
-Wait a bit
+Wait a bit (5 to 10 seconds).
+<!---
+For CI purposes please ignore this line
 ``` shell
-docker-compose-host $: sleep 10
+docker-compose-host $: ../ci-scripts/checkContainerStatus.py --container_name ueransim --timeout 30
 ```
+-->
 Deploy ran simulator for slice 2
 ``` shell
 docker-compose-host $: docker-compose -f docker-compose-slicing-ransim.yaml up -d oai-gnb oai-nr-ue1
 Creating rfsim5g-oai-gnb    ... done
 Creating rfsim5g-oai-nr-ue1 ... done
 ```
-Wait a bit
+Wait a bit (5 to 10 seconds).
+<!---
+For CI purposes please ignore this line
 ``` shell
-docker-compose-host $: sleep 10
+docker-compose-host $: ../ci-scripts/checkContainerStatus.py --container_name rfsim5g-oai-nr-ue1 --timeout 30
 ```
+-->
 Deploy ran simulator for slice 3
 
 ``` shell
 docker-compose-host $: docker-compose -f docker-compose-slicing-ransim.yaml up -d gnbsim
 Creating gnbsim             ... done
 ```
-Wait a bit
+Wait a bit (5 to 10 seconds).
+<!---
+For CI purposes please ignore this line
 ``` shell
-docker-compose-host $: sleep 10
+docker-compose-host $: ../ci-scripts/checkContainerStatus.py --container_name gnbsim --timeout 30
 ```
+-->
 
 Make sure all ran simulator services are healthy.
 
@@ -300,7 +322,7 @@ rtt min/avg/max/mdev = 11.206/25.511/40.071/14.292 ms
 ## 9. Analyzing Scenario Results
 
 <!---
-For CI purposes please ignore this line
+For CI purposes please ignore these lines
 ``` shell
 docker-compose-host $: docker-compose -f docker-compose-slicing-ransim.yaml stop -t 2
 docker-compose-host $: docker-compose -f docker-compose-slicing-basic-nrf.yaml stop -t 2

@@ -1,4 +1,4 @@
-{{- if .Values.persistence.enabled }}
+{{- if .Values.persistent.sharedvolume }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -6,8 +6,8 @@ metadata:
 spec:
   accessModes:
     - ReadWriteMany
-  storageClassName: managed-nfs-storage
+  storageClassName: {{ .Values.persistent.volumeName }}
   resources:
     requests:
-      storage: 1Gi
+      storage: {{ .Values.persistent.size }}
 {{- end }}

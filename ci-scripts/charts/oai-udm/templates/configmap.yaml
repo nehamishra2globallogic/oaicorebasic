@@ -6,4 +6,3 @@ data:
   {{- range $key, $val := .Values.config }}
   {{ $key }}: {{ $val | quote }}
   {{- end }}
-
