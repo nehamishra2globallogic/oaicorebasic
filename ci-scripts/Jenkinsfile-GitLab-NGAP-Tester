@@ -238,6 +238,11 @@ pipeline {
             sh 'docker-compose -f docker-compose-ngap-tester.yaml up -d'
           }
           sh 'docker exec ngap-tester /bin/sh -c "./ngap-tester list -a" 2>&1 | tee archives/test-list.log'
+          tcList = sh returnStdout: true, script: "grep ' TC' archives/test-list.log | awk {'print \$4'}"
+          String[] testScenarios = tcList.split("\\n")
+          for (testCase in testScenarios) {
+            echo "testCase is ${testCase}"
+          }
           //retrieveGnbsimLogs('archives', 'ci-scripts/docker-compose/load-test-gnbsim')
           dir ('ci-scripts/docker-compose/ngap-tester') {
             sh 'docker-compose -f docker-compose-ngap-tester.yaml down -t 0'
@@ -269,7 +274,7 @@ pipeline {
             sh 'docker-compose -f docker-compose-basic-nrf.yaml stop -t 3'
           }
           sleep 5
-          retrieveLogs('archives', 'ci-scripts/docker-compose/docker-compose-basic-nrf.yaml')
+          retrieveLogs('archives', 'ci-scripts/docker-compose/ngap-tester/docker-compose-basic-nrf.yaml')
           dir ('ci-scripts/docker-compose/ngap-tester') {
             sh 'docker-compose -f docker-compose-basic-nrf.yaml down -t 3'
           }
@@ -283,7 +288,7 @@ pipeline {
       script {
         // Zipping all archived log files
         sh "zip -r -qq cn5g_fed_ngap_test.zip archives"
-        sh "cp cn5g_fed_ngap_test.zip ~/ngap-tester-logs-${JOB_NAME}-${BUILD_ID}.zip"
+        sh "cp cn5g_fed_ngap_test.zip ~/ngap-tester-logs/cn5g_fed-${JOB_NAME}-${BUILD_ID}.zip"
       }
     }
     cleanup {
