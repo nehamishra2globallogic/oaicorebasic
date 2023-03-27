@@ -204,10 +204,10 @@ pipeline {
           dir ('ci-scripts/docker-compose/ngap-tester') {
             sh 'docker-compose -f docker-compose-basic-nrf.yaml up -d mysql'
             sleep 2
-            sh 'sudo rm -f /tmp/oai-cn5g-load-test.*'
-            sh 'nohup sudo tshark -i demo-oai -f "sctp or port 80 or port 8080 or port 8805 or icmp or port 3306 or port 2152" -w /tmp/oai-cn5g-load-test.pcap > /tmp/oai-cn5g-load-test.log 2>&1 &'
-            sh '../../checkTsharkCapture.py --log_file /tmp/oai-cn5g-load-test.log --timeout 30'
-            sh 'sudo chmod 666 /tmp/oai-cn5g-load-test.*'
+            sh 'sudo rm -f /tmp/oai-cn5g-ngap-tester.*'
+            sh 'nohup sudo tshark -i demo-oai -f "sctp or port 80 or port 8080 or port 8805 or icmp or port 3306 or port 2152" -w /tmp/oai-cn5g-ngap-tester.pcap > /tmp/oai-cn5g-ngap-tester.log 2>&1 &'
+            sh '../../checkTsharkCapture.py --log_file /tmp/oai-cn5g-ngap-tester.log --timeout 30'
+            sh 'sudo chmod 666 /tmp/oai-cn5g-ngap-tester.*'
             sh 'docker-compose -f docker-compose-basic-nrf.yaml up -d'
             sh '../../checkContainerStatus.py --container_name mysql --timeout 40'
             sh '../../checkContainerStatus.py --container_name oai-spgwu --timeout 40'
@@ -237,6 +237,7 @@ pipeline {
           dir ('ci-scripts/docker-compose/ngap-tester') {
             sh 'docker-compose -f docker-compose-ngap-tester.yaml up -d'
           }
+          sh 'docker logs ngap-tester > archives/ngap-tester.log 2>&1'
           sh 'docker exec ngap-tester /bin/sh -c "./ngap-tester list -a" 2>&1 | tee archives/test-list.log'
           tcList = sh returnStdout: true, script: "grep ' TC' archives/test-list.log | awk {'print \$4'}"
           String[] testScenarios = tcList.split("\\n")
@@ -245,9 +246,9 @@ pipeline {
             timeout(2) {
               try {
                 sh "docker exec ngap-tester /bin/sh -c './ngap-tester run -o ${testCase}' > archives/${testCase}.log 2>&1"
-                echo "Test-Case #${testCase} seems to have PASSED!"
+                echo "Test-Case #${testCase} seems to have COMPLETED (FAILED OR PASSED)!"
               } catch (Exception e) {
-                echo "Test-Case #${testCase} seems to have FAILED!"
+                echo "Test-Case #${testCase} seems to have TIME-OUT or FAILED!"
               }
             }
           }
@@ -296,6 +297,10 @@ pipeline {
         sh "zip -r -qq cn5g_fed_ngap_test.zip archives"
         sh "chmod 666 cn5g_fed_ngap_test.zip archives"
         sh "cp cn5g_fed_ngap_test.zip /opt/ngap-tester-logs/cn5g_fed-${JOB_NAME}-${BUILD_ID}.zip"
+        sh './ci-scripts/checkLoadTestHtmlReport.py --job_name ' + JOB_NAME + ' --job_id ' + BUILD_ID + ' --job_url ' + BUILD_URL
+        if (fileExists('test_results_oai_cn5g_ngap_tester.html')) {
+          archiveArtifacts artifacts: 'test_results_oai_cn5g_ngap_tester.html'
+        }
       }
     }
     cleanup {
@@ -368,7 +373,7 @@ def cleanUpDockerCompose() {
 def retrieveLogs(logPath, dcFileName) {
   sh "mkdir -p ${logPath}"
   sh "cp ${dcFileName} ${logPath}"
-  sh "cp /tmp/oai-cn5g-load-test.* ${logPath} || true"
+  sh "cp /tmp/oai-cn5g-ngap-tester.* ${logPath} || true"
   sh "docker logs oai-nrf > ${logPath}/oai-nrf.log 2>&1"
   sh "docker logs oai-udr > ${logPath}/oai-udr.log 2>&1"
   sh "docker logs oai-udm > ${logPath}/oai-udm.log 2>&1"
