@@ -158,6 +158,7 @@ class HtmlReport():
                 testDetails += generate_list_sub_row(f'{description}', stringStatus, 'danger')
             testDetails += generate_list_sub_footer()
         testDetails += generate_list_footer()
+        testDetails += generate_list_row(f'Logs on private CI server at `oaicicd@selfix:/opt/ngap-tester-logs/cn5g_fed-{args.job_name}-{args.job_id}.zip`', 'info-sign')
         testDetails += generate_button_footer()
         return testDetails
 
