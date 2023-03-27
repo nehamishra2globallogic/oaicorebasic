@@ -12,8 +12,8 @@ oai-nrf:
   weight: 0
   kubernetesType: Vanilla #Openshift/Vanilla Vanilla for Upstream Kubernetes
   nfimage:  # image name either locally present or in a public/private repository
-    repository: docker.io/oaisoftwarealliance/oai-nrf           ## The image will be pulled from dockerhub
-    version: v1.5.0                                    ## The branch to be used to pull from dockerhub
+    repository: @NRF_REPO@ ## docker.io/oaisoftwarealliance/oai-nrf           ## The image will be pulled from dockerhub
+    version: @NRF_TAG@ #v1.5.0                                    ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
   imagePullSecrets:
@@ -24,8 +24,8 @@ oai-udr:
   weight: 1
   kubernetesType: Vanilla #Openshift/Vanilla Vanilla for Upstream Kubernetes
   nfimage:  # image name either locally present or in a public/private repository
-    repository: docker.io/oaisoftwarealliance/oai-udr           ## The image will be pulled from dockerhub
-    version: v1.5.0                                    ## The branch to be used to pull from dockerhub
+    repository: @UDR_REPO@ #docker.io/oaisoftwarealliance/oai-udr           ## The image will be pulled from dockerhub
+    version: @UDR_TAG@ #v1.5.0                                    ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
   imagePullSecrets:
@@ -36,8 +36,8 @@ oai-udm:
   weight: 2
   kubernetesType: Vanilla #Openshift/Vanilla Vanilla for Upstream Kubernetes
   nfimage:  # image name either locally present or in a public/private repository
-    repository: docker.io/oaisoftwarealliance/oai-udm           ## The image will be pulled from dockerhub
-    version: v1.5.0                                    ## The branch to be used to pull from dockerhub
+    repository: @UDM_REPO@ #docker.io/oaisoftwarealliance/oai-udm           ## The image will be pulled from dockerhub
+    version: @UDM_TAG@ #v1.5.0                                    ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
   imagePullSecrets:
@@ -48,8 +48,8 @@ oai-ausf:
   weight: 3
   kubernetesType: Vanilla #Openshift/Vanilla Vanilla for Upstream Kubernetes
   nfimage:  # image name either locally present or in a public/private repository
-    repository: docker.io/oaisoftwarealliance/oai-ausf           ## The image will be pulled from dockerhub
-    version: v1.5.0                                    ## The branch to be used to pull from dockerhub
+    repository: @AUSF_REPO@ #docker.io/oaisoftwarealliance/oai-ausf           ## The image will be pulled from dockerhub
+    version: @AUSF_TAG@ #v1.5.0                                    ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
   imagePullSecrets:
@@ -62,8 +62,8 @@ oai-amf:
   weight: 4
   kubernetesType: Vanilla #Openshift/Vanilla Vanilla for Upstream Kubernetes
   nfimage:  # image name either locally present or in a public/private repository
-    repository: docker.io/oaisoftwarealliance/oai-amf           ## The image will be pulled from dockerhub
-    version: v1.5.0                                    ## The branch to be used to pull from dockerhub
+    repository: @AMF_REPO@ #docker.io/oaisoftwarealliance/oai-amf           ## The image will be pulled from dockerhub
+    version: @AMF_TAG@ #v1.5.0                                    ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
   imagePullSecrets:
@@ -100,8 +100,8 @@ oai-spgwu-tiny:
   weight: 5
   kubernetesType: Vanilla #Openshift/Vanilla Vanilla for Upstream Kubernetes
   nfimage:  # image name either locally present or in a public/private repository
-    repository: docker.io/oaisoftwarealliance/oai-spgwu-tiny    ## The image will be pulled from dockerhub
-    version: v1.5.0                                    ## The branch to be used to pull from dockerhub
+    repository: @SPGWU_REPO@ #docker.io/oaisoftwarealliance/oai-spgwu-tiny    ## The image will be pulled from dockerhub
+    version: @SPGWU_TAG@ #v1.5.0                                    ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
   imagePullSecrets:
@@ -138,8 +138,8 @@ oai-smf:
   weight: 6
   kubernetesType: Vanilla #Openshift/Vanilla Vanilla for Upstream Kubernetes
   nfimage:  # image name either locally present or in a public/private repository
-    repository: docker.io/oaisoftwarealliance/oai-smf           ## The image will be pulled from dockerhub
-    version: v1.5.0                                    ## The branch to be used to pull from dockerhub
+    repository: @SMF_REPO@ #docker.io/oaisoftwarealliance/oai-smf           ## The image will be pulled from dockerhub
+    version: @SMF_TAG@ #v1.5.0                                    ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
   imagePullSecrets:
