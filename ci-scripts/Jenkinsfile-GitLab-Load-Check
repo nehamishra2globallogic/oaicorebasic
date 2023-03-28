@@ -47,9 +47,9 @@ gnbsimTag = params.gnbsimTag
 upstreamTagToUse = params.upstreamTagToUse
 
 // Flags
-doTsharkCaptureRegistration = true
-doTsharkCapturePDUSession = true
-doTsharkCapturePDUSessionHttp2 = true
+doTsharkCaptureRegistration = false
+doTsharkCapturePDUSession = false
+doTsharkCaptureDeregHTT2 = false
 
 //-------------------------------------------------------------------------------
 // Pipeline start
@@ -342,11 +342,11 @@ pipeline {
         script {
           dir ('ci-scripts/docker-compose/load-test-gnbsim') {
             sh 'sed -i -e "s@TEST_REGISTER@False@" -e "s@NB_REGISTRATIONS@10@" omec-gnbsim-config-*.yaml'
-            sh 'sed -i -e "s@TEST_PDU_SESSION@True@" -e "s@NB_PDU_SESSIONS@125@" omec-gnbsim-config-*.yaml'
+            sh 'sed -i -e "s@TEST_PDU_SESSION@True@" -e "s@NB_PDU_SESSIONS@625@" omec-gnbsim-config-*.yaml'
             sh 'docker-compose -f docker-compose-omec-gnbsim.yaml up -d'
-            // One UE takes 3.7 seconds to finish (3 seconds for the traffic test)
-            // 125 UE x 3.7 = 460 seconds (ie 8 minutes)
-            sh '../../checkOmecGnbsimStatus.py --timeout 500'
+            // One UE takes 1.27 seconds to finish
+            // 625 UE x 1.27 = 795 seconds (ie 13 minutes)
+            sh '../../checkOmecGnbsimStatus.py --timeout 900'
           }
           retrieveGnbsimLogs('archives/pdu-sess-est-test', 'ci-scripts/docker-compose/load-test-gnbsim')
           dir ('ci-scripts/docker-compose/load-test-gnbsim') {
@@ -402,7 +402,7 @@ pipeline {
             sh 'docker-compose -f docker-compose-basic-nrf-http2.yaml up -d mysql'
             sleep 2
             sh 'sudo rm -f /tmp/oai-cn5g-load-test.*'
-            if (doTsharkCapturePDUSessionHttp2) {
+            if (doTsharkCaptureDeregHTT2) {
               sh 'nohup sudo tshark -i demo-oai -f "sctp or port 80 or port 8080 or port 8805 or icmp or port 3306" -w /tmp/oai-cn5g-load-test.pcap > /tmp/oai-cn5g-load-test.log 2>&1 &'
               sh '../ci-scripts/checkTsharkCapture.py --log_file /tmp/oai-cn5g-load-test.log --timeout 30'
               sh 'sudo chmod 666 /tmp/oai-cn5g-load-test.*'
@@ -436,11 +436,11 @@ pipeline {
         script {
           dir ('ci-scripts/docker-compose/load-test-gnbsim') {
             sh 'sed -i -e "s@TEST_REGISTER@False@" -e "s@NB_REGISTRATIONS@10@" omec-gnbsim-config-*.yaml'
-            sh 'sed -i -e "s@TEST_PDU_SESSION@True@" -e "s@NB_PDU_SESSIONS@125@" -e "s@pdusessest@deregister@" omec-gnbsim-config-*.yaml'
+            sh 'sed -i -e "s@TEST_PDU_SESSION@True@" -e "s@NB_PDU_SESSIONS@625@" -e "s@pdusessest@deregister@" omec-gnbsim-config-*.yaml'
             sh 'docker-compose -f docker-compose-omec-gnbsim.yaml up -d'
-            // One UE takes 3.7 seconds to finish (3 seconds for the traffic test)
-            // 125 UE x 3.7 = 460 seconds (ie 8 minutes)
-            sh '../../checkOmecGnbsimStatus.py --timeout 500'
+            // One UE takes 2.87 seconds to finish
+            // 625 UE x 2.87 = 1795 seconds (ie 30 minutes)
+            sh '../../checkOmecGnbsimStatus.py --timeout 2000'
           }
           retrieveGnbsimLogs('archives/deregistration-http2', 'ci-scripts/docker-compose/load-test-gnbsim')
           dir ('ci-scripts/docker-compose/load-test-gnbsim') {
