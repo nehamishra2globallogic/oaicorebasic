@@ -145,8 +145,7 @@ services:
                 ipv4_address: 192.168.70.132
     oai-smf:
         container_name: "oai-smf"
-        #image: oaisoftwarealliance/oai-smf:develop
-        image: oai-smf:n3_teid_ip_fix
+        image: oaisoftwarealliance/oai-smf:develop
         environment:
             - TZ=Europe/Paris
             - SMF_INTERFACE_NAME_FOR_N4=eth0
@@ -210,45 +209,45 @@ services:
                 ipv4_address: 192.168.70.133
         extra_hosts:
             - "sdfabric-upf:192.168.70.129"
-    oai-spgwu:
-        container_name: "oai-spgwu"
-        image: oaisoftwarealliance/oai-spgwu-tiny:develop
-        environment:
-            - TZ=Europe/Paris
-            - SGW_INTERFACE_NAME_FOR_S1U_S12_S4_UP=eth0
-            - SGW_INTERFACE_NAME_FOR_SX=eth0
-            - PGW_INTERFACE_NAME_FOR_SGI=eth0
-            - NETWORK_UE_NAT_OPTION=yes
-            - NETWORK_UE_IP=12.1.1.0/24
-            - ENABLE_5G_FEATURES=yes
-            - REGISTER_NRF=yes
-            - USE_FQDN_NRF=yes
-            - UPF_FQDN_5G=oai-spgwu
-            - NRF_IPV4_ADDRESS=192.168.70.130
-            - NRF_FQDN=oai-nrf
-            # Slice 0 (1, 0xFFFFFF)
-            - NSSAI_SST_0=1
-            - DNN_0=oai
-            # Slice 1 (1, 1)
-            - NSSAI_SST_1=1
-            - NSSAI_SD_1=1
-            - DNN_1=oai.ipv4
-            # Slice 2 (222, 123)
-            - NSSAI_SST_2=222
-            - NSSAI_SD_2=123
-            - DNN_2=default
-        depends_on:
-            - oai-nrf
-            - oai-smf
-        cap_add:
-            - NET_ADMIN
-            - SYS_ADMIN
-        cap_drop:
-            - ALL
-        privileged: true
-        networks:
-            public_net:
-                ipv4_address: 192.168.70.134
+    # oai-spgwu:
+    #     container_name: "oai-spgwu"
+    #     image: oaisoftwarealliance/oai-spgwu-tiny:develop
+    #     environment:
+    #         - TZ=Europe/Paris
+    #         - SGW_INTERFACE_NAME_FOR_S1U_S12_S4_UP=eth0
+    #         - SGW_INTERFACE_NAME_FOR_SX=eth0
+    #         - PGW_INTERFACE_NAME_FOR_SGI=eth0
+    #         - NETWORK_UE_NAT_OPTION=yes
+    #         - NETWORK_UE_IP=12.1.1.0/24
+    #         - ENABLE_5G_FEATURES=yes
+    #         - REGISTER_NRF=yes
+    #         - USE_FQDN_NRF=yes
+    #         - UPF_FQDN_5G=oai-spgwu
+    #         - NRF_IPV4_ADDRESS=192.168.70.130
+    #         - NRF_FQDN=oai-nrf
+    #         # Slice 0 (1, 0xFFFFFF)
+    #         - NSSAI_SST_0=1
+    #         - DNN_0=oai
+    #         # Slice 1 (1, 1)
+    #         - NSSAI_SST_1=1
+    #         - NSSAI_SD_1=1
+    #         - DNN_1=oai.ipv4
+    #         # Slice 2 (222, 123)
+    #         - NSSAI_SST_2=222
+    #         - NSSAI_SD_2=123
+    #         - DNN_2=default
+    #     depends_on:
+    #         - oai-nrf
+    #         - oai-smf
+    #     cap_add:
+    #         - NET_ADMIN
+    #         - SYS_ADMIN
+    #     cap_drop:
+    #         - ALL
+    #     privileged: true
+    #     networks:
+    #         public_net:
+    #             ipv4_address: 192.168.70.134
     sdfabric-upf:
         container_name: sdfabric-upf
         image: rohankharade/upf-epc-pfcpiface:v0.4.0-dev
