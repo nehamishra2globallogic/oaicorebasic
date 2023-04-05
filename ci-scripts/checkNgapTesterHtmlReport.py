@@ -46,7 +46,7 @@ from generate_html import (
     generate_list_sub_row,
 )
 
-REPORT_NAME = 'test_results_oai_cn5g_load_test.html'
+REPORT_NAME = 'test_results_oai_cn5g_ngap_tester.html'
 
 class HtmlReport():
     def __init__(self):
@@ -56,33 +56,26 @@ class HtmlReport():
         cwd = os.getcwd()
         with open(os.path.join(cwd, REPORT_NAME), 'w') as wfile:
             wfile.write(generate_header(args))
-            loadTests = [('Registration', 'registration-test'), \
-                         ('PDU Session Establishment', 'pdu-sess-est-test'),
-                         ('Deregistration - HTTP2', 'deregistration-http2')]
-            for (testName, testPath) in loadTests:
-                wfile.write(self.testSummary(testName, testPath))
+            wfile.write(self.testSummary('NGAP-Tester'))
             wfile.write(generate_footer())
 
-    def testSummary(self, testName, testPath):
+    def testSummary(self, testName):
         cwd = os.getcwd()
 
-        if not os.path.isdir(cwd + '/archives/' + testPath):
+        if not os.path.isdir(cwd + '/archives/'):
             return ''
 
-        log_files = sorted(os.listdir(cwd + '/archives/' + testPath))
+        log_files = sorted(os.listdir(cwd + '/archives/'))
         deployedContainerImages = []
         for log_file in log_files:
             if not log_file.endswith(".log"):
                 continue
-            if re.search('oai-cn5g-load-test', log_file) is not None:
+            if re.search('image-info', log_file) is not None:
                 continue
             containerName = re.sub('.log.*$', '', log_file)
             if re.search('spgwu', containerName) is not None:
                 imageRootName = 'oai-spgwu-tiny:'
                 fileRootName = 'oai-spgwu-tiny'
-            elif re.search('omec-gnbsim', containerName) is not None:
-                imageRootName = '5gc-gnbsim:'
-                fileRootName = '5gc-gnbsim'
             else:
                 imageRootName = f'{containerName}:'
                 fileRootName = containerName
@@ -111,79 +104,61 @@ class HtmlReport():
             imageDetailsFile.close()
             deployedContainerImages.append((containerName, f'{imageRootName}{imageTag}', imageSize, imageDate))
 
-        instancesDetails = []
-        fullTestStatus = True
-        fullCountUePassed = 0
-        fullCountUeFailed = 0
+        testCaseDetails = []
+        globalStatus = True
         for log_file in log_files:
             if not log_file.endswith(".log"):
                 continue
-            if re.search('omec-gnbsim', log_file) is None:
+            if re.search('TC', log_file) is None:
                 continue
-            testCompleted = False
-            testPassed = False
-            profileName = ''
-            profileType = ''
-            passedUeCount = 0
-            failedUeCount = 0
-            with open(cwd + '/archives/' + testPath + '/' + log_file,'r') as gnbsimLog:
-                for line in gnbsimLog:
-                    if re.search('ExecuteProfile ended', line) is not None:
-                        testCompleted = True
-                    pName = re.search('Init profile: (?P<name>[a-zA-Z0-9\-]+).*profile type: (?P<type>[a-zA-Z0-9\-]+)', line)
-                    if pName is not None:
-                        profileName = pName.group('name')
-                        profileType = pName.group('type')
-                    ueCount = re.search('Ue\'s Passed: (?P<pass>[0-9]+) , Ue\'s Failed: (?P<fail>[0-9]+)', line)
-                    if ueCount is not None:
-                        passedUeCount = int(ueCount.group('pass'))
-                        failedUeCount = int(ueCount.group('fail'))
-                    if re.search('Profile Status: PASS', line) is not None:
-                        testPassed = True
-                    # In case of the test not completing
-                    if re.search('No more procedures left', line) is not None:
-                        passedUeCount += 1
-            instancesDetails.append((testCompleted, testPassed, profileName, profileType, passedUeCount, failedUeCount))
-            if not testCompleted or not testPassed:
-                fullTestStatus = False
-            fullCountUePassed += passedUeCount
-            fullCountUeFailed += failedUeCount
-
+            testCaseEnded = False
+            testCaseStatus = False
+            testCaseName = re.sub('.log.*$', '', log_file)
+            stringStatus = 'UNKNOWN'
+            description  = 'UNKNOWN'
+            with open(cwd + '/archives/' + log_file,'r') as imageDetailsFile:
+                for line in imageDetailsFile:
+                    result = re.search('Scenario *: Status *: Description', line)
+                    if result is not None:
+                        testCaseEnded = True
+                    result = re.search(f'{testCaseName} *: (?P<status>[A-Z]+) *: (?P<description>.*$)', line)
+                    if result is not None and testCaseEnded:
+                        if result.group('status') == 'PASSED':
+                            testCaseStatus = True
+                        stringStatus = result.group('status')
+                        description = result.group('description')
+                        description = re.sub('NOT YET VALIDATED - ', '', description)
+                        description = re.sub('NOT YET VALIDATED, HAVE TO BE IMPLEMENTED IN OAI CN -', '', description)
+            if not testCaseEnded or not testCaseStatus:
+                globalStatus = False
+            testCaseDetails.append((testCaseName, testCaseStatus, stringStatus, description))
         testDetails = ''
-        if fullCountUeFailed == 0 and fullTestStatus:
-            message = f'Test Passed for all {fullCountUePassed} Users'
-        elif fullCountUeFailed == 0:
-            message = f'Test Completed for only {fullCountUePassed} Users'
+        if globalStatus:
+            message = f'All Tests Passed'
         else:
-            message = f'Test Passed for only {fullCountUePassed} Users and Failed for {fullCountUeFailed}'
-        testDetails += generate_chapter(f'Load Test Summary for {testName}', message, fullTestStatus)
-        testDetails += generate_button_header(f'{testPath}-details', 'More details on load test results')
+            message = f'Some Tests Failed'
+        testDetails += generate_chapter(f'Load Test Summary for {testName}', message, globalStatus)
+        testDetails += generate_button_header(f'tc-suite-details', 'More details on ngap-tester results')
         testDetails += generate_image_table_header()
         for (cName,iTag,iSize,iDate) in deployedContainerImages:
-            if cName == 'omec-gnbsim-0':
-                testDetails += generate_image_table_separator()
             testDetails += generate_image_table_row(cName, iTag, 'N/A', iDate, iSize)
+            if cName == 'ngap-tester':
+                testDetails += generate_image_table_separator()
         testDetails += generate_image_table_footer()
         testDetails += generate_list_header()
-        for (comp, status, pName, pType, passUe, failUe) in instancesDetails:
+        for (name, status, stringStatus, description) in testCaseDetails:
             if status:
-                testDetails += generate_list_row(f'{pName} -- {pType} completed and PASSED', 'info-sign')
-            elif comp:
-                testDetails += generate_list_row(f'{pName} -- {pType} completed but FAILED', 'remove-sign')
+                testDetails += generate_list_row(f'{name}', 'info-sign')
             else:
-                testDetails += generate_list_row(f'{pName} -- {pType} did not completed', 'remove-sign')
+                testDetails += generate_list_row(f'{name}', 'remove-sign')
             testDetails += generate_list_sub_header()
-            if comp:
-                testDetails += generate_list_sub_row('Passing UE count', str(passUe), 'primary')
-                if status:
-                    testDetails += generate_list_sub_row('Failing UE count', str(failUe), 'primary')
-                else:
-                    testDetails += generate_list_sub_row('Failing UE count', str(failUe), 'danger')
+            if status:
+                testDetails += generate_list_sub_row(f'{description}', stringStatus, 'primary')
             else:
-                testDetails += generate_list_sub_row('Completed UE test count', str(passUe), 'danger')
+                testDetails += generate_list_sub_row(f'{description}', stringStatus, 'danger')
             testDetails += generate_list_sub_footer()
-
         testDetails += generate_list_footer()
+        testDetails += generate_list_row(f'Logs on private CI server at `oaicicd@selfix:/opt/ngap-tester-logs/cn5g_fed-{args.job_name}-{args.job_id}.zip`', 'info-sign')
         testDetails += generate_button_footer()
         return testDetails
 
@@ -194,10 +169,10 @@ def _parse_args() -> argparse.Namespace:
         argparse.Namespace: the created parser
     """
     example_text = '''example:
-        ./ci-scripts/checkLoadTestHtmlReport.py --help
-        ./ci-scripts/checkLoadTestHtmlReport.py --job_name NameOfPipeline --job_id BuildNumber --job_url BuildURL'''
+        ./ci-scripts/checkNgapTesterHtmlReport.py --help
+        ./ci-scripts/checkNgapTesterHtmlReport.py --job_name NameOfPipeline --job_id BuildNumber --job_url BuildURL'''
 
-    parser = argparse.ArgumentParser(description='OAI 5G CORE NETWORK Load Test HTML report',
+    parser = argparse.ArgumentParser(description='OAI 5G CORE NETWORK NGAP-Tester HTML report',
                                     epilog=example_text,
                                     formatter_class=argparse.RawDescriptionHelpFormatter)
 
