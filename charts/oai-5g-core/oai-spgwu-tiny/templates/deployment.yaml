@@ -20,7 +20,6 @@ spec:
         k8s.v1.cni.cncf.io/networks: >-
           [{
                  "name": "{{ .Chart.Name }}-n3-net1",
-                 "mac": "12:34:56:78:90:01",
                  "default-route": ["{{ .Values.multus.n6Gw }}"]
           }]
     {{- end }}
