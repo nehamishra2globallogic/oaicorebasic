@@ -70,6 +70,9 @@ boolean testStart1   = true
 boolean testStop0    = true
 boolean testStop1    = true
 
+// Adb device name
+adbPhone0 = '2B161FDH20037Y'
+
 //-------------------------------------------------------------------------------
 // Pipeline start
 pipeline {
@@ -280,10 +283,25 @@ pipeline {
                 testStart0 = false
               }
               try {
+                sh "adb -s ${adbPhone0} shell /data/local/tmp/on"
+                sleep 5
+                sh "adb -s ${adbPhone0} shell 'ifconfig' | tee | tee ../../archives/pixel-7-start0.log"
+                sh "adb -s ${adbPhone0} shell 'ping -c 4 8.8.8.8' | tee ../../archives/pixel-7-ping0.log"
+              } catch (Exception e) {
+                echo "Pixel-7 could not connect"
+              }
+              try {
                 sh 'sudo bash -c "set -o pipefail && ./stop.sh 2>&1 | tee /tmp/test-stop0.log"'
               } catch (Exception e) {
                 echo "Test-Stop #0 seems to have failed!"
                 testStop0 = false
+              }
+              try {
+                sh "adb -s ${adbPhone0} shell /data/local/tmp/off"
+                sleep 5
+                sh "adb -s ${adbPhone0} shell 'ifconfig' | tee | tee ../../archives/pixel-7-stop0.log"
+              } catch (Exception e) {
+                echo "Pixel-7 could not disconnect"
               }
               sleep 5
               try {
@@ -293,10 +311,25 @@ pipeline {
                 testStart1 = false
               }
               try {
+                sh "adb -s ${adbPhone0} shell /data/local/tmp/on"
+                sleep 5
+                sh "adb -s ${adbPhone0} shell 'ifconfig' | tee | tee ../../archives/pixel-7-start1.log"
+                sh "adb -s ${adbPhone0} shell 'ping -c 4 8.8.8.8' | tee ../../archives/pixel-7-ping1.log"
+              } catch (Exception e) {
+                echo "Pixel-7 could not connect"
+              }
+              try {
                 sh 'sudo bash -c "set -o pipefail && ./stop.sh 2>&1 | tee /tmp/test-stop1.log"'
               } catch (Exception e) {
                 echo "Test-Stop #1 seems to have failed!"
                 testStop1 = false
+              }
+              try {
+                sh "adb -s ${adbPhone0} shell /data/local/tmp/off"
+                sleep 5
+                sh "adb -s ${adbPhone0} shell 'ifconfig' | tee | tee ../../archives/pixel-7-stop1.log"
+              } catch (Exception e) {
+                echo "Pixel-7 could not disconnect"
               }
             }
             sh 'sudo chmod 666 /tmp/test-st*.log'
