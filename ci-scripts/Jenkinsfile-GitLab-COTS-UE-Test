@@ -277,11 +277,19 @@ pipeline {
               // I don't want that stage to fail.
               // It's easier then to un-deploy gNB.
               try {
+                sh "adb -s ${adbPhone0} shell reboot"
+              } catch (Exception e) {
+                echo "Pixel-7 could not be rebooted"
+              }
+              sleep 60
+              // First Quectel Module connection
+              try {
                 sh 'sudo bash -c "set -o pipefail && ./start.sh 2>&1 | tee /tmp/test-start0.log"'
               } catch (Exception e) {
                 echo "Test-Start #0 seems to have failed!"
                 testStart0 = false
               }
+              // First Pixel-7 connection
               try {
                 sh "adb -s ${adbPhone0} shell /data/local/tmp/on"
                 sleep 5
@@ -290,12 +298,7 @@ pipeline {
               } catch (Exception e) {
                 echo "Pixel-7 could not connect"
               }
-              try {
-                sh 'sudo bash -c "set -o pipefail && ./stop.sh 2>&1 | tee /tmp/test-stop0.log"'
-              } catch (Exception e) {
-                echo "Test-Stop #0 seems to have failed!"
-                testStop0 = false
-              }
+              // First Pixel-7 disconnection
               try {
                 sh "adb -s ${adbPhone0} shell /data/local/tmp/off"
                 sleep 5
@@ -303,13 +306,22 @@ pipeline {
               } catch (Exception e) {
                 echo "Pixel-7 could not disconnect"
               }
+              // First Quectel Module disconnection
+              try {
+                sh 'sudo bash -c "set -o pipefail && ./stop.sh 2>&1 | tee /tmp/test-stop0.log"'
+              } catch (Exception e) {
+                echo "Test-Stop #0 seems to have failed!"
+                testStop0 = false
+              }
               sleep 5
+              // Second Quectel Module connection
               try {
                 sh 'sudo bash -c "set -o pipefail && ./start.sh 2>&1 | tee /tmp/test-start1.log"'
               } catch (Exception e) {
                 echo "Test-Start #1 seems to have failed!"
                 testStart1 = false
               }
+              // Second Pixel-7 connection
               try {
                 sh "adb -s ${adbPhone0} shell /data/local/tmp/on"
                 sleep 5
@@ -318,12 +330,7 @@ pipeline {
               } catch (Exception e) {
                 echo "Pixel-7 could not connect"
               }
-              try {
-                sh 'sudo bash -c "set -o pipefail && ./stop.sh 2>&1 | tee /tmp/test-stop1.log"'
-              } catch (Exception e) {
-                echo "Test-Stop #1 seems to have failed!"
-                testStop1 = false
-              }
+              // Second Pixel-7 disconnection
               try {
                 sh "adb -s ${adbPhone0} shell /data/local/tmp/off"
                 sleep 5
@@ -331,12 +338,18 @@ pipeline {
               } catch (Exception e) {
                 echo "Pixel-7 could not disconnect"
               }
+              // Second Quectel Module connection
+              try {
+                sh 'sudo bash -c "set -o pipefail && ./stop.sh 2>&1 | tee /tmp/test-stop1.log"'
+              } catch (Exception e) {
+                echo "Test-Stop #1 seems to have failed!"
+                testStop1 = false
+              }
             }
             sh 'sudo chmod 666 /tmp/test-st*.log'
             sh 'cp /tmp/test-st*.log archives'
             sh 'sudo rm /tmp/test-st*.log'
             stash includes: 'archives/*.log', name: 'ue_logs'
-            // We will extend with other kinds of UE (smartphones, ...)
           }
         }
       }
