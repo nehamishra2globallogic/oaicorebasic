@@ -22,7 +22,7 @@
 
 # 1. Configure the containers #
 
-- **Core Network Configuration**: The [docker-compose-mini-nrf](../docker-compose/docker-compose-mini-nrf.yaml) file has configuration parameters for all the core network components. The file is pre-configured with parameters related to an [example scenario](./DEPLOY_SA5G_MINI_DEPLOYMENT.md). The table contains the location of the configuration files. These files contain allowed configurable parameters. **Keep checking this file up to date as it is possible that we will add new parameters for new features.**
+- **Core Network Configuration**: The [docker-compose-mini-nrf](../docker-compose/docker-compose-mini-nrf.yaml) file has configuration parameters for all the core network components. The file is pre-configured with parameters related to an [example scenario](./DEPLOY_SA5G_MINI_WITH_GNBSIM.md). The table contains the location of the configuration files. These files contain allowed configurable parameters. **Keep checking this file up to date as it is possible that we will add new parameters for new features.**
 
     | File Name   | Repository                                   | Location        |
     |:----------- |:-------------------------------------------- |:--------------- |
@@ -119,5 +119,5 @@
 
 Please don't deploy yet!
 
-- If you want to deploy a `minimalist` OAI 5GCN, checkout this [minimalist-deployment tutorial](./DEPLOY_SA5G_MINI_DEPLOYMENT.md).
+- If you want to deploy a `minimalist` OAI 5GCN, checkout this [minimalist-deployment tutorial](./DEPLOY_SA5G_MINI_WITH_GNBSIM.md).
 - If you want to deploy a `basic` OAI 5GCN, checkout this [basic-deployment tutorial](./DEPLOY_SA5G_BASIC_DEPLOYMENT.md).

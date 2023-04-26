@@ -45,7 +45,7 @@ config:
   tz: "Europe/Paris"
   instance: 0
   pidDirectory: "/var/run"
-  logLevel: "info"
+  logLevel: "debug"
   udmName: "oai-udm"
   sbiIfName: "eth0"
   sbiPortHttp1: "80"

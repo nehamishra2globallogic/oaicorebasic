@@ -12,7 +12,7 @@
   </tr>
 </table>
 
-![SA dsTest Demo](./images/5gcn_vpp_upf.jpg)
+![SA Demo](./images/5gcn_vpp_upf.jpg)
 
 **Reading time: ~ 30mins**
 
@@ -64,7 +64,7 @@ Project is available on github as VPP-UPG which follows release `16` of 3GPP spe
 
 Let's begin !!
 
-* Steps 1 to 4 are similar to previous tutorials such as [minimalist](./DEPLOY_SA5G_MINI_DEPLOYMENT.md) or [basic](./DEPLOY_SA5G_BASIC_DEPLOYMENT.md) deployments. Please follow these steps to deploy OAI 5G core network components.
+* Steps 1 to 4 are similar to previous tutorials such as [minimalist](./DEPLOY_SA5G_MINI_WITH_GNBSIM.md) or [basic](./DEPLOY_SA5G_BASIC_DEPLOYMENT.md) deployments. Please follow these steps to deploy OAI 5G core network components.
 
 ## 1. Pre-requisites
 
@@ -274,7 +274,7 @@ $ docker logs oai-smf
 
 ### 6.1. Test with Gnbsim
 
-In this Section we will use Gnbsim to test our deployemt. Make sure you already have built [Gnbsim docker image](./DEPLOY_SA5G_WITH_GNBSIM.md#6-getting-a-gnbsim-docker-image)<br/>
+In this Section we will use Gnbsim to test our deployemt. Make sure you already have built [Gnbsim docker image](./DEPLOY_SA5G_MINI_WITH_GNBSIM.md#6-getting-a-gnbsim-docker-image)<br/>
 Launch gnbsim instance:
 
 ``` shell

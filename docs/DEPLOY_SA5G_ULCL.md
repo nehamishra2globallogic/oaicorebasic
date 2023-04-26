@@ -213,7 +213,7 @@ When the graph is fully built, it should look like this (again, the order does n
 ## 4. Simulate with gnbsim
 
 When the CN is deployed successfully, we can simulate a gNB and UE using `gnbsim`. 
-Please see the [gnbsim tutorial](./DEPLOY_SA5G_WITH_GNBSIM.md) on how to retrieve or build the image.
+Please see the [gnbsim tutorial](./DEPLOY_SA5G_MINI_WITH_GNBSIM.md) on how to retrieve or build the image.
 
 ``` shell
 docker-compose-host $: docker-compose -f docker-compose-gnbsim-vpp.yaml up -d 

@@ -26,9 +26,8 @@ import argparse
 import os
 import re
 import sys
-import subprocess
 
-from generate_html import (
+from common.python.generate_html import (
     generate_header,
     generate_footer,
     generate_chapter,

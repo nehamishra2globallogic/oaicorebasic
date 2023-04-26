@@ -116,11 +116,14 @@ pipeline {
             }
           }
           sh "git clean -x -d -f > /dev/null 2>&1"
-          sh "mkdir -p archives"
+          sh "git submodule foreach --recursive 'git clean -x -d -ff' > /dev/null 2>&1"
+          sh "git submodule deinit --force --all > /dev/null 2>&1"
           // For any upstream job (PR or post-merge), let run on certified tag.
           if (upstreamEvent) {
             sh 'git checkout -f ' + upstreamTagToUse
           }
+          sh 'git submodule update --init --recursive ci-scripts/common'
+          sh "mkdir -p archives"
 
           for (ii = 0; ii < imageNames.size(); ii++) {
             if (ii == NRF) {
@@ -296,7 +299,7 @@ pipeline {
           dir ('ci-scripts') {
             // Tee will make the command always pass
             // Please use the same log name as the folder used in the tutorial
-            sh './checkTutorial.py --tutorial DEPLOY_SA5G_WITH_GNBSIM.md | tee ../archives/mini-gnbsim.log'
+            sh './checkTutorial.py --tutorial DEPLOY_SA5G_MINI_WITH_GNBSIM.md | tee ../archives/mini-gnbsim.log'
           }
           // Checking if FAIL appears
           try {

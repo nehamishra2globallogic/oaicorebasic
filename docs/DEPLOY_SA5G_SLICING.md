@@ -59,7 +59,7 @@ In this tutorial we are going to explore the slicing feature of OAI 5G core netw
 * SMF selection based on S-NSSAI
 * NRF selection based on S-NSSAI (With help of NSSF)
 * AMF selection based on S-NSSAI (With help of NSSF - Next Release, March 2022)
-* Single UE with multiple S-NSSAIs (With the help of commercial tool dsTest)
+* Single UE with multiple S-NSSAIs
 
 A Network Slice is defined within a PLMN and it incorporates the 5G Core and 5G RAN components. Network slice is identified as Single Network Slice Selection Assistance Information (S-NSSAI). A S-NSSAI consists of Slice/Service type (SST) and Slice Differentiator (SD). SST is a mandatory field which defines the expected slice behavior in terms of features and services. Whereas SD is an optional field which can be used to differentiate amongst multiple slices.
 
@@ -83,7 +83,7 @@ Here AMF, NSSF, UDM, UDR, AUSF are common to all slices. SMF and UPF in slice 1 
 
 **Let's begin !!**
 
-* Steps 1 to 4 are similar to previous tutorials such as [minimalist](./DEPLOY_SA5G_MINI_DEPLOYMENT.md) or [basic](./DEPLOY_SA5G_BASIC_DEPLOYMENT.md) deployments. Please follow these steps to deploy OAI 5G core network components.
+* Steps 1 to 4 are similar to previous tutorials such as [minimalist](./DEPLOY_SA5G_MINI_WITH_GNBSIM.md) or [basic](./DEPLOY_SA5G_BASIC_DEPLOYMENT.md) deployments. Please follow these steps to deploy OAI 5G core network components.
 
 ## 1. Pre-requisites
 
@@ -385,8 +385,6 @@ docker-compose-host $: docker logs ueransim > /tmp/oai/slicing-with-nssf/ueransi
 
 ## 10. UE with multiple S-NSSAIs
 OAI 5G CN also supports UE with multiple slices. Apparently the ran simulators that we have validated do not support UE with multiple slices at once.
-
-Hence, we have validated this feature using the commercial testing tool [dsTest](https://www.developingsolutions.com/products/about-dstest/). This test case is integrated in our [CI pipeline for NSSF](https://jenkins-oai.eurecom.fr/view/CN5G/job/OAI-CN5G-NSSF/) and AMF. This pipeline triggers a deployment scenario as shown in the figure below with two slices. During PDU session establishment request, AMF queries NSSF for NSI information with appropriate NRF Id. And then again corresponding SMF and UPF is slected in the NSI, based on S-NSSAI provided. You can verify this scenario from the [pcap](https://jenkins-oai.eurecom.fr/view/CN5G/job/OAI-CN5G-NSSF/lastSuccessfulBuild/artifact/docker_logs.zip).
 
 ![Multislice](./images/5gcn_slicing_ue_multislice.png)
 

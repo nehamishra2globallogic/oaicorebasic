@@ -14,7 +14,6 @@ Welcome to the tutorial home page of the OAI 5g Core project. Here you can find 
     - [Build the container images](./BUILD_IMAGES.md)
 - [Configuring the Containers](./CONFIGURE_CONTAINERS.md)
 - 5G Core Network Deployment
-    - [Using Docker-Compose, perform a `minimalist` deployment](./DEPLOY_SA5G_MINI_DEPLOYMENT.md)
     - [Using Docker-Compose, perform a `basic` deployment](./DEPLOY_SA5G_BASIC_DEPLOYMENT.md)
     - [Using Docker-Compose, perform a `basic-vpp` deployment with `VPP` implementation of UPF](./DEPLOY_SA5G_WITH_VPP_UPF.md)
     - [Using Docker-Compose, perform a `basic` deployment with `SD-Fabric` implementation of UPF](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-upf-sdfabric/-/wikis/Deployment-using-Docker)
@@ -23,12 +22,14 @@ Welcome to the tutorial home page of the OAI 5g Core project. Here you can find 
     - [Using Docker-Compose, doing network slicing](./DEPLOY_SA5G_SLICING.md)
 - 5G Core Network Deployment and Testing with Ran Emulators
     - [Using Docker-Compose, perform a `basic` deployment and test with `OAI RF simulator`](https://gitlab.eurecom.fr/oai/openairinterface5g/-/tree/develop/ci-scripts/yaml_files/5g_rfsimulator)
-    - [Using Docker-Compose, perform a `minimalist` deployment and test with `gnbsim`](./DEPLOY_SA5G_WITH_GNBSIM.md)
+    - [Using Docker-Compose, perform a `minimalist` deployment and test with `gnbsim`](./DEPLOY_SA5G_MINI_WITH_GNBSIM.md)
     - [Using Docker-Compose, perform a `basic` deployment and test with `UERANSIM`](./DEPLOY_SA5G_WITH_UERANSIM.md)
     - [Using Docker-Compose, perform a `basic` deployment and test with `My5g-RANTester`](./DEPLOY_SA5G_WITH_My5g-RANTester.md)
     - [Using Docker-Compose, perform a `basic` deployment and test with `omec-gnbsim`](./DEPLOY_SA5G_WITH_OMEC_GNBSIM.md)
     - [Using Docker-Compose, when testing with Commercial UE, troubleshoot traffic issues](./TROUBLESHOOT_COTS_UE_TRAFFIC.md)
     - [Using Docker-Compose, perform a `basic` UL/CL deployment and test with `gnbsim`](./DEPLOY_SA5G_ULCL.md)
+- Connecting a real RAN to OAI 5G Core Network
+    - [Network Considerations](./NETWORK_CONSIDERATIONS.md)
 - The Developers Corner
     - [How to Deploy Developers Core Network and Basic Debugging](./DEBUG_5G_CORE.md)
     - [Advance Deployment of OAI 5G Core](./ADVANCE_DEPLOYMENT.md)

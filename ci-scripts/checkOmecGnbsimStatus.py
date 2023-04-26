@@ -27,7 +27,7 @@ import re
 import sys
 import time
 import matplotlib.pyplot as plt
-import cls_cmd
+import common.python.cls_cmd as cls_cmd
 
 logging.basicConfig(
     level=logging.INFO,

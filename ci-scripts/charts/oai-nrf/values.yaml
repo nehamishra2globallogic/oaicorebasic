@@ -52,7 +52,7 @@ config:
   nrfInterfacePortForSBI: "80"
   nrfInterfaceHttp2PortForSBI: "8080"
   nrfApiVersion: "v1"
-  logLevel: "info"
+  logLevel: "debug"
 
 persistent:
   sharedvolume: true

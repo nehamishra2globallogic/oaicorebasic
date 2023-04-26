@@ -25,8 +25,8 @@ import argparse
 from datetime import datetime
 import logging
 import re
-import subprocess
 import sys
+import common.python.cls_cmd as cls_cmd
 
 logging.basicConfig(
     level=logging.INFO,
@@ -45,11 +45,12 @@ def main() -> None:
         tagRoot = 'develop'
         nbChars = 15
 
+    myCmds = cls_cmd.LocalCmd()
     cmd = f'curl --insecure -Ss -u oaicicd:oaicicd {PRIVATE_LOCAL_REGISTRY_URL}/v2/{args.repo_name}/tags/list | jq .'
-    tagList = run_cmd(cmd)
+    tagList = myCmds.run(cmd, silent=True)
     latestTag = ''
     latestDate = datetime.strptime('2022-01-01T00:00:00', '%Y-%m-%dT%H:%M:%S')
-    for line in tagList.split('\n'):
+    for line in tagList.stdout.split('\n'):
         res = re.search(f'"(?P<tag>{tagRoot}-[0-9a-zA-Z]+)"', line)
         if res is not None:
             tag = res.group('tag')
@@ -57,14 +58,14 @@ def main() -> None:
             # on other NF / GitLab  `git log -1 --pretty=format:"%h"` returns 8 characters
             if len(tag) == nbChars or len(tag) == (nbChars+1):
                 cmd = f'curl --insecure -Ss -u oaicicd:oaicicd {PRIVATE_LOCAL_REGISTRY_URL}/v2/{args.repo_name}/manifests/{tag} | jq .history'
-                tagInfo = run_cmd(cmd)
-                res2 = re.search('"created.*(?P<date>202[0-9-]\-[0-9]+-[0-9]+T[0-9]+:[0-9]+:[0-9]+).*docker_version', tagInfo)
+                tagInfo = myCmds.run(cmd, silent=True)
+                res2 = re.search('"created.*(?P<date>202[0-9-]\-[0-9]+-[0-9]+T[0-9]+:[0-9]+:[0-9]+).*docker_version', tagInfo.stdout)
                 if res2 is not None:
                     date = datetime.strptime(res2.group('date'), '%Y-%m-%dT%H:%M:%S')
                     if date > latestDate:
                         latestDate = date
                         latestTag = tag
-                res2 = re.search('"created.*(?P<date>202[0-9-]\-[0-9]+-[0-9]+T[0-9]+:[0-9]+:[0-9]+).*container_config.*WORKDIR', tagInfo)
+                res2 = re.search('"created.*(?P<date>202[0-9-]\-[0-9]+-[0-9]+T[0-9]+:[0-9]+:[0-9]+).*container_config.*WORKDIR', tagInfo.stdout)
                 if res2 is not None:
                     date = datetime.strptime(res2.group('date'), '%Y-%m-%dT%H:%M:%S')
                     if date > latestDate:
@@ -91,20 +92,6 @@ def _parse_args() -> argparse.Namespace:
     )
 
     return parser.parse_args()
-
-def run_cmd(cmd, silent=True):
-    if not silent:
-        logging.info(cmd)
-    result = None
-    try:
-        res = subprocess.run(cmd,
-                        shell=True, check=True,
-                        stdout=subprocess.PIPE,
-                        universal_newlines=True)
-        result = res.stdout.strip()
-    except:
-        pass
-    return result
 
 if __name__ == '__main__':
     main()

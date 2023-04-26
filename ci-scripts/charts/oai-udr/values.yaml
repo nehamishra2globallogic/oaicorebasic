@@ -52,7 +52,7 @@ config:
   instance: "0"
   udrname: "oai-udr"
   pidDirectory: "/var/run"
-  logLevel: "info"
+  logLevel: "debug"
   sbiIfName: "eth0"
   sbiPortHttp1: "80"
   sbiPortHttp2: "8080"

@@ -76,7 +76,7 @@ config:
   nssaiSst1: 1 # should match with SMF information (Optional, if removed slice will not be configured)
   nssaiSd1: "0xFFFFFF"  # should match with SMF information (Optional, if removed sd value will be 0xFFFFFF only if nssaiSst1 is configured)
   dnn1: "ims" # should match with SMF information
-  logLevel: "info"
+  logLevel: "debug"
 
 ## currently only used by tcpdump container to store the tcpdump, this volume will be shared between all the network functions
 persistent:

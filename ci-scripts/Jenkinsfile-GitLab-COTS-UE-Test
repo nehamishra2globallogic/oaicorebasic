@@ -87,7 +87,10 @@ pipeline {
       steps {
         script {
           echo '\u2705 \u001B[32mVerify Parameters\u001B[0m'
-          sh "git clean -x -d -f > /dev/null 2>&1"
+          sh "git clean -x -d -ff > /dev/null 2>&1"
+          sh "git submodule foreach --recursive 'git clean -x -d -ff' > /dev/null 2>&1"
+          sh "git submodule deinit --force --all > /dev/null 2>&1"
+          sh "git submodule update --init --recursive ci-scripts/common"
           sh "mkdir -p archives"
           for (ii = 0; ii < imageNames.size(); ii++) {
             if (ii == NRF) {
@@ -299,7 +302,7 @@ pipeline {
             sh 'sudo chmod 666 /tmp/test-st*.log'
             sh 'cp /tmp/test-st*.log archives'
             sh 'sudo rm /tmp/test-st*.log'
-            stash includes: 'archives/test-st*.log', name: 'ue_logs'
+            stash includes: 'archives/*.log', name: 'ue_logs'
             // We will extend with other kinds of UE (smartphones, ...)
           }
         }
@@ -546,6 +549,14 @@ def retrieveLogsFromPods() {
       echo "Getting logs from ${podName} failed"
     }
   }
+  // Retrieving mysql logs
+  podName = sh returnStdout: true, script: "oc get pods | grep mysql | awk {'print \$1'} || true"
+  podName = podName.trim()
+  try {
+    sh "oc logs ${podName} &> archives/mysql.logs"
+  } catch (Exception e) {
+    echo "Getting logs from ${podName} failed"
+  }
   sh "oc describe pod &> archives/describe-pods-post-test.logs"
   sh "oc get pods.metrics.k8s.io &> archives/nf-resource-consumption.log"
   if (nrfPod.contains("oai-nrf")) {
@@ -591,15 +602,9 @@ def checkStatusOnGNB() {
   if (cnt != 30) {
     status += 1
   }
-  amfStatus = sh returnStdout: true, script: "docker logs sa-b210-gnb 2>&1 | grep 'Received NGAP_REGISTER_GNB_CNF'"
-  if (amfStatus.contains('Received NGAP_REGISTER_GNB_CNF: associated AMF 1')) {
-    echo "gNB is connected to AMF"
-  } else {
-    status += 2
-  }
   cnt = 0
   while (cnt < 10) {
-    syncStatus = sh returnStdout: true, script: "docker logs sa-b210-gnb 2>&1 | grep sync"
+    syncStatus = sh returnStdout: true, script: "docker logs sa-b210-gnb 2>&1 | grep sync || true"
     if (syncStatus.contains('got sync')) {
       echo "gNB radio is ready"
       cnt = 30
@@ -610,6 +615,12 @@ def checkStatusOnGNB() {
   }
   if (cnt != 30) {
     status += 4
+  }
+  amfStatus = sh returnStdout: true, script: "docker logs sa-b210-gnb 2>&1 | grep 'Received NGAP_REGISTER_GNB_CNF' || true"
+  if (amfStatus.contains('Received NGAP_REGISTER_GNB_CNF: associated AMF 1')) {
+    echo "gNB is connected to AMF"
+  } else {
+    status += 2
   }
   return status
 }

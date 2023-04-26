@@ -98,7 +98,7 @@ config:
   qosProfile5qi1: 1
   sessionAmbrUl1: "1000Mbps"
   sessionAmbrDl1: "1000Mbps"
-  logLevel: "info"
+  logLevel: "debug"
 
 ## currently only used by tcpdump container to store the tcpdump, this volume will be shared between all the network functions (If true it should be true for all the NFs specially NRF)
 persistent:

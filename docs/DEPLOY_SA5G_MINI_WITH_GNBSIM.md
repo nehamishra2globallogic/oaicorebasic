@@ -12,7 +12,7 @@
   </tr>
 </table>
 
-![SA dsTest Demo](./images/5gCN_gnbsim.jpg)
+![SA Demo](./images/5gCN_gnbsim.jpg)
 
 **Reading time: ~ 20mins**
 
@@ -44,9 +44,7 @@ Note: In case readers are interested in deploying debuggers/developers core netw
 
 <br/>
 
-This tutorial is an extension of a previous tutorial: [testing a `minimalist` deployment using Docker-Compose](./DEPLOY_SA5G_MINI_DEPLOYMENT.md). In this previous tutorial, we saw the advanced testing tool dsTester, which is useful for validating even more complex scenarios.
-
-Moreover, there are various other opensource gnb/ue simulator tools that are available for SA5G testing. In this tutorial, we use an opensource simulator tool called `gnbsim`. With the help of the `gnbsim` tool, we can perform very basic SA5G tests by simulating one gnb and one ue.
+In this tutorial, we use an opensource simulator tool called `gnbsim`. With the help of the `gnbsim` tool, we can perform very basic SA5G tests by simulating one gnb and one ue.
 
 **About gnbsim:**
 
@@ -55,7 +53,7 @@ Gnbsim is a 5G SA gNB/UE (Rel. 16) simulator for testing 5G System. It is a 3rd 
 Let's begin !!
 
 * Steps 1 to 5 are similar to the previous tutorial. Please follow these steps to deploy OAI 5G core network components.
-* We deploy the gnbsim docker service on the same host as for core network, so there is no need to create an additional route as we did for dsTest-host.
+* We deploy the gnbsim docker service on the same host as for core network, so there is no need to create an additional route as we did for gnb-host.
 * Before we proceed further, for end-to-end SA5G testing, make sure you have healthy docker services for OAI cn5g.
 
 ## 1. Pre-requisites
@@ -93,8 +91,6 @@ For CI purposes, we are deploying with an automated PCAP capture on the docker n
 ``` shell
 docker-compose-host $: python3 ./core-network.py --type start-mini --scenario 1 --capture /tmp/oai/mini-gnbsim/mini-gnbsim.pcap
 ```
-
-More details in [section 7 of the `minimalist` tutorial](./DEPLOY_SA5G_MINI_DEPLOYMENT.md#7-deploying-oai-5g-core-network).
 
 ``` console
 oai-cn5g-fed/docker-compose$ docker ps -a
@@ -299,8 +295,6 @@ docker-compose-host $: docker logs gnbsim > /tmp/oai/mini-gnbsim/gnbsim.log 2>&1
 | [smf.log](./results/dsTest/logs/smf.log)                                                          |
 | [nrf.log](./results/dsTest/logs/nrf.log)                                                          |
 | [spgwu.log](./results/dsTest/logs/spgwu.log)
-
-* For detailed analysis of messages, please refer to the previous tutorial [testing with dsTester](./docs/DEPLOY_SA5G_WITH_DS_TESTER.md).
 
 ## 9. Trying Some Advanced Stuff
 

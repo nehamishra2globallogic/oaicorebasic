@@ -91,7 +91,7 @@ config:
   mySqlUser: "root" # OPTIONAL: used only if not using AUSF
   mySqlPass: "linux" # OPTIONAL: used only if not using AUSF
   mySqlDb: "oai_db" # OPTIONAL: used only if not using AUSF
-  logLevel: "info"
+  logLevel: "debug"
 
 persistent:
   sharedvolume: true

@@ -102,7 +102,7 @@ For now these two entries are present in the database file
 
 ## 3. Deploying OAI 5g Core Network
 
-In the previous tutorial we explain how to deploy the core network using our [python deployer](../docker-compose/core-network.py). Here we will only provide quick commands needed to deploy the core network, to learn how to use the python deployer please follow [this page](./DEPLOY_SA5G_MINI_DEPLOYMENT.md).
+In the previous tutorial we explain how to deploy the core network using our [python deployer](../docker-compose/core-network.py). Here we will only provide quick commands needed to deploy the core network, to learn how to use the python deployer please follow [this page](./DEPLOY_SA5G_MINI_WITH_GNBSIM.md).
 
 - Start the core network components, check which scenario you are using with nrf or without nrf
 

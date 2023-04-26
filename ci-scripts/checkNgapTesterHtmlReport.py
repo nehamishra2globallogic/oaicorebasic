@@ -26,9 +26,8 @@ import argparse
 import os
 import re
 import sys
-import subprocess
 
-from generate_html import (
+from common.python.generate_html import (
     generate_header,
     generate_footer,
     generate_chapter,
@@ -54,10 +53,16 @@ class HtmlReport():
 
     def generate(self, args):
         cwd = os.getcwd()
+        status = True
         with open(os.path.join(cwd, REPORT_NAME), 'w') as wfile:
             wfile.write(generate_header(args))
-            wfile.write(self.testSummary('NGAP-Tester'))
+            (status, testSummary) = self.testSummary('NGAP-Tester')
+            wfile.write(testSummary)
             wfile.write(generate_footer())
+        if status:
+            sys.exit(0)
+        else:
+            sys.exit(-1)
 
     def testSummary(self, testName):
         cwd = os.getcwd()
@@ -104,8 +109,16 @@ class HtmlReport():
             imageDetailsFile.close()
             deployedContainerImages.append((containerName, f'{imageRootName}{imageTag}', imageSize, imageDate))
 
+        mandatoryTests = []
+        if os.path.isfile(cwd + '/ci-scripts/docker-compose/ngap-tester/list-mandatory.txt'):
+            print('found the list of mandatory tests')
+            with open(cwd + '/ci-scripts/docker-compose/ngap-tester/list-mandatory.txt','r') as mandatoryFile:
+                for line in mandatoryFile:
+                    mandatoryTests.append(line.strip())
+
         testCaseDetails = []
         globalStatus = True
+        globalMandatoryStatus = True
         for log_file in log_files:
             if not log_file.endswith(".log"):
                 continue
@@ -116,6 +129,14 @@ class HtmlReport():
             testCaseName = re.sub('.log.*$', '', log_file)
             stringStatus = 'UNKNOWN'
             description  = 'UNKNOWN'
+            if len(mandatoryTests) > 0:
+                try:
+                    index = mandatoryTests.index(testCaseName)
+                    mandatory = True
+                except:
+                    mandatory = False
+            else:
+                mandatory = False
             with open(cwd + '/archives/' + log_file,'r') as imageDetailsFile:
                 for line in imageDetailsFile:
                     result = re.search('Scenario *: Status *: Description', line)
@@ -129,15 +150,22 @@ class HtmlReport():
                         description = result.group('description')
                         description = re.sub('NOT YET VALIDATED - ', '', description)
                         description = re.sub('NOT YET VALIDATED, HAVE TO BE IMPLEMENTED IN OAI CN -', '', description)
-            if not testCaseEnded or not testCaseStatus:
+            if (not testCaseEnded or not testCaseStatus):
                 globalStatus = False
-            testCaseDetails.append((testCaseName, testCaseStatus, stringStatus, description))
+                if mandatory:
+                    globalMandatoryStatus = False
+            testCaseDetails.append((testCaseName, testCaseStatus, mandatory, stringStatus, description))
         testDetails = ''
         if globalStatus:
             message = f'All Tests Passed'
+        elif globalMandatoryStatus and len(mandatoryTests) > 0:
+            message = f'All Mandatory Tests Passed'
         else:
             message = f'Some Tests Failed'
-        testDetails += generate_chapter(f'Load Test Summary for {testName}', message, globalStatus)
+        if len(mandatoryTests) > 0:
+            testDetails += generate_chapter(f'Load Test Summary for {testName}', message, globalMandatoryStatus)
+        else:
+            testDetails += generate_chapter(f'Load Test Summary for {testName}', message, globalStatus)
         testDetails += generate_button_header(f'tc-suite-details', 'More details on ngap-tester results')
         testDetails += generate_image_table_header()
         for (cName,iTag,iSize,iDate) in deployedContainerImages:
@@ -146,7 +174,9 @@ class HtmlReport():
                 testDetails += generate_image_table_separator()
         testDetails += generate_image_table_footer()
         testDetails += generate_list_header()
-        for (name, status, stringStatus, description) in testCaseDetails:
+        for (name, status, mandatory, stringStatus, description) in testCaseDetails:
+            if mandatory and len(mandatoryTests) > 0:
+                name += ' <span class="label label-default">MANDATORY</span>'
             if status:
                 testDetails += generate_list_row(f'{name}', 'info-sign')
             else:
@@ -160,7 +190,12 @@ class HtmlReport():
         testDetails += generate_list_footer()
         testDetails += generate_list_row(f'Logs on private CI server at `oaicicd@selfix:/opt/ngap-tester-logs/cn5g_fed-{args.job_name}-{args.job_id}.zip`', 'info-sign')
         testDetails += generate_button_footer()
-        return testDetails
+
+        # If there is no mandatory list, the test is always passing
+        if len(mandatoryTests) == 0:
+            globalMandatoryStatus = True
+
+        return (globalMandatoryStatus, testDetails)
 
 def _parse_args() -> argparse.Namespace:
     """Parse the command line args

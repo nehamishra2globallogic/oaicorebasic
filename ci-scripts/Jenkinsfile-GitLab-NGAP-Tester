@@ -96,12 +96,15 @@ pipeline {
               upstreamJobs[UDR] = true
             }
           }
-          sh "git clean -x -d -f > /dev/null 2>&1"
-          sh "mkdir -p archives"
+          sh "git clean -x -d -ff > /dev/null 2>&1"
+          sh "git submodule foreach --recursive 'git clean -x -d -ff' > /dev/null 2>&1"
+          sh "git submodule deinit --force --all > /dev/null 2>&1"
           // For any upstream job (PR or post-merge), let run on certified tag.
           if (upstreamEvent) {
             sh 'git checkout -f ' + upstreamTagToUse
           }
+          sh 'git submodule update --init --recursive ci-scripts/common'
+          sh "mkdir -p archives"
 
           for (ii = 0; ii < imageNames.size(); ii++) {
             if (ii == NRF) {
@@ -202,12 +205,6 @@ pipeline {
           sh 'cp -Rf /opt/ngap-tester/test/* ci-scripts/docker-compose/ngap-tester/'
           updateDockerCompose('ci-scripts/docker-compose/ngap-tester/docker-compose-basic-nrf.yaml', ngapTesterTag)
           dir ('ci-scripts/docker-compose/ngap-tester') {
-            sh 'docker-compose -f docker-compose-basic-nrf.yaml up -d mysql'
-            sleep 2
-            sh 'sudo rm -f /tmp/oai-cn5g-ngap-tester.*'
-            sh 'nohup sudo tshark -i demo-oai -f "sctp or port 80 or port 8080 or port 8805 or icmp or port 3306 or port 2152" -w /tmp/oai-cn5g-ngap-tester.pcap > /tmp/oai-cn5g-ngap-tester.log 2>&1 &'
-            sh '../../checkTsharkCapture.py --log_file /tmp/oai-cn5g-ngap-tester.log --timeout 30'
-            sh 'sudo chmod 666 /tmp/oai-cn5g-ngap-tester.*'
             sh 'docker-compose -f docker-compose-basic-nrf.yaml up -d'
             sh '../../checkContainerStatus.py --container_name mysql --timeout 40'
             sh '../../checkContainerStatus.py --container_name oai-spgwu --timeout 40'
@@ -244,12 +241,20 @@ pipeline {
           for (testCase in testScenarios) {
             echo "Test-Case is ${testCase}"
             timeout(4) {
+              sh 'sudo rm -f /tmp/oai-cn5g-ngap-tester.*'
+              sh 'nohup sudo tshark -i demo-oai -f "sctp or port 80 or port 8080 or port 8805 or icmp or port 3306 or port 2152" -w /tmp/oai-cn5g-ngap-tester.pcap > /tmp/oai-cn5g-ngap-tester.log 2>&1 &'
+              sh './ci-scripts/checkTsharkCapture.py --log_file /tmp/oai-cn5g-ngap-tester.log --timeout 30'
+              sh 'sudo chmod 666 /tmp/oai-cn5g-ngap-tester.*'
               try {
                 sh "docker exec ngap-tester /bin/sh -c './ngap-tester run -o ${testCase}' > archives/${testCase}.log 2>&1"
                 echo "Test-Case #${testCase} seems to have COMPLETED (FAILED OR PASSED)!"
               } catch (Exception e) {
                 echo "Test-Case #${testCase} seems to have TIME-OUT or FAILED!"
               }
+              sleep 2
+              sh 'sudo killall -9 tshark'
+              sleep 1
+              sh "cp /tmp/oai-cn5g-ngap-tester.pcap archives/${testCase}.pcap"
             }
           }
           dir ('ci-scripts/docker-compose/ngap-tester') {
@@ -289,6 +294,15 @@ pipeline {
         }
       }
     }
+    stage ('Mandatory Tests Check') {
+      steps {
+        script {
+          // Here it will test if all the mandatory tests passed
+          // If not, it will return an error and make the whole pipeline fail
+          sh './ci-scripts/checkNgapTesterHtmlReport.py --job_name ' + JOB_NAME + ' --job_id ' + BUILD_ID + ' --job_url ' + BUILD_URL
+        }
+      }
+    }
   }
   post {
     always {
@@ -298,8 +312,11 @@ pipeline {
         // Currently no public artifacting on the logs and pcap
         sh "chmod 666 cn5g_fed_ngap_test.zip"
         sh "cp cn5g_fed_ngap_test.zip /opt/ngap-tester-logs/cn5g_fed-${JOB_NAME}-${BUILD_ID}.zip"
-        // We still generate HTML report
-        sh './ci-scripts/checkNgapTesterHtmlReport.py --job_name ' + JOB_NAME + ' --job_id ' + BUILD_ID + ' --job_url ' + BUILD_URL
+        // We generate HTML report if we did not already
+        // we shall not fail in post section
+        if (!fileExists('test_results_oai_cn5g_ngap_tester.html')) {
+          sh './ci-scripts/checkNgapTesterHtmlReport.py --job_name ' + JOB_NAME + ' --job_id ' + BUILD_ID + ' --job_url ' + BUILD_URL + ' || true'
+        }
         if (fileExists('test_results_oai_cn5g_ngap_tester.html')) {
           archiveArtifacts artifacts: 'test_results_oai_cn5g_ngap_tester.html'
         }
@@ -375,7 +392,6 @@ def cleanUpDockerCompose() {
 def retrieveLogs(logPath, dcFileName) {
   sh "mkdir -p ${logPath}"
   sh "cp ${dcFileName} ${logPath}"
-  sh "cp /tmp/oai-cn5g-ngap-tester.* ${logPath} || true"
   sh "docker logs oai-nrf > ${logPath}/oai-nrf.log 2>&1"
   sh "docker logs oai-udr > ${logPath}/oai-udr.log 2>&1"
   sh "docker logs oai-udm > ${logPath}/oai-udm.log 2>&1"

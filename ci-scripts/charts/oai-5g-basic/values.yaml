@@ -14,6 +14,8 @@ oai-nrf:
     version: NRF_TAG                                    ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
+  config:
+    logLevel: "debug"
   nodeSelector: {}
 oai-udr:
   enabled: true
@@ -24,6 +26,8 @@ oai-udr:
     version: UDR_TAG                                    ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
+  config:
+    logLevel: "debug"
   nodeSelector: {}
 oai-udm:
   enabled: true
@@ -34,6 +38,8 @@ oai-udm:
     version: UDM_TAG                                    ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
+  config:
+    logLevel: "debug"
   nodeSelector: {}
 oai-ausf:
   enabled: true
@@ -44,6 +50,8 @@ oai-ausf:
     version: AUSF_TAG                                    ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
+  config:
+    logLevel: "debug"
   nodeSelector: {}
 oai-amf:
   enabled: true
@@ -78,6 +86,7 @@ oai-amf:
     useHttp2: "no"
     intAlgoList: '[ "NIA1" , "NIA2" ]'
     ciphAlgoList: '[ "NEA0" , "NEA1" , "NEA2" ]'
+    logLevel: "debug"
   nodeSelector: {}     #Using dedicated nodeName in the chart directly
 oai-spgwu-tiny:
   enabled: true
@@ -116,7 +125,27 @@ oai-spgwu-tiny:
     nssaiSst1: 1 # should match with SMF information (Optional, if removed slice will not be configured)
     nssaiSd1: "0xFFFFFF"  # should match with SMF information (Optional, if removed sd value will be 0xFFFFFF only if nssaiSst1 is configured)
     dnn1: "ims" # should match with SMF information
+    logLevel: "debug"
   nodeSelector: {}
+oai-traffic-server:
+  enabled: true
+  weight: 6
+  kubernetesType: Openshift #Openshift/Vanilla Vanilla for Upstream Kubernetes
+  trafficServer:
+    repository: image-registry.openshift-image-registry.svc:5000/oaicicd-core/oai-traffic-server
+    version: latest
+    #pullPolicy: IfNotPresent or Never or Always
+    pullPolicy: IfNotPresent
+  multus:
+    create: true
+    n3Ip: "172.21.6.202"
+    n3Netmask: "22"
+    n6Gw: "172.21.7.254"
+    hostInterface: "bond0"
+  config:
+    ueroute: 12.1.1.0/24
+    upfIpadd: 172.21.6.201
+    noOfIperf3Server: 2
 oai-smf:
   enabled: true
   weight: 6
@@ -151,4 +180,5 @@ oai-smf:
     qosProfile5qi1: 1
     sessionAmbrUl1: "1000Mbps"
     sessionAmbrDl1: "1000Mbps"
+    logLevel: "debug"
   nodeSelector: {}
