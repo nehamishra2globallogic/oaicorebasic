@@ -21,6 +21,7 @@ spec:
       imagePullSecrets:
         {{ toYaml .Values.imagePullSecrets | indent 8 }}
       containers:
+    {{- if .Values.includeTcpDumpContainer }}
       - name: tcpdump
         image: "{{ .Values.tcpdumpimage.repository }}:{{ .Values.tcpdumpimage.version }}"
         imagePullPolicy: {{ .Values.tcpdumpimage.pullPolicy }}
@@ -33,21 +34,26 @@ spec:
             memory: {{ .Values.resources.tcpdump.limits.memory | quote }}
             cpu: {{ .Values.resources.tcpdump.limits.cpu | quote }}
         {{- end}}
+        securityContext:
+          {{- toYaml .Values.securityContext | nindent 12 }}
         {{- if .Values.start.tcpdump}}
         command:
           - /bin/sh
           - -c
-          - /usr/sbin/tcpdump -i any -w /pcap/oai-nssf_`date +%Y-%m-%d_%H_%M-%S-%Z`.pcap
+          - /usr/sbin/tcpdump -i any -w /pcap/{{ .Chart.Name }}_`date +%Y-%m-%d_%H_%M-%S-%Z`.pcap
         {{- else}}
         command:
           - /bin/sleep
           - infinity
         {{- end}}
-        {{- if .Values.persistence.sharedvolume}}
+        {{- if .Values.includeTcpDumpContainer}}
+        {{- if .Values.persistent.sharedvolume}}
         volumeMounts:
-        - mountPath: "/pcap"
-          name: cn5g-pv
+        - mountPath: "/tmp/pcap"
+          name: cn5g-pvc
         {{- end}}
+        {{- end}}
+    {{- end }}
       - name: nssf
         image: "{{ .Values.nfimage.repository }}:{{ .Values.nfimage.version }}"
         imagePullPolicy: {{ .Values.nfimage.pullPolicy }}
@@ -115,6 +121,11 @@ spec:
               configMapKeyRef:
                 name: {{ .Chart.Name }}-configmap
                 key: pidDirectory
+          - name: LOG_LEVEL
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Chart.Name }}-configmap
+                key: logLevel
           - name: NSSF_FQDN
             valueFrom:
               configMapKeyRef:
@@ -152,10 +163,12 @@ spec:
           - infinity
         {{- end}}
       volumes:
-      {{- if .Values.persistence.sharedvolume}}
-      - name: cn5g-pv
+      {{- if .Values.includeTcpDumpContainer}}
+      {{- if .Values.persistent.sharedvolume}}
+      - name: cn5g-pvc
         persistenceVolumeClaim:
           claimName: cn5g-pvc
+      {{- end }}
       {{- end }}
       - name: nssf-slice-config
         configMap:

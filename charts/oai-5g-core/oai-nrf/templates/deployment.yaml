@@ -23,6 +23,7 @@ spec:
         {{ toYaml .Values.imagePullSecrets | indent 8 }}
     {{- end }}
       containers:
+    {{- if .Values.includeTcpDumpContainer }}
       - name: tcpdump
         image: "{{ .Values.tcpdumpimage.repository }}:{{ .Values.tcpdumpimage.version }}"
         imagePullPolicy: {{ .Values.tcpdumpimage.pullPolicy }}
@@ -35,6 +36,8 @@ spec:
             memory: {{ .Values.resources.tcpdump.limits.memory | quote }}
             cpu: {{ .Values.resources.tcpdump.limits.cpu | quote }}
         {{- end}}
+        securityContext:
+          {{- toYaml .Values.securityContext | nindent 12 }}
         {{- if .Values.start.tcpdump}}
         command:
           - /bin/sh
@@ -45,11 +48,14 @@ spec:
           - /bin/sleep
           - infinity
         {{- end}}
-        {{- if .Values.persistent.sharedvolume}}
+        {{- if .Values.includeTcpDumpContainer}}
+        {{- if .Values.persistent and .Values.persistent.sharedvolume }}
         volumeMounts:
-        - mountPath: "/pcap"
+        - mountPath: "/tmp/pcap"
           name: cn5g-pvc
         {{- end}}
+        {{- end}}
+    {{- end }}
       - name: nrf
         image: "{{ .Values.nfimage.repository }}:{{ .Values.nfimage.version }}"
         imagePullPolicy: {{ .Values.nfimage.pullPolicy }}
@@ -71,7 +77,7 @@ spec:
             - /bin/bash
             - /openair-nrf/bin/healthcheck.sh
           initialDelaySeconds: 2
-          periodSeconds: 3
+          periodSeconds: 2
         {{- end}}
         {{- if .Values.livenessProbe}}
         livenessProbe:
@@ -110,11 +116,18 @@ spec:
               configMapKeyRef:
                 name: {{ .Chart.Name }}-configmap
                 key: nrfApiVersion
-      volumes:
+          - name: LOG_LEVEL
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Chart.Name }}-configmap
+                key: logLevel
+      {{- if .Values.includeTcpDumpContainer}}
       {{- if .Values.persistent.sharedvolume}}
+      volumes:
       - name: cn5g-pvc
         persistentVolumeClaim:
           claimName: cn5g-pvc
+      {{- end }}
       {{- end }}
       dnsPolicy: ClusterFirst
       restartPolicy: Always
@@ -127,4 +140,3 @@ spec:
       {{- if .Values.nodeName}}
       nodeName: {{ .Values.nodeName }}
       {{- end }}
-

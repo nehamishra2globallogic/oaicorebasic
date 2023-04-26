@@ -31,7 +31,7 @@ data:
 
           // Tracking area code, 0x0000 and 0xfffe are reserved values
           tracking_area_code  =  1;
-          plmn_list = ({ mcc = 001; mnc = 01; mnc_length = 2; snssaiList = ({ sst = 1, sd = 0xffffff }) });
+          plmn_list = ({ mcc = 208; mnc = 99; mnc_length = 2; snssaiList = ({ sst = 1, sd = 0xffffff }) });
 
 
           nr_cellid = 12345678L;
@@ -40,13 +40,6 @@ data:
 
           min_rxtxtime                                              = 6;
           force_256qam_off = 1;
-
-          pdcch_ConfigSIB1 = (
-            {
-              controlResourceSetZero = 12;
-              searchSpaceZero = 0;
-            }
-          );
 
           servingCellConfigCommon = (
           {
@@ -193,12 +186,12 @@ data:
           tr_s_preference  = "local_L1";
           tr_n_preference  = "f1";
           local_n_if_name = "eth0";
-          local_n_address = "10.244.0.84";
-          remote_n_address = "10.244.0.1";
+          local_n_address = "192.168.72.142";
+          remote_n_address = "192.168.72.140";
           local_n_portc   = 500;
-          local_n_portd   = 2153;
+          local_n_portd   = 2152;
           remote_n_portc  = 501;
-          remote_n_portd  = 2153;
+          remote_n_portd  = 2152;
           pusch_TargetSNRx10          = 200;
           pucch_TargetSNRx10          = 200;
         }
@@ -239,24 +232,26 @@ data:
           worker_config      = "WORKER_ENABLE";
         }
       );
+
       rfsimulator: {
-      serveraddr = "server";
+          serveraddr = "server";
           serverport = "4043";
           options = (); #("saviq"); or/and "chanmod"
           modelname = "AWGN";
           IQfile = "/tmp/rfsimulator.iqs"
       }
 
-           log_config :
-           {
-             global_log_level                      ="info";
-             hw_log_level                          ="info";
-             phy_log_level                         ="info";
-             mac_log_level                         ="info";
-             rlc_log_level                         ="info";
-             pdcp_log_level                        ="info";
-             rrc_log_level                         ="info";
-             f1ap_log_level                         ="debug";
-             ngap_log_level                         ="debug";
-          };
+      log_config :
+      {
+        global_log_level = "info";
+        hw_log_level     = "info";
+        nr_phy_log_level = "info";
+        nr_mac_log_level = "info";
+        rlc_log_level    = "info";
+        pdcp_log_level   = "info";
+        rrc_log_level    = "info";
+        f1ap_log_level   = "info";
+        ngap_log_level   = "debug";
+      };
+
 {{- end }}

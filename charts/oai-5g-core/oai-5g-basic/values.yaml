@@ -13,11 +13,14 @@ oai-nrf:
   kubernetesType: Vanilla #Openshift/Vanilla Vanilla for Upstream Kubernetes
   nfimage:  # image name either locally present or in a public/private repository
     repository: docker.io/oaisoftwarealliance/oai-nrf           ## The image will be pulled from dockerhub
-    version: v1.5.0                                    ## The branch to be used to pull from dockerhub
+    version: develop                                    ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
+  includeTcpDumpContainer: false #only for taking pcaps inside network function pod
   imagePullSecrets:
     - name: "regcred"
+  config:
+    logLevel: "debug"   #allowed info/error/debug
   nodeSelector: {}
 oai-udr:
   enabled: true
@@ -25,11 +28,14 @@ oai-udr:
   kubernetesType: Vanilla #Openshift/Vanilla Vanilla for Upstream Kubernetes
   nfimage:  # image name either locally present or in a public/private repository
     repository: docker.io/oaisoftwarealliance/oai-udr           ## The image will be pulled from dockerhub
-    version: v1.5.0                                    ## The branch to be used to pull from dockerhub
+    version: develop                                    ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
+  includeTcpDumpContainer: false #only for taking pcaps inside network function pod
   imagePullSecrets:
     - name: "regcred"
+  config:
+    logLevel: "debug"   #allowed info/error/debug
   nodeSelector: {}
 oai-udm:
   enabled: true
@@ -37,11 +43,14 @@ oai-udm:
   kubernetesType: Vanilla #Openshift/Vanilla Vanilla for Upstream Kubernetes
   nfimage:  # image name either locally present or in a public/private repository
     repository: docker.io/oaisoftwarealliance/oai-udm           ## The image will be pulled from dockerhub
-    version: v1.5.0                                    ## The branch to be used to pull from dockerhub
+    version: develop                                    ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
+  includeTcpDumpContainer: false #only for taking pcaps inside network function pod
   imagePullSecrets:
     - name: "regcred"
+  config:
+    logLevel: "debug"   #allowed info/error/debug
   nodeSelector: {}
 oai-ausf:
   enabled: true
@@ -49,11 +58,14 @@ oai-ausf:
   kubernetesType: Vanilla #Openshift/Vanilla Vanilla for Upstream Kubernetes
   nfimage:  # image name either locally present or in a public/private repository
     repository: docker.io/oaisoftwarealliance/oai-ausf           ## The image will be pulled from dockerhub
-    version: v1.5.0                                    ## The branch to be used to pull from dockerhub
+    version: develop                                    ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
+  includeTcpDumpContainer: false #only for taking pcaps inside network function pod
   imagePullSecrets:
     - name: "regcred"
+  config:
+    logLevel: "debug"   #allowed info/error/debug
   nodeSelector: {}
 oai-amf:
   enabled: true
@@ -61,21 +73,23 @@ oai-amf:
   kubernetesType: Vanilla #Openshift/Vanilla Vanilla for Upstream Kubernetes
   nfimage:  # image name either locally present or in a public/private repository
     repository: docker.io/oaisoftwarealliance/oai-amf           ## The image will be pulled from dockerhub
-    version: v1.5.0                                    ## The branch to be used to pull from dockerhub
+    version: develop                                    ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
+  includeTcpDumpContainer: false #only for taking pcaps inside network function pod
   imagePullSecrets:
     - name: "regcred"
   multus:
     create: false
-    n1IPadd: "172.21.6.200"
-    n1Netmask: "22"
-    n1Gateway: "172.21.7.254"
+    n2IPadd: "172.21.6.94"
+    n2Netmask: "22"
+    n2Gateway: "172.21.7.254"
     hostInterface: "bond0"      # Interface of the host machine on which this pod will be scheduled
   config:
     amfInterfaceNameForNGAP: "eth0" # If multus creation is true then net1 else eth0
     amfInterfaceNameForN11: "eth0"  # Service based interface
     externalAusf: "yes"
+    logLevel: "debug"   #allowed info/error/debug
     # Mandatory
     sst0: "1"
     sd0: "0xFFFFFF"
@@ -89,7 +103,7 @@ oai-amf:
     smfSelection: "no"        #Bug in SMF can not have SMF selection when using UDR to fetch user-information
     useHttp2: "no"
     intAlgoList: '[ "NIA1" , "NIA1" , "NIA2" ]'
-    ciphAlgoList: '[ "NEA1" , "NEA1" , "NEA2" ]'
+    ciphAlgoList: '[ "NEA0" , "NEA1" , "NEA2" ]'
   nodeSelector: {}
 oai-spgwu-tiny:
   enabled: true
@@ -97,14 +111,15 @@ oai-spgwu-tiny:
   kubernetesType: Vanilla #Openshift/Vanilla Vanilla for Upstream Kubernetes
   nfimage:  # image name either locally present or in a public/private repository
     repository: docker.io/oaisoftwarealliance/oai-spgwu-tiny    ## The image will be pulled from dockerhub
-    version: v1.5.0                                    ## The branch to be used to pull from dockerhub
+    version: develop                                    ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
+  includeTcpDumpContainer: false #only for taking pcaps inside network function pod
   imagePullSecrets:
     - name: "regcred"
   multus:
     create: false
-    n3Ip: "172.21.6.201"
+    n3Ip: "172.21.6.95"
     n3Netmask: "22"
     n6Gw: "172.21.7.254"
     hostInterface: "bond0"
@@ -112,10 +127,11 @@ oai-spgwu-tiny:
     n3If: "eth0"  # net1 if gNB is outside the cluster network and multus creation is true else eth0
     n4If: "eth0" # use for SMF communication
     n6If: "eth0"  # net1 if gNB is outside the cluster network and multus creation is true else eth0 (important because it sends the traffic towards internet)
+    logLevel: "debug"   #allowed info/error/debug
     threadsN3Ul: "1"
     threadsN6Dl: "1"
-    threadsN6Prio: 98
-    threadsN3Prio: 88
+    threadsN6Prio: 99
+    threadsN3Prio: 98
     threadsN4Prio: 88
     netUeIp: "12.1.1.0/24"  # The range in which UE ip-address will be allocated should be configured the same in SMF
     registerNRF: "yes"
@@ -135,14 +151,16 @@ oai-smf:
   kubernetesType: Vanilla #Openshift/Vanilla Vanilla for Upstream Kubernetes
   nfimage:  # image name either locally present or in a public/private repository
     repository: docker.io/oaisoftwarealliance/oai-smf           ## The image will be pulled from dockerhub
-    version: v1.5.0                                    ## The branch to be used to pull from dockerhub
+    version: develop                                    ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
+  includeTcpDumpContainer: false #only for taking pcaps inside network function pod
   imagePullSecrets:
     - name: "regcred"
   config:
     useLocalSubscriptionInfo: "no" #this means ip-address information will be fetched from UDR
     ueMtu: 1500
+    logLevel: "debug"   #allowed info/error/debug
     dnsIpv4Address: "172.21.3.100" # configure the dns for UE don't use Kubernetes DNS
     dnsSecIpv4Address: "172.21.3.100" # configure the dns for UE don't use Kubernetes DNS
     defaultCSCFIpv4Address: "172.21.6.13" # For IMS server if needed

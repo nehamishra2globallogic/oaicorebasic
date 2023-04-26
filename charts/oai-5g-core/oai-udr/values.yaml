@@ -1,14 +1,8 @@
-kubernetesType: Vanilla  #Vanilla for community kubernetes distribution
+kubernetesType: Vanilla  # Vanilla (Community Kubernetes) or Openshift (For RedHat Openshift)
 
 nfimage:
   repository: docker.io/oaisoftwarealliance/oai-udr # image name either locally present or in a public/private repository
-  version: v1.5.0 #image tag, develop tag for experimental features 
-  #pullPolicy: IfNotPresent or Never or Always
-  pullPolicy: IfNotPresent
-
-tcpdumpimage:
-  repository: docker.io/corfr/tcpdump
-  version: latest
+  version: develop #image tag, develop tag for experimental features 
   #pullPolicy: IfNotPresent or Never or Always
   pullPolicy: IfNotPresent
 
@@ -29,18 +23,6 @@ serviceAccount:
 podSecurityContext:
   runAsUser: 0
   runAsGroup: 0
-
-securityContext:
-  privileged: false
-
-service:
-  type: ClusterIP
-  http1Port: 80
-  http2Port: 8080
-
-start:
-  udr: true
-  tcpdump: false #start tcpdump collection to analyse but beware it will take a lot of space in the container/persistent volume
 
 config:
   tz: "Europe/Paris"
@@ -63,11 +45,32 @@ config:
   mySqlPass: "linux"
   mySqlDb: "oai_db"
 
-persistence:
-  sharedvolume: false
-  volumneName: managed-nfs-storage
-  size: 1Gi
-  
+## Debugging section
+start:
+  udr: true #If false the network function container will run in sleep mode for manually testing
+
+includeTcpDumpContainer: false #If true it will add a tcpdump container inside network function pod for debugging
+
+# Un-comment the below lines if includeTcpDumpContainer is true
+# tcpdumpimage:
+#   repository: docker.io/corfr/tcpdump
+#   version: latest
+#   #pullPolicy: IfNotPresent or Never or Always
+#   pullPolicy: IfNotPresent
+
+
+# securityContext:
+#   # capabilities:   #Only needed when capturing packets inside the tcp container
+#   #   add: 
+#   #    - NET_ADMIN
+#   #   drop: 
+#   #    - ALL
+#   privileged: false
+
+# To store PCAP of NF in a sharedVolume so it can be easily fetched
+# persistent:
+#   sharedvolume: true
+
 resources:
   define: false
   limits:
@@ -94,4 +97,3 @@ terminationGracePeriodSeconds: 5
 nodeSelector: {}
 
 nodeName:
-

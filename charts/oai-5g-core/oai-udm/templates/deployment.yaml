@@ -23,10 +23,11 @@ spec:
         {{ toYaml .Values.imagePullSecrets | indent 8 }}
     {{- end }}
       containers:
+    {{- if .Values.includeTcpDumpContainer }}
       - name: tcpdump
         image: "{{ .Values.tcpdumpimage.repository }}:{{ .Values.tcpdumpimage.version }}"
         imagePullPolicy: {{ .Values.tcpdumpimage.pullPolicy }}
-         {{- if .Values.resources.define}}
+        {{- if .Values.resources.define}}
         resources:
           requests:
             memory: {{ .Values.resources.tcpdump.requests.memory | quote }}
@@ -35,21 +36,26 @@ spec:
             memory: {{ .Values.resources.tcpdump.limits.memory | quote }}
             cpu: {{ .Values.resources.tcpdump.limits.cpu | quote }}
         {{- end}}
+        securityContext:
+          {{- toYaml .Values.securityContext | nindent 12 }}
         {{- if .Values.start.tcpdump}}
         command:
           - /bin/sh
           - -c
-          - /usr/sbin/tcpdump -i any -w /pcap/oai-udm_`date +%Y-%m-%d_%H_%M-%S-%Z`.pcap
+          - /usr/sbin/tcpdump -i any -w /pcap/{{ .Chart.Name }}_`date +%Y-%m-%d_%H_%M-%S-%Z`.pcap
         {{- else}}
         command:
           - /bin/sleep
           - infinity
         {{- end}}
-        {{- if .Values.persistence.sharedvolume}}
+        {{- if .Values.includeTcpDumpContainer}}
+        {{- if .Values.persistent.sharedvolume}}
         volumeMounts:
-        - mountPath: "/pcap"
+        - mountPath: "/tmp/pcap"
           name: cn5g-pv
         {{- end}}
+        {{- end}}
+    {{- end }}
       - name: udm
         image: "{{ .Values.nfimage.repository }}:{{ .Values.nfimage.version }}"
         imagePullPolicy: {{ .Values.nfimage.pullPolicy }}
@@ -69,6 +75,11 @@ spec:
               configMapKeyRef:
                 name: {{ .Chart.Name }}-configmap
                 key: pidDirectory
+          - name: LOG_LEVEL
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Chart.Name }}-configmap
+                key: logLevel
           - name: UDM_NAME
             valueFrom:
               configMapKeyRef:
@@ -185,11 +196,13 @@ spec:
           - /bin/sleep
           - infinity
         {{- end}}
+      {{- if .Values.includeTcpDumpContainer}}
+      {{- if .Values.persistent.sharedvolume}}
       volumes:
-      {{- if .Values.persistence.sharedvolume}}
-      - name: cn5g-pv
-        persistenceVolumeClaim:
+      - name: cn5g-pvc
+        persistentVolumeClaim:
           claimName: cn5g-pvc
+      {{- end }}
       {{- end }}
       dnsPolicy: ClusterFirst
       restartPolicy: Always

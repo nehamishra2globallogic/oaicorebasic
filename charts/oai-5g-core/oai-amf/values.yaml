@@ -1,15 +1,9 @@
-kubernetesType: Vanilla  #Vanilla for community kubernetes distribution
+kubernetesType: Vanilla  # Vanilla (Community Kubernetes) or Openshift (For RedHat Openshift)
 
 nfimage:  # image name either locally present or in a public/private repository
   repository: docker.io/oaisoftwarealliance/oai-amf           ## The image will be pulled from dockerhub
-  version: v1.5.0                                    #image tag, develop tag for experimental features 
+  version: develop                                   #image tag, develop tag for experimental features 
   # pullPolicy: IfNotPresent or Never or Always
-  pullPolicy: IfNotPresent
-
-tcpdumpimage:
-  repository: docker.io/corfr/tcpdump
-  version: latest
-  #pullPolicy: IfNotPresent or Never or Always
   pullPolicy: IfNotPresent
 
 ## good to use when pulling images from docker-hub mention 
@@ -24,19 +18,9 @@ serviceAccount:
   name: "oai-amf-sa"
 
 #service type is fixed to clusterIP, it is only support for non multus interface (eth0)
-
-## OPENSHIFT terminology
 podSecurityContext:
   runAsUser: 0
   runAsGroup: 0
-
-## OPENSHIFT terminology
-securityContext:
-  privileged: false
-
-start:
-  amf: true
-  tcpdump: false # WARNING: start tcpdump collection to analyse but beware it will take a lot of space in the container/persistent volume
 
 # AMF needs two seperate interface one for http (for SBI) and other one for SCTP (N1/N2) to communicate with gNB. 
 # But for experimentation only one interface can be used. 
@@ -45,15 +29,15 @@ start:
 # 2. Your gnB is outside the cluster and the host machine can communicate but pods can not then you can provide ip-address in the same range as your host machine
 # 3. You want static ip-address for N1/N2 interface, Namf can be discovered by its service name
 
-
 multus:
   create: false
-  n2IPadd: "172.21.10.6"
+  n2IPadd: "172.21.6.94"
   n2Netmask: "22"
-  n2Gateway: "172.21.11.254"
+  n2Gateway: "172.21.7.254"
   hostInterface: "bond0"      # Interface of the host machine on which this pod will be scheduled
 
-## Incase the pod is not able to resolve the FQDN of other network functions example nrf then you can disable useFqdnDns feature this way AMF will talk to other network functions using their ip-address. 
+## Incase the pod is not able to resolve the FQDN of other network 
+## functions example nrf then you can disable useFqdnDns feature this way AMF will talk to other network functions using their ip-address. 
 
 config:
   mcc: "001"
@@ -81,17 +65,42 @@ config:
   externalNssf: "no"
   useHttp2: "no"
   intAlgoList: '[ "NIA1" , "NIA1" , "NIA2" ]'
-  ciphAlgoList: '[ "NEA1" , "NEA1" , "NEA2" ]'
+  ciphAlgoList: '[ "NEA0" , "NEA1" , "NEA2" ]'
   mySqlServer: "mysql" # OPTIONAL: used only if not using AUSF
   mySqlUser: "root" # OPTIONAL: used only if not using AUSF
   mySqlPass: "linux" # OPTIONAL: used only if not using AUSF
   mySqlDb: "oai_db" # OPTIONAL: used only if not using AUSF
+  logLevel: "debug"
 
-
+#NRF creates the PVC and it is shared among all the Core-Network NFs to store TCP Dump
 persistent:
   sharedvolume: false
-  volumneName: managed-nfs-storage
-  size: 1Gi
+
+## Debugging section
+start:
+  amf: true #If false the network function container will run in sleep mode for manually testing
+
+includeTcpDumpContainer: false #If true it will add a tcpdump container inside network function pod for debugging
+
+# Un-comment the below lines if includeTcpDumpContainer is true
+# tcpdumpimage:
+#   repository: docker.io/corfr/tcpdump
+#   version: latest
+#   #pullPolicy: IfNotPresent or Never or Always
+#   pullPolicy: IfNotPresent
+
+
+# securityContext:
+#   # capabilities:   #Only needed when capturing packets inside the tcp container
+#   #   add: 
+#   #    - NET_ADMIN
+#   #   drop: 
+#   #    - ALL
+#   privileged: false
+
+# To store PCAP of NF in a sharedVolume so it can be easily fetched
+# persistent:
+#   sharedvolume: true
 
 resources:
   define: false

@@ -21,10 +21,9 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name: "oai-nr-ue-sa"
 
-## good to use when pulling images from docker-hub mention 
-#imagePullSecrets: 
-#  - name: "regcred"
-
+# good to use when pulling images from docker-hub mention 
+imagePullSecrets: 
+ - name: "regcred"
 
 podSecurityContext:
   runAsUser: 0
@@ -45,7 +44,7 @@ start:
 
 multus:
   create: false
-  ipadd: "172.21.6.204"  # interface needed to connect with gnb
+  ipadd: "172.21.6.27"  # interface needed to connect with gnb
   netmask: "22"
   defaultGateway: "172.21.7.254"
   hostInterface: "bond0"
