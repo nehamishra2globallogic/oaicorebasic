@@ -10,8 +10,8 @@ oai-nrf:
   weight: 0
   kubernetesType: Openshift #Openshift/Vanilla Vanilla for Upstream Kubernetes
   nfimage:  # image name either locally present or in a public/private repository
-    repository: image-registry.openshift-image-registry.svc:5000/oaicicd-core/oai-nrf           ## The image will be pulled from dockerhub
-    version: NRF_TAG                                    ## The branch to be used to pull from dockerhub
+    repository: image-registry.openshift-image-registry.svc:5000/oaicicd-core-for-ci-ran/oai-nrf           ## The image will be pulled from dockerhub
+    version: develop-013f0f3b                                    ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
   config:
@@ -22,8 +22,8 @@ oai-udr:
   weight: 1
   kubernetesType: Openshift #Openshift/Vanilla Vanilla for Upstream Kubernetes
   nfimage:  # image name either locally present or in a public/private repository
-    repository: image-registry.openshift-image-registry.svc:5000/oaicicd-core/oai-udr           ## The image will be pulled from dockerhub
-    version: UDR_TAG                                    ## The branch to be used to pull from dockerhub
+    repository: image-registry.openshift-image-registry.svc:5000/oaicicd-core-for-ci-ran/oai-udr           ## The image will be pulled from dockerhub
+    version: develop-97bcef88                                    ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
   config:
@@ -34,8 +34,8 @@ oai-udm:
   weight: 2
   kubernetesType: Openshift #Openshift/Vanilla Vanilla for Upstream Kubernetes
   nfimage:  # image name either locally present or in a public/private repository
-    repository: image-registry.openshift-image-registry.svc:5000/oaicicd-core/oai-udm           ## The image will be pulled from dockerhub
-    version: UDM_TAG                                    ## The branch to be used to pull from dockerhub
+    repository: image-registry.openshift-image-registry.svc:5000/oaicicd-core-for-ci-ran/oai-udm           ## The image will be pulled from dockerhub
+    version: develop-d58dd034                                    ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
   config:
@@ -46,8 +46,8 @@ oai-ausf:
   weight: 3
   kubernetesType: Openshift #Openshift/Vanilla Vanilla for Upstream Kubernetes
   nfimage:  # image name either locally present or in a public/private repository
-    repository: image-registry.openshift-image-registry.svc:5000/oaicicd-core/oai-ausf           ## The image will be pulled from dockerhub
-    version: AUSF_TAG                                    ## The branch to be used to pull from dockerhub
+    repository: image-registry.openshift-image-registry.svc:5000/oaicicd-core-for-ci-ran/oai-ausf           ## The image will be pulled from dockerhub
+    version: develop-e7640bd5                                    ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
   config:
@@ -58,13 +58,13 @@ oai-amf:
   weight: 4
   kubernetesType: Openshift #Openshift/Vanilla Vanilla for Upstream Kubernetes
   nfimage:  # image name either locally present or in a public/private repository
-    repository: image-registry.openshift-image-registry.svc:5000/oaicicd-core/oai-amf           ## The image will be pulled from dockerhub
-    version: AMF_TAG                                    ## The branch to be used to pull from dockerhub
+    repository: image-registry.openshift-image-registry.svc:5000/oaicicd-core-for-ci-ran/oai-amf           ## The image will be pulled from dockerhub
+    version: develop-5d602d80                                    ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
   multus:
     create: true
-    n2IPadd: "172.21.6.200"
+    n2IPadd: "172.21.6.100"
     n2Netmask: "22"
     n2Gateway: "172.21.7.254"
     hostInterface: "bond0"      # Interface of the host machine on which this pod will be scheduled
@@ -93,13 +93,13 @@ oai-spgwu-tiny:
   weight: 5
   kubernetesType: Openshift #Openshift/Vanilla Vanilla for Upstream Kubernetes
   nfimage:  # image name either locally present or in a public/private repository
-    repository: image-registry.openshift-image-registry.svc:5000/oaicicd-core/oai-spgwu-tiny    ## The image will be pulled from dockerhub
-    version: SPGWU_TINY_TAG                                    ## The branch to be used to pull from dockerhub
+    repository: image-registry.openshift-image-registry.svc:5000/oaicicd-core-for-ci-ran/oai-spgwu-tiny    ## The image will be pulled from dockerhub
+    version: develop-3c691be5                                     ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
   multus:
     create: true
-    n3Ip: "172.21.6.201"
+    n3Ip: "172.21.6.101"
     n3Netmask: "22"
     n6Gw: "172.21.7.254"
     hostInterface: "bond0"
@@ -132,27 +132,27 @@ oai-traffic-server:
   weight: 6
   kubernetesType: Openshift #Openshift/Vanilla Vanilla for Upstream Kubernetes
   trafficServer:
-    repository: image-registry.openshift-image-registry.svc:5000/oaicicd-core/oai-traffic-server
+    repository: image-registry.openshift-image-registry.svc:5000/oaicicd-core-for-ci-ran/oai-traffic-server
     version: latest
     #pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
   multus:
     create: true
-    n3Ip: "172.21.6.202"
+    n3Ip: "172.21.6.102"
     n3Netmask: "22"
     n6Gw: "172.21.7.254"
     hostInterface: "bond0"
   config:
     ueroute: 12.1.1.0/24
-    upfIpadd: 172.21.6.201
+    upfIpadd: 172.21.6.101
     noOfIperf3Server: 2
 oai-smf:
   enabled: true
-  weight: 6
+  weight: 7
   kubernetesType: Openshift #Openshift/Vanilla Vanilla for Upstream Kubernetes
   nfimage:  # image name either locally present or in a public/private repository
-    repository: image-registry.openshift-image-registry.svc:5000/oaicicd-core/oai-smf           ## The image will be pulled from dockerhub
-    version: SMF_TAG                                    ## The branch to be used to pull from dockerhub
+    repository: image-registry.openshift-image-registry.svc:5000/oaicicd-core-for-ci-ran/oai-smf           ## The image will be pulled from dockerhub
+    version: develop-f3fb83cb                                    ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
   config:

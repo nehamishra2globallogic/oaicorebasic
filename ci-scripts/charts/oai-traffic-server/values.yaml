@@ -22,14 +22,14 @@ securityContext:
 
 multus:
   create: true
-  IPadd: "172.21.6.202"
+  IPadd: "172.21.6.102"
   Netmask: "22"
   Gateway: "172.21.7.254"
   hostInterface: "bond0"      # Interface of the host machine on which this pod will be scheduled
 
 config:
   ueroute: 12.1.1.0/24
-  upfIpadd: 172.21.6.201
+  upfIpadd: 172.21.6.101
   noOfIperf3Server: 10
 
 readinessProbe: true
@@ -40,4 +40,4 @@ terminationGracePeriodSeconds: 2
 
 nodeSelector: {}
 
-nodeName: 
+nodeName:

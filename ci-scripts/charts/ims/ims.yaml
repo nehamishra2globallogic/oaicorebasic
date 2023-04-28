@@ -24,7 +24,7 @@ metadata:
 subjects:
 - kind: ServiceAccount
   name: ims-sa
-  namespace: oaicicd-core
+  namespace: oaicicd-core-for-ci-ran
 roleRef:
   kind: Role
   name: ims-privileged-role
@@ -44,7 +44,7 @@ spec:
         "type": "static",
         "addresses": [
                 {
-                        "address": "172.21.6.202/22"
+                        "address": "172.21.6.102/22"
 
                 }
         ]
@@ -116,7 +116,7 @@ spec:
       securityContext:
         runAsUser: 0
         runAsGroup: 0
-      serviceAccountName: ims-sa 
+      serviceAccountName: ims-sa
       containers:
       - name: ims
         image: quay.io/quay/ubuntu:latest

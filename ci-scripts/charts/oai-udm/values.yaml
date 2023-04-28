@@ -1,19 +1,19 @@
 kubernetesType: Openshift  #Vanilla for community kubernetes distribution
 
 nfimage:
-  repository: image-registry.openshift-image-registry.svc:5000/oaicicd-core/oai-udm #docker.io/oaisoftwarealliance/oai-udm         
-  version: UDM_TAG                        #image tag, develop tag for experimental features 
+  repository: image-registry.openshift-image-registry.svc:5000/oaicicd-core-for-ci-ran/oai-udm #docker.io/oaisoftwarealliance/oai-udm
+  version: UDM_TAG                        #image tag, develop tag for experimental features
   #pullPolicy: IfNotPresent or Never or Always
   pullPolicy: IfNotPresent
 
 tcpdumpimage:
-  repository: support-tools
+  repository: image-registry.openshift-image-registry.svc:5000/oaicicd-core-for-ci-ran/support-tools
   version: 8.7-8
   #pullPolicy: IfNotPresent or Never or Always
   pullPolicy: IfNotPresent
 
-## good to use when pulling images from docker-hub mention 
-#imagePullSecrets: 
+## good to use when pulling images from docker-hub mention
+#imagePullSecrets:
 #  - name: "regcred"
 
 serviceAccount:
@@ -51,7 +51,7 @@ config:
   sbiPortHttp1: "80"
   sbiPortHttp2: "8080"
   udmApiVersionNb: "v1"
-  useFqdnDns: "yes"       #yes to enable FQDN resoultion instead of ip-addresses but we still need to put some dummy ip-address in Ip-address field 
+  useFqdnDns: "yes"       #yes to enable FQDN resoultion instead of ip-addresses but we still need to put some dummy ip-address in Ip-address field
   nfRegistration: "no"    #yes to register to NRF
   useHttp2: "no"          #yes to enable http2
   udrIpAddress: "127.0.0.1"
