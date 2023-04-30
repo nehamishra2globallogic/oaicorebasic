@@ -7,10 +7,12 @@ metadata:
 spec:
   accessModes:
     - ReadWriteMany
-{{- if .Values.persistent.storageClass }}
+{{- if not .Values.persistent.storageClass }}
+{{- if (eq "-" .Values.persistent.storageClass) }}
   storageClassName: ""
 {{- else }}
   storageClassName: "{{ .Values.persistent.storageClass }}"
+{{- end }}
 {{- end }}
   resources:
     requests:

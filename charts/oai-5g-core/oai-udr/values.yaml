@@ -48,28 +48,19 @@ config:
 ## Debugging section
 start:
   udr: true #If false the network function container will run in sleep mode for manually testing
+  tcpdump: false
 
 includeTcpDumpContainer: false #If true it will add a tcpdump container inside network function pod for debugging
 
-# Un-comment the below lines if includeTcpDumpContainer is true
-# tcpdumpimage:
-#   repository: docker.io/corfr/tcpdump
-#   version: latest
-#   #pullPolicy: IfNotPresent or Never or Always
-#   pullPolicy: IfNotPresent
+tcpdumpimage:
+  repository: docker.io/corfr/tcpdump
+  version: latest
+  #pullPolicy: IfNotPresent or Never or Always
+  pullPolicy: IfNotPresent
 
-
-# securityContext:
-#   # capabilities:   #Only needed when capturing packets inside the tcp container
-#   #   add: 
-#   #    - NET_ADMIN
-#   #   drop: 
-#   #    - ALL
-#   privileged: false
-
-# To store PCAP of NF in a sharedVolume so it can be easily fetched
-# persistent:
-#   sharedvolume: true
+#To store PCAP of NF in a sharedVolume so it can be easily fetched (PVC is created with NRF charts so make sure in NRF it is true)
+persistent:
+  sharedvolume: false
 
 resources:
   define: false

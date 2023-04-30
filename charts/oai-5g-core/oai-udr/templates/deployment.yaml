@@ -35,12 +35,17 @@ spec:
             cpu: {{ .Values.resources.tcpdump.limits.cpu | quote }}
         {{- end}}
         securityContext:
-          {{- toYaml .Values.securityContext | nindent 12 }}
+           privileged: true
+           capabilities:
+              add:
+               - NET_ADMIN
+              drop:
+               - ALL
         {{- if .Values.start.tcpdump}}
         command:
           - /bin/sh
           - -c
-          - /usr/sbin/tcpdump -i any -w /pcap/{{ .Chart.Name }}_`date +%Y-%m-%d_%H_%M-%S-%Z`.pcap
+          - /usr/sbin/tcpdump -i any -w /tmp/pcap/{{ .Chart.Name }}_`date +%Y-%m-%d_%H_%M-%S-%Z`.pcap
         {{- else}}
         command:
           - /bin/sleep
@@ -84,8 +89,6 @@ spec:
           initialDelaySeconds: 10
           periodSeconds: 5
         {{- end}}
-        securityContext:
-          {{- toYaml .Values.securityContext | nindent 12 }}
         ports:
         - containerPort: {{ .Values.config.sbiPortHttp1 }}
           name: http1

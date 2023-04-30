@@ -35,7 +35,12 @@ spec:
             cpu: {{ .Values.resources.tcpdump.limits.cpu | quote }}
         {{- end}}
         securityContext:
-          {{- toYaml .Values.securityContext | nindent 12 }}
+           privileged: true
+           capabilities:
+              add:
+               - NET_ADMIN
+              drop:
+               - ALL
         {{- if .Values.start.tcpdump}}
         command:
           - /bin/sh
@@ -87,8 +92,6 @@ spec:
           initialDelaySeconds: 10
           periodSeconds: 5
         {{- end}}
-        securityContext:
-          {{- toYaml .Values.securityContext | nindent 12 }}
         ports:
         - containerPort: {{ .Values.config.sbiPortHttp1 }}
           name: http1

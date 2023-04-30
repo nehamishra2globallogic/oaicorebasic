@@ -43,7 +43,7 @@ oai-amf:
     hostInterface: "bond0"      # Interface of the host machine on which this pod will be scheduled
   config:
     amfInterfaceNameForNGAP: "eth0" # If multus creation is true then net1 else eth0
-    amfInterfaceNameForN11: "eth0"  # Service based interface
+    amfInterfaceNameForSBI: "eth0"  # Service based interface
     externalAusf: "no"
     logLevel: "debug"   #allowed info/error/debug
     sst0: "1"
