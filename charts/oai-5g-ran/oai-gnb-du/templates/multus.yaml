@@ -28,12 +28,15 @@ spec:
 apiVersion: "k8s.cni.cncf.io/v1"
 kind: NetworkAttachmentDefinition 
 metadata:
-  name: {{ .Chart.Name }}-net1
+  name: {{ .Chart.Name }}-net2
 spec:
   config: '{ 
       "cniVersion": "0.3.1",
       "type": "macvlan",
       "master": {{- cat .Values.multus.ruInterface.hostInterface | nospace | quote }},
+      {{- if .Values.multus.ruInterface.mtu }}
+      "mtu": {{ .Values.multus.ruInterface.mtu }},
+      {{- end }}
       "mode": "bridge",
       "ipam": {
         "type": "static",

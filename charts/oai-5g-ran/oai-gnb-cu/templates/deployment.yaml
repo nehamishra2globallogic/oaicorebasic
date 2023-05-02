@@ -47,11 +47,10 @@ spec:
       containers:
       - name: gnbcu
         image: "{{ .Values.nfimage.repository }}:{{ .Values.nfimage.version }}"
-        {{- if .Values.config.mountConfig}}
         volumeMounts:
-          - mountPath: /opt/oai-gnb/etc
+          - mountPath: /opt/oai-gnb/etc/mounted.conf
             name: configuration
-        {{- end}}
+            subPath: mounted.conf
         {{- if .Values.resources.define}}
         resources:
           requests:
@@ -236,12 +235,10 @@ spec:
           - infinity
         {{- end}}
       {{- end }}
-      {{- if .Values.config.mountConfig}}
       volumes:
       - configMap:
           name: {{ .Chart.Name }}-configmap
         name: configuration
-      {{- end}}
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler

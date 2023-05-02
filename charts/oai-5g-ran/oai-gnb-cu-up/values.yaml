@@ -1,5 +1,7 @@
-kubernetesType: Vanilla  #Vanilla for community kubernetes distribution
+kubernetesType: Vanilla  #Vanilla for community kubernetes distribution else Openshift for Openshift
 
+## In case of using these charts on Openshift then please use UBI images
+## To know more about them follow this tutorial https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed/-/tree/master/openshift
 nfimage:   # image name either locally present or in a public/private repository
   repository: docker.io/oaisoftwarealliance/oai-nr-cuup           ## dockerhub oaisoftwarealliance/oai-gnb  
   version: develop # image tag
@@ -19,7 +21,9 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name: "oai-gnb-cu-up-sa"
 
-# cu-up needs three seperate interfaces one for ngap (N3), f1 and e1 
+## CU-UP can work with 1 virtual ip-address here we are using three different virtual interfaces. 
+## In case you are using 1 ip-address for all 3 logical interfaces then please change it template/configmap.yaml
+## Change these ip-addresses according to your environment
 multus:
   defaultGateway: "172.21.7.254"
   e1Interface:
@@ -27,33 +31,32 @@ multus:
     IPadd: "172.21.6.91"
     Netmask: "22"
     # if gatway is commented then it will be remove
-    Gateway: "172.21.7.254"
+    #Gateway: "172.21.7.254"
     hostInterface: "bond0"      # Interface of the host machine on which this pod will be scheduled
   n3Interface:
     create: true
     IPadd: "172.21.6.97"
     Netmask: "22"
     # if gatway is commented then it will be remove
-    Gateway: "172.21.7.254"
+    #Gateway: "172.21.7.254"
     hostInterface: "bond0"      # Interface of the host machine on which this pod will be scheduled
   f1uInterface:
     create: true
     IPadd: "172.21.6.93"
     Netmask: "22"
     # if gatway is commented then it will be remove
-    Gateway: "172.21.7.254"
+    #Gateway: "172.21.7.254"
     hostInterface: "bond0"      # Interface of the host machine on which this pod will be scheduled
 
 config:
-  mountConfig: true          #If config file is mounted then please edit mount.conf in configmap.yaml properly 
   timeZone: "Europe/Paris"
-  useAdditionalOptions: "--sa --rfsim"
+  useAdditionalOptions: "--sa"
   mcc: "001"   # check the information with AMF, SMF, UPF/SPGWU
   mnc: "01"    # check the information with AMF, SMF, UPF/SPGWU
   mncLength: "2" # check the information with AMF, SMF, UPF/SPGWU
   tac: "1"     # check the information with AMF
   nssaiSst: "1"  #currently only 4 standard values are allowed 1,2,3,4 
-  nssaiSd: "ffffff"    #values in hexa-decimal format
+  nssaiSd: "0xffffff"    #values in hexa-decimal format
   e1IpAddress: 172.21.6.90
   ## Its the DU which communicates with the CU so no need for DU ip-address
   f1duIpAddress: "172.21.6.100"
@@ -70,6 +73,7 @@ start:
 
 includeTcpDumpContainer: false #If true it will add a tcpdump container inside network function pod for debugging
 
+## For openshift you can use rhel8/support-tools:8.7-13
 tcpdumpimage:
    repository: docker.io/corfr/tcpdump
    version: latest

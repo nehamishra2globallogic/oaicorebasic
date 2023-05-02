@@ -3,18 +3,18 @@ kind: Deployment
 metadata:
   name: {{ .Chart.Name }}
   labels:
-    {{- include "oai-gnb-cu.labels" . | nindent 4 }}
+    {{- include "oai-gnb-cu-up.labels" . | nindent 4 }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      {{- include "oai-gnb-cu.selectorLabels" . | nindent 6 }}
+      {{- include "oai-gnb-cu-up.selectorLabels" . | nindent 6 }}
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        {{- include "oai-gnb-cu.selectorLabels" . | nindent 8 }}
+        {{- include "oai-gnb-cu-up.selectorLabels" . | nindent 8 }}
         app: oai-gnb-cu-up
     {{- if .Values.multus.e1Interface.create }}
       annotations:
@@ -47,11 +47,10 @@ spec:
       containers:
       - name: gnbcu
         image: "{{ .Values.nfimage.repository }}:{{ .Values.nfimage.version }}"
-        {{- if .Values.config.mountConfig}}
         volumeMounts:
-          - mountPath: /opt/oai-gnb/etc
+          - mountPath: /opt/oai-gnb/etc/mounted.conf
             name: configuration
-        {{- end}}
+            subPath: mounted.conf
         {{- if .Values.resources.define}}
         resources:
           requests:
@@ -81,20 +80,11 @@ spec:
         {{- end}}
         env:
           - name: TZ
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: timeZone
-          - name: USE_VOLUMED_CONF
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: mountConfig
+            value: {{ .Values.config.timeZone }}
           - name: USE_ADDITIONAL_OPTIONS
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: useAdditionalOptions
+            value: {{ .Values.config.useAdditionalOptions }}
+          - name: USE_VOLUMED_CONF      
+            value: "yes"
       {{- if .Values.includeTcpDumpContainer }}
       - name: tcpdump
         image: "{{ .Values.tcpdumpimage.repository }}:{{ .Values.tcpdumpimage.version }}"
@@ -125,14 +115,11 @@ spec:
           - /bin/sleep
           - infinity
         {{- end}}
-      {{- end }}
-        {{- end}}
-      {{- if .Values.config.mountConfig}}
+      {{- end}}
       volumes:
       - configMap:
           name: {{ .Chart.Name }}-configmap
         name: configuration
-      {{- end}}
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler

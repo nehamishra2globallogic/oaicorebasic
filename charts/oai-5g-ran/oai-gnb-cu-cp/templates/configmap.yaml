@@ -1,21 +1,11 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: {{ .Chart.Name }}-configmap
-data:
-  {{- range $key, $val := .Values.config }}
-  {{ $key }}: {{ $val | quote }}
-  {{- end }}
-
 ---
-{{- if .Values.config.mountConfig }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ .Chart.Name }}-configmap
 data:
   mounted.conf: |
-      Active_gNBs = ( "oai-cu-up-rfsim");
+      Active_gNBs = ( "oai-cu-cp");
       # Asn1_verbosity, choice in: none, info, annoying
       Asn1_verbosity = "none";
       Num_Threads_PUSCH = 8;
@@ -29,11 +19,15 @@ data:
 
       #     cell_type =  "CELL_MACRO_GNB";
 
-          gNB_name  =  "oai-cu-up-rfsim";
+          gNB_name  =  "oai-cu-cp";
 
           // Tracking area code, 0x0000 and 0xfffe are reserved values
           tracking_area_code  =  1;
-          plmn_list = ({ mcc = 001; mnc = 01; mnc_length = 2; snssaiList = ({ sst = 1, sd = 0xffffff }) });
+          plmn_list = ({ mcc = {{ .Values.config.mcc }}; 
+                         mnc = {{ .Values.config.mnc }}; 
+                         mnc_length ={{ .Values.config.mncLength }};
+                         snssaiList = ({ sst = {{ .Values.config.nssaiSst }}, sd = {{ .Values.config.nssaiSd }} })
+                      });
 
 
           nr_cellid = 12345678L;
@@ -41,13 +35,14 @@ data:
 
           tr_s_preference = "f1";
 
-          local_s_if_name = "lo";
-          local_s_address = "192.168.72.140";
-          remote_s_address = "192.168.72.143";
+          local_s_if_name = "net3";
+          local_s_address = "{{ .Values.multus.f1cInterface.IPadd }}";
+          remote_s_address = "{{ .Values.config.f1duIpAddress }}";
           local_s_portc   = 501;
           local_s_portd   = 2152;
           remote_s_portc  = 500;
           remote_s_portd  = 2152;
+
           ssb_SubcarrierOffset                                      = 0;
           min_rxtxtime                                              = 6;
 
@@ -188,7 +183,7 @@ data:
 
 
           ////////// AMF parameters:
-          amf_ip_address      = ( { ipv4       = "192.168.71.132";
+          amf_ip_address      = ( { ipv4       = "{{ .Values.config.amfIpAddress }}";
                                     ipv6       = "192:168:30::17";
                                     active     = "yes";
                                     preference = "ipv4";
@@ -199,17 +194,17 @@ data:
           (
             {
               type = "cp";
-              ipv4_cucp = "192.168.72.140";
+              ipv4_cucp = "{{ .Values.multus.f1cInterface.IPadd }}";
               port_cucp = 38462;
-              ipv4_cuup = "192.168.72.141";
+              ipv4_cuup = "{{ .Values.config.e1IpAddress }}";
               port_cuup = 38462;
             }
           )
 
           NETWORK_INTERFACES :
           {
-              GNB_INTERFACE_NAME_FOR_NG_AMF            = "demo-oai";
-              GNB_IPV4_ADDRESS_FOR_NG_AMF              = "192.168.71.140/24";
+              GNB_INTERFACE_NAME_FOR_NG_AMF            = "net2";
+              GNB_IPV4_ADDRESS_FOR_NG_AMF              = "{{ .Values.multus.n2Interface.IPadd }}";
           };
         }
       );
@@ -242,4 +237,3 @@ data:
              f1ap_log_level                         ="info";
              ngap_log_level                         ="debug";
           };
-{{- end }}

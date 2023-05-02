@@ -27,12 +27,12 @@ spec:
           }
           {{- if .Values.multus.n3Interface.create }}
           ,{
-                 "name": "{{ .Chart.Name }}-net2",
+                 "name": "{{ .Chart.Name }}-net2"
           }
           {{- end }}
           {{- if .Values.multus.ruInterface.create }}
           ,{
-                 "name": "{{ .Chart.Name }}-net3",
+                 "name": "{{ .Chart.Name }}-net3"
           }
           {{- end }}
           ]
