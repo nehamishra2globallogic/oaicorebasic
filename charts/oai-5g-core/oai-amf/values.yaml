@@ -78,9 +78,6 @@ config:
   mySqlUser: "root" # OPTIONAL: used only if not using AUSF
   mySqlPass: "linux" # OPTIONAL: used only if not using AUSF
   mySqlDb: "oai_db" # OPTIONAL: used only if not using AUSF
-<<<<<<< HEAD
-  logLevel: "info"
-=======
   logLevel: "debug"
 
 ## Debugging section
@@ -95,7 +92,6 @@ tcpdumpimage:
    version: latest
    #pullPolicy: IfNotPresent or Never or Always
    pullPolicy: IfNotPresent
->>>>>>> origin/feat/helm-repo
 
 #To store PCAP of NF in a sharedVolume so it can be easily fetched (PVC is created with NRF charts so make sure in NRF it is true)
 persistent:
