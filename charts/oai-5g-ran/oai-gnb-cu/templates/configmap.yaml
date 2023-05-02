@@ -14,13 +14,14 @@ kind: ConfigMap
 metadata:
   name: {{ .Chart.Name }}-configmap
 data:
+  #Taken from --> https://gitlab.eurecom.fr/oai/openairinterface5g/-/blob/develop/ci-scripts/conf_files/gNB_SA_CU.conf
   mounted.conf: |
-      Active_gNBs = ( "oai-cu-rfsim");
+      Active_gNBs = ( "oai-cu");
       # Asn1_verbosity, choice in: none, info, annoying
       Asn1_verbosity = "none";
       Num_Threads_PUSCH = 8;
 
-      Active_gNBs = ( "gNB-Eurecom-CU");
+      Active_gNBs = ( "oai-cu");
       # Asn1_verbosity, choice in: none, info, annoying
       Asn1_verbosity = "none";
       Num_Threads_PUSCH = 8;
@@ -33,7 +34,7 @@ data:
 
       #     cell_type =  "CELL_MACRO_GNB";
 
-          gNB_name  =  "gNB-Eurecom-CU";
+          gNB_name  =  "oai-cu";
 
           // Tracking area code, 0x0000 and 0xfffe are reserved values
           tracking_area_code  =  1;

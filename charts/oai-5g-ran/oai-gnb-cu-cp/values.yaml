@@ -6,12 +6,6 @@ nfimage:   # image name either locally present or in a public/private repository
   # pullPolicy: IfNotPresent or Never or Always
   pullPolicy: IfNotPresent
 
-tcpdumpimage:
-  repository: docker.io/corfr/tcpdump
-  version: latest
-  #pullPolicy: IfNotPresent or Never or Always
-  pullPolicy: IfNotPresent
-
 ## good to use when pulling images from docker-hub mention 
 imagePullSecrets: 
   - name: "regcred"
@@ -25,53 +19,34 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name: "oai-gnb-cu-cp-sa"
 
-podSecurityContext:
-  runAsUser: 0
-  runAsGroup: 0
-
-securityContext:
-  privileged: true
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
-
-
-start:
-  gnbcu: true
-  tcpdump: false
-
-# cu-cp needs three seperate interfaces one for ngap (N2), f1 and e1 
- 
-multus:
-  f1cInterface:
-    create: false
-    IPadd: "172.21.6.16"
-    Netmask: "22"
-    defaultGateway: "172.21.11.254"
-    hostInterface: "bond0"      # Interface of the host machine on which this pod will be scheduled
+ multus:
+  defaultGateway: "172.21.11.254"
   e1Interface:
-    create: false
-    IPadd: "172.21.6.17"
+    create: true
+    IPadd: "172.21.6.90"
     Netmask: "22"
-    defaultGateway: "172.21.11.254"
+    # if gatway is commented then it will be remove
+    Gateway: "172.21.11.254"
     hostInterface: "bond0"      # Interface of the host machine on which this pod will be scheduled
   n2Interface:
-    create: false
-    IPadd: "172.21.6.18"
+    create: true
+    IPadd: "172.21.6.98"
     Netmask: "22"
-    defaultGateway: "172.21.11.254"
+    # if gatway is commented then it will be remove
+    Gateway: "172.21.11.254"
+    hostInterface: "bond0"      # Interface of the host machine on which this pod will be scheduled
+  f1cInterface:
+    create: true
+    IPadd: "172.21.6.92"
+    Netmask: "22"
+    # if gatway is commented then it will be remove
+    Gateway: "172.21.11.254"
     hostInterface: "bond0"      # Interface of the host machine on which this pod will be scheduled
 
-
 config:
-  mountConfig: false          #If config file is mounted then please edit mount.conf in configmap.yaml properly 
+  mountConfig: true          #If config file is mounted then please edit mount.conf in configmap.yaml properly 
   timeZone: "Europe/Paris"
-  rfSimulator: "server" 
-  gnbcuName: "oai-cu-rfsim"
-  useSAcu: "yes"
+  useAdditionalOptions: "--sa --rfsim --log_config.global_log_options level,nocolor,time"
   mcc: "001"   # check the information with AMF, SMF, UPF/SPGWU
   mnc: "01"    # check the information with AMF, SMF, UPF/SPGWU
   mncLength: "2" # check the information with AMF, SMF, UPF/SPGWU
@@ -79,17 +54,25 @@ config:
   nssaiSst: "1"  #currently only 4 standard values are allowed 1,2,3,4 
   nssaiSd0: "ffffff"    #values in hexa-decimal format
   amfIpAddress: "oai-amf-svc"  # amf ip-address
-  gnbNgaIfName: "eth0"            # net1 in case multus create is true that means another interface is created for ngap interface, n2 to communicate with amf
-  gnbNgaIpAddress: "status.podIP" # n2IPadd in case multus create is true
-  gnbNguIfName: "eth0"   #net2 in case multus create is true gtu interface for upf/spgwu
-  gnbNguIpAddress: "status.podIP" # n3IPadd in case multus create is true
-  f1IfName: "eth0"                # net3 incase multus create is true
-  f1cuIpAddress: "status.podIP"   
+  e1IpAddress: "status.podIP"
   f1duIpAddress: "127.0.0.1"
-  f1cuPort: "2153"
-  f1duPort: "2153"
-  useAdditionalOptions: "--sa --rfsim --log_config.global_log_options level,nocolor,time"
+ 
+# Debugging section
+podSecurityContext:
+  runAsUser: 0
+  runAsGroup: 0
 
+start:
+  gnbcucp: true
+  tcpdump: false
+
+includeTcpDumpContainer: false #If true it will add a tcpdump container inside network function pod for debugging
+
+tcpdumpimage:
+   repository: docker.io/corfr/tcpdump
+   version: latest
+   #pullPolicy: IfNotPresent or Never or Always
+   pullPolicy: IfNotPresent
 
 resources:
   define: false

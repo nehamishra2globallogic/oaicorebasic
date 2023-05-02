@@ -15,11 +15,10 @@ metadata:
   name: {{ .Chart.Name }}-configmap
 data:
   mounted.conf: |
-      Active_gNBs = ( "oai-cu-cp-rfsim");
+      Active_gNBs = ( "oai-cu-up");
       # Asn1_verbosity, choice in: none, info, annoying
       Asn1_verbosity = "none";
       sa = 1;
-
       gNBs =
       (
        {
@@ -28,18 +27,21 @@ data:
 
       #     cell_type =  "CELL_MACRO_GNB";
 
-          gNB_name  =  "oai-cu-cp-rfsim";
+          gNB_name  =  "oai-cu-up";
 
           // Tracking area code, 0x0000 and 0xfffe are reserved values
           tracking_area_code  =  1;
-          plmn_list = ({ mcc = 208; mnc = 99; mnc_length = 2; snssaiList = ({ sst = 1, sd = 0xffffff }) });
-
+          plmn_list = ({ mcc = {{ .Values.config.mcc }}; 
+                         mnc = {{ .Values.config.mnc }}; 
+                         mnc_length ={{ .Values.config.mncLength }}; 
+                         snssaiList = ({ sst = {{ .Values.config.nssaiSst }}, sd = {{ .Values.config.nssaiSd }} }) 
+                      });
 
           tr_s_preference = "f1";
 
-          local_s_if_name = "lo";
-          local_s_address = "192.168.72.141";
-          remote_s_address = "192.168.72.142";
+          local_s_if_name = "net3";
+          local_s_address = "{{ .Values.multus.f1uInterface.IPadd }}";
+          remote_s_address = "{{ .Values.config.f1duIpAddress }}";
           local_s_portc   = 501;
           local_s_portd   = 2152;
           remote_s_portc  = 500;
@@ -57,17 +59,17 @@ data:
           (
             {
               type = "up";
-              ipv4_cucp = "192.168.72.140";
-              ipv4_cuup = "192.168.72.141";
+              ipv4_cucp = "{{ .Values.config.e1IpAddress }}";
+              ipv4_cuup = "{{ .Values.multus.f1uInterface.IPadd }}";
             }
           )
 
           NETWORK_INTERFACES :
           {
-              GNB_INTERFACE_NAME_FOR_NG_AMF            = "demo-oai";
-              GNB_IPV4_ADDRESS_FOR_NG_AMF              = "192.168.71.141/24";
-              GNB_INTERFACE_NAME_FOR_NGU               = "demo-oai";
-              GNB_IPV4_ADDRESS_FOR_NGU                 = "192.168.71.141/24";
+              GNB_INTERFACE_NAME_FOR_NG_AMF            = "net2";
+              GNB_IPV4_ADDRESS_FOR_NG_AMF              = "{{ .Values.multus.n3Interface.IPadd }}";
+              GNB_INTERFACE_NAME_FOR_NGU               = "net2";
+              GNB_IPV4_ADDRESS_FOR_NGU                 = "{{ .Values.multus.n3Interface.IPadd }}";
               GNB_PORT_FOR_S1U                         = 2152; # Spec 2152
           };
         }
