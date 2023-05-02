@@ -27,13 +27,8 @@ oai-udr:
   weight: 1
   kubernetesType: Vanilla #Openshift/Vanilla Vanilla for Upstream Kubernetes
   nfimage:  # image name either locally present or in a public/private repository
-<<<<<<< HEAD
     repository: @UDR_REPO@ #docker.io/oaisoftwarealliance/oai-udr           ## The image will be pulled from dockerhub
     version: @UDR_TAG@ #v1.5.0                                    ## The branch to be used to pull from dockerhub
-=======
-    repository: docker.io/oaisoftwarealliance/oai-udr           ## The image will be pulled from dockerhub
-    version: develop                                    ## The branch to be used to pull from dockerhub
->>>>>>> origin/feat/helm-repo
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
   includeTcpDumpContainer: false #only for taking pcaps inside network function pod
@@ -47,13 +42,8 @@ oai-udm:
   weight: 2
   kubernetesType: Vanilla #Openshift/Vanilla Vanilla for Upstream Kubernetes
   nfimage:  # image name either locally present or in a public/private repository
-<<<<<<< HEAD
     repository: @UDM_REPO@ #docker.io/oaisoftwarealliance/oai-udm           ## The image will be pulled from dockerhub
     version: @UDM_TAG@ #v1.5.0                                    ## The branch to be used to pull from dockerhub
-=======
-    repository: docker.io/oaisoftwarealliance/oai-udm           ## The image will be pulled from dockerhub
-    version: develop                                    ## The branch to be used to pull from dockerhub
->>>>>>> origin/feat/helm-repo
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
   includeTcpDumpContainer: false #only for taking pcaps inside network function pod
@@ -67,38 +57,25 @@ oai-ausf:
   weight: 3
   kubernetesType: Vanilla #Openshift/Vanilla Vanilla for Upstream Kubernetes
   nfimage:  # image name either locally present or in a public/private repository
-<<<<<<< HEAD
     repository: @AUSF_REPO@ #docker.io/oaisoftwarealliance/oai-ausf           ## The image will be pulled from dockerhub
     version: @AUSF_TAG@ #v1.5.0                                    ## The branch to be used to pull from dockerhub
-=======
-    repository: docker.io/oaisoftwarealliance/oai-ausf           ## The image will be pulled from dockerhub
-    version: develop                                    ## The branch to be used to pull from dockerhub
->>>>>>> origin/feat/helm-repo
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
   includeTcpDumpContainer: false #only for taking pcaps inside network function pod
   imagePullSecrets:
     - name: "regcred"
-<<<<<<< HEAD
   securityContext:
     privileged: false
-=======
   config:
     logLevel: "debug"   #allowed info/error/debug
->>>>>>> origin/feat/helm-repo
   nodeSelector: {}
 oai-amf:
   enabled: true
   weight: 4
   kubernetesType: Vanilla #Openshift/Vanilla Vanilla for Upstream Kubernetes
   nfimage:  # image name either locally present or in a public/private repository
-<<<<<<< HEAD
     repository: @AMF_REPO@ #docker.io/oaisoftwarealliance/oai-amf           ## The image will be pulled from dockerhub
     version: @AMF_TAG@ #v1.5.0                                    ## The branch to be used to pull from dockerhub
-=======
-    repository: docker.io/oaisoftwarealliance/oai-amf           ## The image will be pulled from dockerhub
-    version: develop                                    ## The branch to be used to pull from dockerhub
->>>>>>> origin/feat/helm-repo
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
   includeTcpDumpContainer: false #only for taking pcaps inside network function pod
@@ -108,15 +85,9 @@ oai-amf:
     privileged: false
   multus:
     create: false
-<<<<<<< HEAD
-    n2IPadd: "172.21.6.200"
-    n2Netmask: "22"
-    n2Gateway: "172.21.7.254"
-=======
     n2IPadd: "172.21.6.94"
     n2Netmask: "22"
     defaultGateway: "172.21.7.254"
->>>>>>> origin/feat/helm-repo
     hostInterface: "bond0"      # Interface of the host machine on which this pod will be scheduled
   config:
     amfInterfaceNameForNGAP: "eth0" # If multus creation is true then net1 else eth0
@@ -135,11 +106,7 @@ oai-amf:
     nfRegistration: "yes"
     smfSelection: "no"        #Bug in SMF can not have SMF selection when using UDR to fetch user-information
     useHttp2: "no"
-<<<<<<< HEAD
     intAlgoList: '[ "NIA1" , "NIA2" ]'
-=======
-    intAlgoList: '[ "NIA1" , "NIA1" , "NIA2" ]'
->>>>>>> origin/feat/helm-repo
     ciphAlgoList: '[ "NEA0" , "NEA1" , "NEA2" ]'
   nodeSelector: {}
 oai-spgwu-tiny:
@@ -147,13 +114,8 @@ oai-spgwu-tiny:
   weight: 5
   kubernetesType: Vanilla #Openshift/Vanilla Vanilla for Upstream Kubernetes
   nfimage:  # image name either locally present or in a public/private repository
-<<<<<<< HEAD
     repository: @SPGWU_REPO@ #docker.io/oaisoftwarealliance/oai-spgwu-tiny    ## The image will be pulled from dockerhub
     version: @SPGWU_TAG@ #v1.5.0                                    ## The branch to be used to pull from dockerhub
-=======
-    repository: docker.io/oaisoftwarealliance/oai-spgwu-tiny    ## The image will be pulled from dockerhub
-    version: develop                                    ## The branch to be used to pull from dockerhub
->>>>>>> origin/feat/helm-repo
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
   includeTcpDumpContainer: false #only for taking pcaps inside network function pod
@@ -212,13 +174,8 @@ oai-smf:
   weight: 6
   kubernetesType: Vanilla #Openshift/Vanilla Vanilla for Upstream Kubernetes
   nfimage:  # image name either locally present or in a public/private repository
-<<<<<<< HEAD
     repository: @SMF_REPO@ #docker.io/oaisoftwarealliance/oai-smf           ## The image will be pulled from dockerhub
     version: @SMF_TAG@ #v1.5.0                                    ## The branch to be used to pull from dockerhub
-=======
-    repository: docker.io/oaisoftwarealliance/oai-smf           ## The image will be pulled from dockerhub
-    version: develop                                    ## The branch to be used to pull from dockerhub
->>>>>>> origin/feat/helm-repo
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
   includeTcpDumpContainer: false #only for taking pcaps inside network function pod
