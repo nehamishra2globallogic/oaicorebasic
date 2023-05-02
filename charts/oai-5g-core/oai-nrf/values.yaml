@@ -1,6 +1,7 @@
-kubernetesType: Openshift  # Vanilla (Community Kubernetes) or Openshift (For RedHat Openshift)
+kubernetesType: Vanilla  #Vanilla for community kubernetes distribution else Openshift for Openshift
 
-# NF image
+## In case of using these charts on Openshift then please use UBI images
+## To know more about them follow this tutorial https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed/-/tree/master/openshift
 nfimage:
   repository: docker.io/oaisoftwarealliance/oai-nrf
   version: develop #image tag, develop tag for experimental features 
@@ -38,6 +39,7 @@ start:
 
 includeTcpDumpContainer: false #If true it will add a tcpdump container inside network function pod for debugging
 
+## For openshift you can use rhel8/support-tools:8.7-13
 tcpdumpimage:
   repository: docker.io/corfr/tcpdump
   version: latest

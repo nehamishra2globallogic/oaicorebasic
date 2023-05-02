@@ -1,3 +1,4 @@
+{{- if .Values.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -21,3 +22,4 @@ data:
       iperf3 -s --daemon -p $server_port
     done
     /bin/bash -c 'trap : TERM INT; sleep infinity & wait'
+{{- end }}
