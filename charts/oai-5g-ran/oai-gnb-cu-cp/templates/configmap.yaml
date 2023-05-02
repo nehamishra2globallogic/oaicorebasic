@@ -194,7 +194,7 @@ data:
           (
             {
               type = "cp";
-              ipv4_cucp = "{{ .Values.multus.f1cInterface.IPadd }}";
+              ipv4_cucp = "{{ .Values.multus.e1Interface.IPadd }}";
               port_cucp = 38462;
               ipv4_cuup = "{{ .Values.config.e1IpAddress }}";
               port_cuup = 38462;

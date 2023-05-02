@@ -49,7 +49,7 @@ data:
             {
               type = "up";
               ipv4_cucp = "{{ .Values.config.e1IpAddress }}";
-              ipv4_cuup = "{{ .Values.multus.f1uInterface.IPadd }}";
+              ipv4_cuup = "{{ .Values.multus.e1Interface.IPadd }}";
             }
           )
 

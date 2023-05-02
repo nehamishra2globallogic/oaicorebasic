@@ -76,8 +76,8 @@ config:
   f1cuIpAddress: "status.podIP"   # f1Interface.IPadd
   ## Its the DU which communicates with the CU so no need for DU ip-address
   f1duIpAddress: "127.0.0.1"
-  f1cuPort: "2153"
-  f1duPort: "2153"
+  f1cuPort: "2152"
+  f1duPort: "2152"
 
 ## Debugging section
 podSecurityContext:

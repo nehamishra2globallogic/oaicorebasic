@@ -31,24 +31,26 @@ multus:
     create: true
     IPadd: "172.21.6.90"
     Netmask: "22"
-    # if gatway is commented then it will be remove
+    # if gatway is commented or empty then it will be remove
     #Gateway: "172.21.7.254"
     hostInterface: "bond0"      # Interface of the host machine on which this pod will be scheduled
   n2Interface:
     create: true
     IPadd: "172.21.6.98"
     Netmask: "22"
-    # if gatway is commented then it will be remove
+    # if gatway is commented or empty then it will be remove
     #Gateway: "172.21.7.254"
     hostInterface: "bond0"      # Interface of the host machine on which this pod will be scheduled
   f1cInterface:
     create: true
     IPadd: "172.21.6.92"
     Netmask: "22"
-    # if gatway is commented then it will be remove
+    # if gatway is commented or empty then it will be remove
     #Gateway: "172.21.7.254"
     hostInterface: "bond0"      # Interface of the host machine on which this pod will be scheduled
 
+## configuration file is in template/config.yaml 
+## It is taken from https://gitlab.eurecom.fr/oai/openairinterface5g/-/blob/develop/ci-scripts/conf_files/gnb-cucp.sa.f1.conf
 config:
   timeZone: "Europe/Paris"
   useAdditionalOptions: "--sa --log_config.global_log_options level,nocolor,time"

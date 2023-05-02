@@ -64,14 +64,14 @@ config:
   nssaiSd0: "ffffff"    #values in hexa-decimal format
   amfIpAddress: "127.0.0.1"  # Not mandatory, you can leave it like this in coming release it will be removed
   gnbNgaIfName: "eth0"            # net1 in case multus create is true that means another interface is created for ngap interface, n2 to communicate with amf
-  gnbNgaIpAddress: "status.podIP" # n2IPadd in case multus create is true
+  gnbNgaIpAddress: "status.podIP" # f1Interface.Ipadd in case multus create is true
   gnbNguIfName: "eth0"   #net2 in case multus create is true gtu interface for upf/spgwu
-  gnbNguIpAddress: "status.podIP" # n3IPadd in case multus create is true
-  f1IfName: "eth0"                # net3 incase multus create is true
-  f1cuIpAddress: "10.244.0.16"     # replace this value with GNB_CU_eth0_IP if not using multus
+  gnbNguIpAddress: "status.podIP" # f1Interface.Ipadd in case multus create is true
+  f1IfName: "eth0"                # net1 incase multus create is true
+  f1cuIpAddress: "10.244.0.16"     # replace this value with CU f1 ip-address or CU-CP F1C ip-address if not using multus
   f1duIpAddress: "status.podIP"
-  f1cuPort: "2153"
-  f1duPort: "2153"
+  f1cuPort: "2152"
+  f1duPort: "2152"
 
 ## Debugging section
 podSecurityContext:

@@ -48,6 +48,8 @@ multus:
     #Gateway: "172.21.7.254"
     hostInterface: "bond0"      # Interface of the host machine on which this pod will be scheduled
 
+## configuration file is in template/config.yaml 
+## It is taken from https://gitlab.eurecom.fr/oai/openairinterface5g/-/blob/develop/ci-scripts/conf_files/gnb-cuup.sa.f1.conf
 config:
   timeZone: "Europe/Paris"
   useAdditionalOptions: "--sa"
