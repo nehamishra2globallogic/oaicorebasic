@@ -55,7 +55,7 @@ oai-udm:
 oai-ausf:
   enabled: true
   weight: 3
-  kubernetesType: Openshift #Openshift/Vanilla Vanilla for Upstream Kubernetes
+  kubernetesType: Vanilla #Openshift/Vanilla Vanilla for Upstream Kubernetes
   nfimage:  # image name either locally present or in a public/private repository
     repository: docker.io/oaisoftwarealliance/oai-ausf           ## The image will be pulled from dockerhub
     version: develop                                    ## The branch to be used to pull from dockerhub
@@ -83,7 +83,7 @@ oai-amf:
     create: false
     n2IPadd: "172.21.6.94"
     n2Netmask: "22"
-    n2Gateway: "172.21.7.254"
+    defaultGateway: "172.21.7.254"
     hostInterface: "bond0"      # Interface of the host machine on which this pod will be scheduled
   config:
     amfInterfaceNameForNGAP: "eth0" # If multus creation is true then net1 else eth0
@@ -121,7 +121,7 @@ oai-spgwu-tiny:
     create: false
     n3Ip: "172.21.6.95"
     n3Netmask: "22"
-    n6Gw: "172.21.7.254"
+    defaultGateway: "172.21.7.254"
     hostInterface: "bond0"
   config:
     n3If: "eth0"  # net1 if gNB is outside the cluster network and multus creation is true else eth0
@@ -145,26 +145,26 @@ oai-spgwu-tiny:
     nssaiSd1: "0xFFFFFF"  # should match with SMF information (Optional, if removed sd value will be 0xFFFFFF only if nssaiSst1 is configured)
     dnn1: "ims" # should match with SMF information
   nodeSelector: {}
-oai-traffic-server:
-  enabled: true
-  weight: 6
-  kubernetesType: Vanilla
-  trafficServer:
-    repository: docker.io/oaisoftwarealliance/trf-gen-cn5g
-    version: latest
-    #pullPolicy: IfNotPresent or Never or Always
-    pullPolicy: IfNotPresent
-  #Without multus traffic server won't be able to forward packets to spgwu if can't use server then add an extra container in spgwu with iperf3 or install iperf3 package in tcpdump container
-  multus:
-    create: false
-    IPadd: "172.21.6.99"
-    Netmask: "22"
-    Gateway: "172.21.7.254"
-    hostInterface: "bond0"	# Interface of the host machine on which this pod will be scheduled
-  config:
-    ueroute: 12.1.1.0/24
-    upfIpadd: 172.21.6.95
-    noOfIperf3Server: 10
+#oai-traffic-server:
+#  enabled: false
+#  weight: 6
+#  kubernetesType: Vanilla
+#  trafficServer:
+#    repository: docker.io/oaisoftwarealliance/trf-gen-cn5g
+#    version: latest
+#    #pullPolicy: IfNotPresent or Never or Always
+#    pullPolicy: IfNotPresent
+#  #Without multus traffic server won't be able to forward packets to spgwu if can't use server then add an extra container in spgwu with iperf3 or install iperf3 package in tcpdump container
+#  multus:
+#    create: true
+#    IPadd: "172.21.6.99"
+#    Netmask: "22"
+#    defaultGateway: "172.21.7.254"
+#    hostInterface: "bond0"	# Interface of the host machine on which this pod will be scheduled
+#  config:
+#    ueroute: 12.1.1.0/24
+#    upfIpadd: 172.21.6.95
+#    noOfIperf3Server: 10
 oai-smf:
   enabled: true
   weight: 6
@@ -179,7 +179,7 @@ oai-smf:
     create: false
     n4IPadd: "172.21.6.98"
     n4Netmask: "22"
-    n4Gateway: "172.21.7.254"
+    defaultGateway: "172.21.7.254"
     hostInterface: "bond0"      # Interface of the host machine on which this pod will be scheduled
   imagePullSecrets:
     - name: "regcred"
