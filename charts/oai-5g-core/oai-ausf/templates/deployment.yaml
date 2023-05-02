@@ -53,10 +53,7 @@ spec:
           - /bin/sleep
           - infinity
         {{- end}}
-<<<<<<< HEAD
-=======
         {{- if .Values.includeTcpDumpContainer}}
->>>>>>> origin/feat/helm-repo
         {{- if .Values.persistent.sharedvolume}}
         volumeMounts:
         - mountPath: "/tmp/pcap"
@@ -205,12 +202,7 @@ spec:
       {{- if .Values.includeTcpDumpContainer}}
       {{- if .Values.persistent.sharedvolume}}
       volumes:
-<<<<<<< HEAD
-      {{- if .Values.persistent.sharedvolume}}
-      - name: cn5g-pv
-=======
       - name: cn5g-pvc
->>>>>>> origin/feat/helm-repo
         persistentVolumeClaim:
           claimName: cn5g-pvc
       {{- end }}
