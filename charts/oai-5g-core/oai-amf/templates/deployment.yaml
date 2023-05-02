@@ -31,6 +31,7 @@ spec:
         {{ toYaml .Values.imagePullSecrets | indent 8 }}
     {{- end }}
       containers:
+    {{- if .Values.includeTcpDumpContainer }}
       - name: tcpdump
         image: "{{ .Values.tcpdumpimage.repository }}:{{ .Values.tcpdumpimage.version }}"
         imagePullPolicy: {{ .Values.tcpdumpimage.pullPolicy }}
@@ -44,22 +45,30 @@ spec:
             cpu: {{ .Values.resources.tcpdump.limits.cpu | quote }}
         {{- end}}
         securityContext:
-          {{- toYaml .Values.securityContext | nindent 12 }}
+           privileged: true
+           capabilities:
+              add:
+               - NET_ADMIN
+              drop:
+               - ALL
         {{- if .Values.start.tcpdump}}
         command:
           - /bin/sh
           - -c
-          - /usr/sbin/tcpdump -i any -w /pcap/{{ .Chart.Name }}_`date +%Y-%m-%d_%H_%M-%S-%Z`.pcap
+          - /usr/sbin/tcpdump -i any -w /tmp/pcap/{{ .Chart.Name }}_`date +%Y-%m-%d_%H_%M-%S-%Z`.pcap
         {{- else}}
         command:
           - /bin/sleep
           - infinity
         {{- end}}
+        {{- if .Values.includeTcpDumpContainer}}
         {{- if .Values.persistent.sharedvolume}}
         volumeMounts:
-        - mountPath: "/pcap"
-          name: cn5g-pv
+        - mountPath: "/tmp/pcap"
+          name: cn5g-pvc
         {{- end}}
+        {{- end}}
+    {{- end }}
       - name: amf
         image: "{{ .Values.nfimage.repository }}:{{ .Values.nfimage.version }}"
         imagePullPolicy: {{ .Values.nfimage.pullPolicy }}
@@ -75,8 +84,6 @@ spec:
             memory: {{ .Values.resources.nf.limits.memory | quote }}
             cpu: {{ .Values.resources.nf.limits.cpu | quote }}
         {{- end}}
-        securityContext:
-          {{- toYaml .Values.securityContext | nindent 12 }}
         {{- if .Values.readinessProbe}}
         readinessProbe:
           exec:
@@ -84,7 +91,7 @@ spec:
             - /bin/bash
             - /openair-amf/bin/healthcheck.sh
           initialDelaySeconds: 2
-          periodSeconds: 3
+          periodSeconds: 5
         {{- end}}
         {{- if .Values.livenessProbe}}
         livenessProbe:
@@ -117,10 +124,12 @@ spec:
           - infinity
         {{- end}}
       volumes:
+      {{- if .Values.includeTcpDumpContainer}}
       {{- if .Values.persistent.sharedvolume}}
-      - name: cn5g-pv
+      - name: cn5g-pvc
         persistentVolumeClaim:
           claimName: cn5g-pvc
+      {{- end }}
       {{- end }}
       - configMap:
           name: {{ .Chart.Name }}-configmap

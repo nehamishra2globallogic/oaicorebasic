@@ -1,14 +1,8 @@
-kubernetesType: Vanilla  #Vanilla for community kubernetes distribution
+kubernetesType: Vanilla  # Vanilla (Community Kubernetes) or Openshift (For RedHat Openshift)
 
 nfimage:
   repository: docker.io/oaisoftwarealliance/oai-udm         
-  version: v1.5.0                        #image tag, develop tag for experimental features 
-  #pullPolicy: IfNotPresent or Never or Always
-  pullPolicy: IfNotPresent
-
-tcpdumpimage:
-  repository: docker.io/corfr/tcpdump
-  version: latest
+  version: develop                        #image tag, develop tag for experimental features 
   #pullPolicy: IfNotPresent or Never or Always
   pullPolicy: IfNotPresent
 
@@ -29,18 +23,12 @@ podSecurityContext:
 
 #service type is fixed to clusterIP, it is only support for non multus interface (eth0)
 
-securityContext:
-  privileged: false
-
-start:
-  udm: true
-  tcpdump: false
-
 config:
   tz: "Europe/Paris"
   instance: 0
   pidDirectory: "/var/run"
   udmName: "oai-udm"
+  logLevel: "debug"
   sbiIfName: "eth0"
   sbiPortHttp1: "80"
   sbiPortHttp2: "8080"
@@ -58,10 +46,22 @@ config:
   nrfFqdn: "oai-nrf-svc"
   logLevel: "info"
 
-persistence:
+## Debugging section
+start:
+  udm: true #If false the network function container will run in sleep mode for manually testing
+  tcpdump: false
+
+includeTcpDumpContainer: false #If true it will add a tcpdump container inside network function pod for debugging
+
+tcpdumpimage:
+   repository: docker.io/corfr/tcpdump
+   version: latest
+   #pullPolicy: IfNotPresent or Never or Always
+   pullPolicy: IfNotPresent
+
+#To store PCAP of NF in a sharedVolume so it can be easily fetched (PVC is created with NRF charts so make sure in NRF it is true)
+persistent:
   sharedvolume: false
-  volumneName: managed-nfs-storage
-  size: 1Gi
 
 resources:
   define: false
@@ -88,4 +88,4 @@ terminationGracePeriodSeconds: 5
 
 nodeSelector: {}
 
-nodeName: 
+nodeName:

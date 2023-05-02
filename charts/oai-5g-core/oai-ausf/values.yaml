@@ -1,14 +1,8 @@
-kubernetesType: Vanilla  #Vanilla for community kubernetes distribution
+kubernetesType: Vanilla  # Vanilla (Community Kubernetes) or Openshift (For RedHat Openshift)
 
 nfimage:
   repository: docker.io/oaisoftwarealliance/oai-ausf   ## oaisoftwarealliance/oai-ausf # image name either locally present or in a public/private repository
-  version: v1.5.0       #image tag, develop tag for experimental features 
-  #pullPolicy: IfNotPresent or Never or Always
-  pullPolicy: IfNotPresent
-
-tcpdumpimage:
-  repository: docker.io/corfr/tcpdump
-  version: latest
+  version: develop       #image tag, develop tag for experimental features 
   #pullPolicy: IfNotPresent or Never or Always
   pullPolicy: IfNotPresent
 
@@ -31,17 +25,11 @@ podSecurityContext:
   runAsUser: 0
   runAsGroup: 0
 
-securityContext:
-  privileged: false
-
-start:
-  ausf: true
-  tcpdump: false #start tcpdump collection to analyse but beware it will take a lot of space in the container/persistent volume
-
 config:
   tz: "Europe/Paris"
   instanceId: "0"
   pidDirectory: "/var/run"
+  logLevel: "debug"
   ausfName: "OAI_AUSF"
   sbiIfName: "eth0"
   sbiPortHttp1: "80"
@@ -58,10 +46,24 @@ config:
   nrfFqdn: "oai-nrf-svc"
   registerNrf: "no"
 
+## Debugging section
+start:
+  ausf: true #If false the network function container will run in sleep mode for manually testing
+  tcpdump: false
+
+includeTcpDumpContainer: false #If true it will add a tcpdump container inside network function pod for debugging
+
+tcpdumpimage:
+  repository: docker.io/corfr/tcpdump
+  version: latest   
+  #pullPolicy: IfNotPresent or Never or Always
+  pullPolicy: IfNotPresent
+
+
+#To store PCAP of NF in a sharedVolume so it can be easily fetched (PVC is created with NRF charts so make sure in NRF it is true)
+
 persistent:
   sharedvolume: false
-  volumneName: managed-nfs-storage
-  size: 1Gi
 
 resources:
   define: false
@@ -88,4 +90,4 @@ terminationGracePeriodSeconds: 5
 
 nodeSelector: {}
 
-nodeName: 
+nodeName:

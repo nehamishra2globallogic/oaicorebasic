@@ -14,8 +14,14 @@ kind: ConfigMap
 metadata:
   name: {{ .Chart.Name }}-configmap
 data:
+  #Taken from --> https://gitlab.eurecom.fr/oai/openairinterface5g/-/blob/develop/ci-scripts/conf_files/gNB_SA_CU.conf
   mounted.conf: |
-      Active_gNBs = ( "oai-cu-rfsim");
+      Active_gNBs = ( "oai-cu");
+      # Asn1_verbosity, choice in: none, info, annoying
+      Asn1_verbosity = "none";
+      Num_Threads_PUSCH = 8;
+
+      Active_gNBs = ( "oai-cu");
       # Asn1_verbosity, choice in: none, info, annoying
       Asn1_verbosity = "none";
       Num_Threads_PUSCH = 8;
@@ -28,11 +34,11 @@ data:
 
       #     cell_type =  "CELL_MACRO_GNB";
 
-          gNB_name  =  "oai-cu-rfsim";
+          gNB_name  =  "oai-cu";
 
           // Tracking area code, 0x0000 and 0xfffe are reserved values
           tracking_area_code  =  1;
-          plmn_list = ({ mcc = 001; mnc = 01; mnc_length = 2; snssaiList = ({ sst = 1, sd = 0xffffff }) });
+          plmn_list = ({ mcc = 208; mnc = 99; mnc_length = 2; snssaiList = ({ sst = 1, sd = 0xffffff }) });
 
 
           nr_cellid = 12345678L;
@@ -40,21 +46,14 @@ data:
 
           tr_s_preference = "f1";
 
-          local_s_if_name = "eth0";
-          local_s_address = "10.244.0.83";
-          remote_s_address = "127.0.0.1";
+          local_s_if_name = "lo";
+          local_s_address = "127.0.0.4";
+          remote_s_address = "127.0.0.3";
           local_s_portc   = 501;
-          local_s_portd   = 2153;
+          local_s_portd   = 2152;
           remote_s_portc  = 500;
-          remote_s_portd  = 2153;
+          remote_s_portd  = 2152;
           min_rxtxtime                                              = 6;
-
-           pdcch_ConfigSIB1 = (
-            {
-              controlResourceSetZero = 12;
-              searchSpaceZero = 0;
-            }
-            );
 
           servingCellConfigCommon = (
           {
@@ -193,7 +192,7 @@ data:
 
 
           ////////// AMF parameters:
-              amf_ip_address      = ( { ipv4       = "10.244.0.72";
+          amf_ip_address      = ( { ipv4       = "192.168.70.132";
                                     ipv6       = "192:168:30::17";
                                     active     = "yes";
                                     preference = "ipv4";
@@ -202,11 +201,10 @@ data:
 
           NETWORK_INTERFACES :
           {
-
-              GNB_INTERFACE_NAME_FOR_NG_AMF            = "eth0";
-              GNB_IPV4_ADDRESS_FOR_NG_AMF              = "10.244.0.83";
-              GNB_INTERFACE_NAME_FOR_NGU               = "eth0";
-              GNB_IPV4_ADDRESS_FOR_NGU                 = "10.244.0.83";
+              GNB_INTERFACE_NAME_FOR_NG_AMF            = "demo-oai";
+              GNB_IPV4_ADDRESS_FOR_NG_AMF              = "192.168.70.129/24";
+              GNB_INTERFACE_NAME_FOR_NGU               = "demo-oai";
+              GNB_IPV4_ADDRESS_FOR_NGU                 = "192.168.70.129/24";
               GNB_PORT_FOR_S1U                         = 2152; # Spec 2152
           };
         }
@@ -237,7 +235,9 @@ data:
              rlc_log_level                         ="debug";
              pdcp_log_level                        ="info";
              rrc_log_level                         ="info";
-             f1ap_log_level                         ="debug";
+             f1ap_log_level                         ="info";
              ngap_log_level                         ="debug";
           };
+
+
 {{- end }}

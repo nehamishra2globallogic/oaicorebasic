@@ -1,15 +1,9 @@
-kubernetesType: Vanilla  #Vanilla for community kubernetes distribution
+kubernetesType: Vanilla  # Vanilla (Community Kubernetes) or Openshift (For RedHat Openshift)
 
 nfimage:
   repository: docker.io/oaisoftwarealliance/oai-spgwu-tiny # dockerhub oaisoftwarealliance/oai-spgwu-tiny
-  version: v1.5.0           #image tag, develop tag for experimental features
+  version: develop           #image tag, develop tag for experimental features
   # pullPolicy: IfNotPresent or Never or Always
-  pullPolicy: IfNotPresent
-
-tcpdumpimage:
-  repository: docker.io/corfr/tcpdump
-  version: latest
-  #pullPolicy: IfNotPresent or Never or Always
   pullPolicy: IfNotPresent
 
 ## good to use when pulling images from docker-hub
@@ -27,19 +21,11 @@ podSecurityContext:
   runAsUser: 0
   runAsGroup: 0
 
-securityContext:
-  privileged: true
-
 #service type is fixed to clusterIP, it is only support for non multus interface (eth0)
 
 service:
   pfcpPort: 8805 # default port no need to change unless necessary
   gtpuPort: 2152 # default port no need to change unless necessary
-
-# Just for debugging
-start:
-  spgwu: true
-  tcpdump: false
 
 # create an extra interface for N3 incase the gNB is outside the cluster network or there is a need to have dedicated interface for N3
 multus:
@@ -77,12 +63,25 @@ config:
   logLevel: "info"
 
 
-## currently only used by tcpdump container to store the tcpdump, this volume will be shared between all the network functions
-persistent:
-  sharedvolume: false  # should be true when if wants to store the tcpdump of all the network functions at same place
-  volumneName: managed-nfs-storage
-  size: 1Gi
+## Debugging section
+start:
+  spgwu: true #If false the network function container will run in sleep mode for manually testing
+  tcpdump: false
 
+includeTcpDumpContainer: false #If true it will add a tcpdump container inside network function pod for debugging
+
+tcpdumpimage:
+  repository: docker.io/corfr/tcpdump
+  version: latest
+  #pullPolicy: IfNotPresent or Never or Always
+  pullPolicy: IfNotPresent
+
+securityContext:
+  privileged: true
+
+#To store PCAP of NF in a sharedVolume so it can be easily fetched (PVC is created with NRF charts so make sure in NRF it is true)
+persistent:
+  sharedvolume: false
 
 resources:
   define: false

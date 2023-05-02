@@ -6,12 +6,6 @@ nfimage:
   # pullPolicy: IfNotPresent or Never or Always
   pullPolicy: IfNotPresent
 
-tcpdumpimage:
-  repository: docker.io/corfr/tcpdump
-  version: latest
-  #pullPolicy: IfNotPresent or Never or Always
-  pullPolicy: IfNotPresent
-
 serviceAccount:
   # Specifies whether a service account should be created
   create: true
@@ -21,31 +15,13 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name: "oai-nr-ue-sa"
 
-## good to use when pulling images from docker-hub mention 
-#imagePullSecrets: 
-#  - name: "regcred"
-
-
-podSecurityContext:
-  runAsUser: 0
-  runAsGroup: 0
-
-securityContext:
-  privileged: true
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
-
-start:
-  nrue: true
-  tcpdump: false  # if false then started in sleep mode else it will start capturing packets, nr ue will have a lot of packets per sec better avoid this or add a filter in the deployment.yaml
+# good to use when pulling images from docker-hub mention 
+imagePullSecrets: 
+ - name: "regcred"
 
 multus:
   create: false
-  ipadd: "172.21.6.204"  # interface needed to connect with gnb
+  ipadd: "172.21.6.27"  # interface needed to connect with gnb
   netmask: "22"
   defaultGateway: "172.21.7.254"
   hostInterface: "bond0"
@@ -59,10 +35,26 @@ config:
   dnn: "oai" 
   nssaiSst: "1"                     # configure according to gnb and amf, smf and upf 
   nssaiSd: "16777215" 
-  useAdditionalOptions: "-E --sa --rfsim -r 106 --numerology 1 -C 3619200000 --nokrnmod" 
+  useAdditionalOptions: "--sa -E --rfsim -r 106 --numerology 1 -C 3619200000 --nokrnmod --log_config.global_log_options level,nocolor,time" 
 
 # in case of du change the command   
 #"--sa --rfsim -r 106 --numerology 1 -C 3619200000 --nokrnmod --log_config.global_log_options level,nocolor,time" 
+
+podSecurityContext:
+  runAsUser: 0
+  runAsGroup: 0
+
+start:
+  nrue: true
+  tcpdump: false  # if false then started in sleep mode else it will start capturing packets, nr ue will have a lot of packets per sec better avoid this or add a filter in the deployment.yaml
+
+includeTcpDumpContainer: false #If true it will add a tcpdump container inside network function pod for debugging
+
+tcpdumpimage:
+   repository: docker.io/corfr/tcpdump
+   version: latest
+   #pullPolicy: IfNotPresent or Never or Always
+   pullPolicy: IfNotPresent
 
 resources:
   define: false

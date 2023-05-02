@@ -6,12 +6,6 @@ nfimage:   # image name either locally present or in a public/private repository
   # pullPolicy: IfNotPresent or Never or Always
   pullPolicy: IfNotPresent
 
-tcpdumpimage:
-  repository: docker.io/corfr/tcpdump
-  version: latest
-  #pullPolicy: IfNotPresent or Never or Always
-  pullPolicy: IfNotPresent
-
 # good to use when pulling images from docker-hub mention 
 imagePullSecrets: 
  - name: "regcred"
@@ -25,71 +19,100 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name: "oai-gnb-sa"
 
-podSecurityContext:
-  runAsUser: 0
-  runAsGroup: 0
-
-securityContext:
-  privileged: true
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
-
 #service type is fixed to clusterIP, it is only support for non multus interface (eth0)
 
-start:
-  gnb: true
-  tcpdump: false
 
-# gNB needs two seperate interface one for ngap (N2) and other one for gtpu (N3) 
-# But for experimentation only one interface can be used. 
-# When you need multus:
-# 1. you want seperate interface for N2 and N3 
-# 2. You want static ip-address for N2 and N3 interface
-# 3. Different interfaces for different packets
+# These helm-charts can be used for two purpose
+# 1. RFSimulated oai-gNB: Only requires 1 interface for N2 and N3. You can use Kubernetes default interface eth0
+# 2. Physical gNB with Ethernet based USRP or RRU: You need to use ruInterface to connect with RU. Make sure that the ip-address you choose can reach to RU. 
+#                                                 Using a dedicated interface for N2 or N3 is optional you can still use eth0. 
 
-multus:    # needed when gnB service will run on another interface rather than traditional eth0
-  create: false
-  n2n3IPadd: "172.21.6.203"
-  n2n3Netmask: "22"
+## NOTE: To use these charts with USRP B210 you need to modify and mount usb from the host. 
+# Multus interface name
+
+multus:
   defaultGateway: "172.21.7.254"
-  hostInterface: "bond0"      # Interface of the host machine on which this pod will be scheduled
+  n2Interface:
+    create: false
+    IPadd: "172.21.6.90"
+    Netmask: "22"
+    # if gatway is commented then it will be remove
+    Gateway: "172.21.7.254"
+    hostInterface: "bond0"      # Interface of the host machine on which this pod will be scheduled
+  n3Interface:
+    create: false
+    IPadd: "172.21.6.91"
+    Netmask: "22"
+    # if gatway is commented then it will be remove
+    Gateway: "172.21.7.254"
+    hostInterface: "bond0"      # Interface of the host machine on which this pod will be scheduled
+  ruInterface:            #Only needed if using a ethernet based RU/USRP
+    create: false
+    IPadd: "192.168.80.90"
+    Netmask: "24"
+    # if gatway is commented then it will be remove
+    Gateway: "192.168.80.1"  #In case you don't have a gateway remove it from here
+    hostInterface: "bond0"      # Interface of the host machine on which this pod will be scheduled
 
+## If you want to change more configuration parameters then you should mount the config file or use it from 
+# https://gitlab.eurecom.fr/oai/openairinterface5g/-/tree/develop/targets/PROJECTS/GENERIC-NR-5GC/CONF 
 config:
   mountConfig: false          #If config file is mounted then please edit mount.conf in configmap.yaml properly 
-  useSATddMono: true
-  timeZone: "Europe/Paris"
   rfSimulator: "server"
+  timeZone: "Europe/Paris"
+  useAdditionalOptions: "--sa -E --rfsim --log_config.global_log_options level,nocolor,time"
+  # If mounting the configuration file then below parameters are not used
   useSATddMono: "yes"
-  gnbName: "gnb-rfsim"
+  gnbName: "oai-gnb-rfsim"
   mcc: "001"   # check the information with AMF, SMF, UPF/SPGWU
   mnc: "01"    # check the information with AMF, SMF, UPF/SPGWU
   mncLength: "2" # check the information with AMF, SMF, UPF/SPGWU
   tac: "1"     # check the information with AMF
   nssaiSst: "1"  #currently only 4 standard values are allowed 1,2,3,4 
   nssaiSd0: "ffffff"    #values in hexa-decimal format
-  amfIpAddress: "oai-amf-svc"  # amf ip-address or service-name oai-amf-svc
+  #entrypoint.sh tries to resolve the amfHost name if the resolution did not work gNB will not start
+  amfIpAddress: "oai-amf-svc"  # amf ip-address or service-name oai-amf-svc or 172.21.6.94
   gnbNgaIfName: "eth0"            # net1 in case multus create is true that means another interface is created for ngap interface, n2 to communicate with amf
   gnbNgaIpAddress: "status.podIP" # n2n3IPadd in case multus create is true
   gnbNguIfName: "eth0"   #net1 in case multus create is true gtu interface for upf/spgwu
   gnbNguIpAddress: "status.podIP" # n2n3IPadd in case multus create is true
-  useAdditionalOptions: "--sa -E --rfsim --log_config.global_log_options level,nocolor,time"
+  ## -E is to apply three-quarter of sampling frequency, 23.04 Msps to reduce the data rate on USB/PCIe transfers (only valid for 20 MHz)
   threadParallelConfig: "PARALLEL_SINGLE_THREAD"
   sdrAddrs: "serial=XXXXXXX"
 
+## Debugging section
+start:
+  gnb: true #If false the network function container will run in sleep mode for manually testing
+  tcpdump: false
+
+includeTcpDumpContainer: false #If true it will add a tcpdump container inside network function pod for debugging
+
+podSecurityContext:
+  runAsUser: 0
+  runAsGroup: 0
+
+tcpdumpimage:
+   repository: docker.io/corfr/tcpdump
+   version: latest
+   #pullPolicy: IfNotPresent or Never or Always
+   pullPolicy: IfNotPresent
 
 resources:
   define: false
   limits:
-    cpu: 100m
-    memory: 128Mi
+    tcpdump:
+      cpu: 100m
+      memory: 128Mi
+    nf:
+      cpu: 100m
+      memory: 128Mi
   requests:
-   cpu: 100m
-   memory: 256Mi
-
+    tcpdump:
+      cpu: 100m
+      memory: 128Mi
+    nf:
+      cpu: 100m
+      memory: 128Mi
 
 tolerations: []
 

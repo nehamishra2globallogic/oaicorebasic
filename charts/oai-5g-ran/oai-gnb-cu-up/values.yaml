@@ -1,0 +1,96 @@
+kubernetesType: Vanilla  #Vanilla for community kubernetes distribution
+
+nfimage:   # image name either locally present or in a public/private repository
+  repository: docker.io/oaisoftwarealliance/oai-nr-cuup           ## dockerhub oaisoftwarealliance/oai-gnb  
+  version: develop # image tag
+  # pullPolicy: IfNotPresent or Never or Always
+  pullPolicy: IfNotPresent
+
+## good to use when pulling images from docker-hub mention 
+imagePullSecrets: 
+  - name: "regcred"
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: "oai-gnb-cu-up-sa"
+
+# cu-up needs three seperate interfaces one for ngap (N3), f1 and e1 
+multus:
+  defaultGateway: "172.21.7.254"
+  e1Interface:
+    create: true
+    IPadd: "172.21.6.91"
+    Netmask: "22"
+    # if gatway is commented then it will be remove
+    Gateway: "172.21.7.254"
+    hostInterface: "bond0"      # Interface of the host machine on which this pod will be scheduled
+  n3Interface:
+    create: true
+    IPadd: "172.21.6.97"
+    Netmask: "22"
+    # if gatway is commented then it will be remove
+    Gateway: "172.21.7.254"
+    hostInterface: "bond0"      # Interface of the host machine on which this pod will be scheduled
+  f1uInterface:
+    create: true
+    IPadd: "172.21.6.93"
+    Netmask: "22"
+    # if gatway is commented then it will be remove
+    Gateway: "172.21.7.254"
+    hostInterface: "bond0"      # Interface of the host machine on which this pod will be scheduled
+
+config:
+  mountConfig: true          #If config file is mounted then please edit mount.conf in configmap.yaml properly 
+  timeZone: "Europe/Paris"
+  useAdditionalOptions: "--sa --rfsim"
+  mcc: "001"   # check the information with AMF, SMF, UPF/SPGWU
+  mnc: "01"    # check the information with AMF, SMF, UPF/SPGWU
+  mncLength: "2" # check the information with AMF, SMF, UPF/SPGWU
+  tac: "1"     # check the information with AMF
+  nssaiSst: "1"  #currently only 4 standard values are allowed 1,2,3,4 
+  nssaiSd: "ffffff"    #values in hexa-decimal format
+  e1IpAddress: 172.21.6.90
+  ## Its the DU which communicates with the CU so no need for DU ip-address
+  f1duIpAddress: "172.21.6.100"
+
+
+## Debugging section
+podSecurityContext:
+  runAsUser: 0
+  runAsGroup: 0
+
+start:
+  gnbcuup: true #If false the network function container will run in sleep mode for manually testing
+  tcpdump: false
+
+includeTcpDumpContainer: false #If true it will add a tcpdump container inside network function pod for debugging
+
+tcpdumpimage:
+   repository: docker.io/corfr/tcpdump
+   version: latest
+   #pullPolicy: IfNotPresent or Never or Always
+   pullPolicy: IfNotPresent
+
+resources:
+  define: false
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+   cpu: 100m
+   memory: 256Mi
+
+tolerations: []
+
+affinity: {}
+
+terminationGracePeriodSeconds: 5
+
+nodeSelector: {}
+
+nodeName: 
