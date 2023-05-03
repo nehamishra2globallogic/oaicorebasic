@@ -83,6 +83,7 @@ oai-amf:
     create: false
     n2IPadd: "172.21.6.94"
     n2Netmask: "22"
+    ## If you don't have a gateway leave the field empty or commented
     defaultGateway: "172.21.7.254"
     hostInterface: "bond0"      # Interface of the host machine on which this pod will be scheduled
   config:
@@ -121,6 +122,7 @@ oai-spgwu-tiny:
     create: false
     n3Ip: "172.21.6.95"
     n3Netmask: "22"
+    ## If you don't have a gateway leave the field empty or commented
     defaultGateway: "172.21.7.254"
     hostInterface: "bond0"
   config:
@@ -179,6 +181,7 @@ oai-smf:
     create: false
     n4IPadd: "172.21.6.98"
     n4Netmask: "22"
+    ## If you don't have a gateway leave the field empty or commented
     defaultGateway: "172.21.7.254"
     hostInterface: "bond0"      # Interface of the host machine on which this pod will be scheduled
   imagePullSecrets:

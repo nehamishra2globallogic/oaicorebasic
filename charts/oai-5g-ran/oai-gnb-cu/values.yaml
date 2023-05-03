@@ -9,7 +9,7 @@ nfimage:   # image name either locally present or in a public/private repository
   pullPolicy: IfNotPresent
 
 ## good to use when pulling images from docker-hub mention 
-imagePullSecrets: 
+imagePullSecrets:
   - name: "regcred"
 
 serviceAccount:
@@ -27,7 +27,7 @@ serviceAccount:
 # Interface mapping is strictly based on your networking environment 
 ## Change these ip-addresses according to your environment 
 multus:
-  # if defaultGateway is commented then it will be remove
+  # if default gatway is commented or left blank then it will be remove
   defaultGateway: 172.21.7.254
   n2Interface:
     create: false
@@ -51,8 +51,9 @@ multus:
     #Gateway: "172.21.7.254"
     hostInterface: "bond0"      # Interface of the host machine on which this pod will be scheduled
 
-## If you want to change more configuration parameters then you should mount the config file or use it from 
-# https://gitlab.eurecom.fr/oai/openairinterface5g/-/tree/develop/targets/PROJECTS/GENERIC-NR-5GC/CONF 
+## If you want to change more configuration parameters then you should mount the config file  
+# in templates/configmap.yaml
+# Example config files --> https://gitlab.eurecom.fr/oai/openairinterface5g/-/tree/develop/targets/PROJECTS/GENERIC-NR-5GC/CONF 
 config:
   mountConfig: false          #If config file is mounted then please edit mount.conf in configmap.yaml properly 
   timeZone: "Europe/Paris"
@@ -100,28 +101,40 @@ tcpdumpimage:
 resources:
   define: false
   limits:
-    tcpdump:
-      cpu: 100m
-      memory: 128Mi
     nf:
       cpu: 100m
       memory: 128Mi
+    # tcpdump:
+    #   cpu: 100m
+    #   memory: 128Mi
   requests:
-    tcpdump:
-      cpu: 100m
-      memory: 128Mi
     nf:
       cpu: 100m
       memory: 128Mi
+    # tcpdump:
+    #   cpu: 100m
+    #   memory: 128Mi
 
+## NF is the network function and tcpdump is the tcpdump container. 
+## To know more about request and limit it is better to understand that how Kubernetes QoS works. 
+## https://kubernetes.io/docs/concepts/configuration/manage-resources-containers
+## https://kubernetes.io/docs/concepts/workloads/pods/pod-qos
 resources:
   define: false
   limits:
-    cpu: 100m
-    memory: 128Mi
+    nf:
+      cpu: 100m
+      memory: 128Mi
+    # tcpdump:
+    #   cpu: 100m
+    #   memory: 128Mi
   requests:
-   cpu: 100m
-   memory: 256Mi
+    nf:
+      cpu: 100m
+      memory: 128Mi
+    # tcpdump:
+    #   cpu: 100m
+    #   memory: 128Mi
 
 
 tolerations: []
