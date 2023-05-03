@@ -3,17 +3,6 @@ kind: ConfigMap
 metadata:
   name: {{ .Chart.Name }}-configmap
 data:
-  {{- range $key, $val := .Values.config }}
-  {{ $key }}: {{ $val | quote }}
-  {{- end }}
-
----
-{{- if .Values.config.mountConfig }}
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: {{ .Chart.Name }}-configmap
-data:
   mounted.conf: |
       Active_gNBs = ( "oai-cu-up");
       # Asn1_verbosity, choice in: none, info, annoying
@@ -60,7 +49,7 @@ data:
             {
               type = "up";
               ipv4_cucp = "{{ .Values.config.e1IpAddress }}";
-              ipv4_cuup = "{{ .Values.multus.f1uInterface.IPadd }}";
+              ipv4_cuup = "{{ .Values.multus.e1Interface.IPadd }}";
             }
           )
 
@@ -103,4 +92,3 @@ data:
              f1ap_log_level                         ="info";
              ngap_log_level                         ="debug";
           };
-{{- end }}

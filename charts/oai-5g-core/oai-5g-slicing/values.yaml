@@ -98,7 +98,7 @@ oai-amf:
     create: false
     n2IPadd: "172.21.6.94"
     n2Netmask: "22"
-    n2Gateway: "172.21.7.254"
+    defaultGateway: "172.21.7.254"
     hostInterface: "bond0"      # Interface of the host machine on which this pod will be scheduled
   config:
     amfInterfaceNameForNGAP: "eth0" # If multus creation is true then net1 else eth0
@@ -140,7 +140,7 @@ oai-spgwu-tiny:
     create: false
     n3Ip: "172.21.6.95"
     n3Netmask: "22"
-    n6Gw: "172.21.7.254"
+    defaultGateway: "172.21.7.254"
     hostInterface: "bond0"
   config:
     n3If: "eth0"  # net1 if gNB is outside the cluster network and multus creation is true else eth0
@@ -174,6 +174,12 @@ oai-smf:
     version: develop                                   ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
+  multus:
+    create: false
+    n4IPadd: "172.21.6.98"
+    n4Netmask: "22"
+    defaultGateway: "172.21.7.254"
+    hostInterface: "bond0"      # Interface of the host machine on which this pod will be scheduled
   includeTcpDumpContainer: false #only for taking pcaps inside network function pod
   imagePullSecrets:
     - name: "regcred"

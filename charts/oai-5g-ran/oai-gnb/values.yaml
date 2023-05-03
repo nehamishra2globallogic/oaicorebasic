@@ -1,5 +1,7 @@
-kubernetesType: Vanilla  #Vanilla for community kubernetes distribution
+kubernetesType: Vanilla  #Vanilla for community kubernetes distribution else Openshift for Openshift
 
+## In case of using these charts on Openshift then please use UBI images
+## To know more about them follow this tutorial https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed/-/tree/master/openshift
 nfimage:   # image name either locally present or in a public/private repository
   repository: docker.io/oaisoftwarealliance/oai-gnb
   version: develop # image tag
@@ -21,13 +23,14 @@ serviceAccount:
 
 #service type is fixed to clusterIP, it is only support for non multus interface (eth0)
 
-
 # These helm-charts can be used for two purpose
 # 1. RFSimulated oai-gNB: Only requires 1 interface for N2 and N3. You can use Kubernetes default interface eth0
 # 2. Physical gNB with Ethernet based USRP or RRU: You need to use ruInterface to connect with RU. Make sure that the ip-address you choose can reach to RU. 
 #                                                 Using a dedicated interface for N2 or N3 is optional you can still use eth0. 
+# 3. Another thing you can chose to use same virtual interface for N2/N3 its optional to have two different
 
 ## NOTE: To use these charts with USRP B210 you need to modify and mount usb from the host. 
+## Change these ip-addresses according to your environment
 # Multus interface name
 
 multus:
@@ -37,21 +40,23 @@ multus:
     IPadd: "172.21.6.90"
     Netmask: "22"
     # if gatway is commented then it will be remove
-    Gateway: "172.21.7.254"
+    #Gateway: "172.21.7.254"
     hostInterface: "bond0"      # Interface of the host machine on which this pod will be scheduled
   n3Interface:
     create: false
     IPadd: "172.21.6.91"
     Netmask: "22"
     # if gatway is commented then it will be remove
-    Gateway: "172.21.7.254"
+    #Gateway: "172.21.7.254"
     hostInterface: "bond0"      # Interface of the host machine on which this pod will be scheduled
   ruInterface:            #Only needed if using a ethernet based RU/USRP
     create: false
     IPadd: "192.168.80.90"
     Netmask: "24"
     # if gatway is commented then it will be remove
-    Gateway: "192.168.80.1"  #In case you don't have a gateway remove it from here
+    #Gateway: "192.168.80.1"  #In case you don't have a gateway remove it from here
+    ## The value must be [0, master's MTU]. If commented it will masters MTU
+    #mtu: 1500
     hostInterface: "bond0"      # Interface of the host machine on which this pod will be scheduled
 
 ## If you want to change more configuration parameters then you should mount the config file or use it from 
@@ -74,7 +79,7 @@ config:
   amfIpAddress: "oai-amf-svc"  # amf ip-address or service-name oai-amf-svc or 172.21.6.94
   gnbNgaIfName: "eth0"            # net1 in case multus create is true that means another interface is created for ngap interface, n2 to communicate with amf
   gnbNgaIpAddress: "status.podIP" # n2n3IPadd in case multus create is true
-  gnbNguIfName: "eth0"   #net1 in case multus create is true gtu interface for upf/spgwu
+  gnbNguIfName: "eth0"   #net2/net1 in case multus create is true gtu interface for upf/spgwu
   gnbNguIpAddress: "status.podIP" # n2n3IPadd in case multus create is true
   ## -E is to apply three-quarter of sampling frequency, 23.04 Msps to reduce the data rate on USB/PCIe transfers (only valid for 20 MHz)
   threadParallelConfig: "PARALLEL_SINGLE_THREAD"
@@ -91,6 +96,7 @@ podSecurityContext:
   runAsUser: 0
   runAsGroup: 0
 
+## For openshift you can use rhel8/support-tools:8.7-13
 tcpdumpimage:
    repository: docker.io/corfr/tcpdump
    version: latest
@@ -115,7 +121,6 @@ resources:
       memory: 128Mi
 
 tolerations: []
-
 affinity: {}
 
 terminationGracePeriodSeconds: 5

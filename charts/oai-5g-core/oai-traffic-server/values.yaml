@@ -21,7 +21,7 @@ multus:
   create: false
   IPadd: "172.21.6.99"
   Netmask: "22"
-  Gateway: "172.21.7.254"
+  defaultGateway: "172.21.7.254"
   hostInterface: "bond0"      # Interface of the host machine on which this pod will be scheduled
 
 config:
@@ -32,6 +32,9 @@ config:
 readinessProbe: true
 
 livenessProbe: false
+
+# Control if the charts will be deployed or not
+enabled: true
 
 terminationGracePeriodSeconds: 2
 

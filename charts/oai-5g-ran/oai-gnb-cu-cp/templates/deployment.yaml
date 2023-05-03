@@ -47,11 +47,10 @@ spec:
       containers:
       - name: gnbcucp
         image: "{{ .Values.nfimage.repository }}:{{ .Values.nfimage.version }}"
-        {{- if .Values.config.mountConfig}}
         volumeMounts:
-          - mountPath: /opt/oai-gnb/etc
+          - mountPath: /opt/oai-gnb/etc/mounted.conf
             name: configuration
-        {{- end}}
+            subPath: mounted.conf
         {{- if .Values.resources.define}}
         resources:
           requests:
@@ -81,20 +80,11 @@ spec:
         {{- end}}
         env:
           - name: TZ
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: timeZone
-          - name: USE_VOLUMED_CONF
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: mountConfig
+            value: {{ .Values.config.timeZone }}
           - name: USE_ADDITIONAL_OPTIONS
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: useAdditionalOptions
+            value: {{ .Values.config.useAdditionalOptions }}
+          - name: USE_VOLUMED_CONF
+            value: "yes"
       {{- if .Values.includeTcpDumpContainer }}
       - name: tcpdump
         image: "{{ .Values.tcpdumpimage.repository }}:{{ .Values.tcpdumpimage.version }}"
@@ -126,12 +116,10 @@ spec:
           - infinity
         {{- end}}
       {{- end }}
-      {{- if .Values.config.mountConfig}}
       volumes:
       - configMap:
           name: {{ .Chart.Name }}-configmap
         name: configuration
-      {{- end}}
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler

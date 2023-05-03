@@ -1,3 +1,4 @@
+{{- if .Values.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -21,7 +22,7 @@ spec:
         k8s.v1.cni.cncf.io/networks: >-
               [{
                    "name": "{{ .Chart.Name }}-net1",
-                   "default-route": ["{{ .Values.multus.Gateway }}"]
+                   "default-route": ["{{ .Values.multus.defaultGateway }}"]
               }]
     spec:
       securityContext:
@@ -77,3 +78,4 @@ spec:
       {{- if .Values.nodeName}}
       nodeName: {{ .Values.nodeName }}
       {{- end }}
+{{- end }}
