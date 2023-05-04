@@ -47,8 +47,10 @@ oai-amf:
     amfInterfaceNameForSBI: "eth0"  # Service based interface
     externalAusf: "no"
     logLevel: "debug"   #allowed info/error/debug
-    sst0: "1"
-    sd0: "0xFFFFFF"
+    sst0: "1"         ## 1 slice/SST is mandatory
+    sd0: "0xFFFFFF"   ## Optional 0xFFFFFF means no SD as per 3GPP
+    ## Can add upto 3 more slices. More than that you can do it in the configmap of amf templates/configmap.yaml
+    # Note only SST is mandatory for a slice SD is optional
     sst1: "1"
     sd1: "1"
     mcc: "001"

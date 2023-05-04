@@ -98,23 +98,6 @@ tcpdumpimage:
    #pullPolicy: IfNotPresent or Never or Always
    pullPolicy: IfNotPresent
 
-resources:
-  define: false
-  limits:
-    nf:
-      cpu: 100m
-      memory: 128Mi
-    # tcpdump:
-    #   cpu: 100m
-    #   memory: 128Mi
-  requests:
-    nf:
-      cpu: 100m
-      memory: 128Mi
-    # tcpdump:
-    #   cpu: 100m
-    #   memory: 128Mi
-
 ## NF is the network function and tcpdump is the tcpdump container. 
 ## To know more about request and limit it is better to understand that how Kubernetes QoS works. 
 ## https://kubernetes.io/docs/concepts/configuration/manage-resources-containers
@@ -125,16 +108,18 @@ resources:
     nf:
       cpu: 100m
       memory: 128Mi
-    # tcpdump:
-    #   cpu: 100m
-    #   memory: 128Mi
+    #If tcpdump container is disabled this value will not be used
+    tcpdump:
+      cpu: 100m
+      memory: 128Mi
   requests:
     nf:
       cpu: 100m
       memory: 128Mi
-    # tcpdump:
-    #   cpu: 100m
-    #   memory: 128Mi
+    #If tcpdump container is disabled this value will not be used
+    tcpdump:
+      cpu: 100m
+      memory: 128Mi
 
 
 tolerations: []

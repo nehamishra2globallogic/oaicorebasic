@@ -1,0 +1,34 @@
+# Parent Helm Charts for Deploying Basic OAI-5G Core Network
+
+Basic deployment contains
+
+1. OAI-AMF
+2. OAI-SMF
+3. OAI-NRF
+4. OAI-UDR
+5. OAI-AUSF
+6. OAI-UDM
+7. OAI-SPGWU-TINY
+8. MYSQL (Subscriber database)
+
+To change the configuration of any core network component you can use `values.yaml`. To change the parameters which are missing from `values.yaml` you can change them in the helm-chart of the respective network function. 
+
+Once you are sure with the configuration parameters you can deploy these charts following the below steps. 
+
+1. Make sure you have [helm-spray plugin](https://github.com/ThalesGroup/helm-spray) if you don't then you can download like this
+
+```bash
+helm plugin install https://github.com/ThalesGroup/helm-spray
+```
+
+2. Perform a dependency update whenever you change anything in the sub-charts or if you have recently clone the repository. 
+
+```bash
+helm dependency update
+```
+
+3. Deploy the helm-charts
+
+```
+helm spray .
+```

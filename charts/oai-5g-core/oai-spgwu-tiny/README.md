@@ -1,19 +1,19 @@
-# Helm Chart for OAI Access and Mobility Function (AMF)
+# Helm Chart for OAI Serving and Packet Data Network Gateway User Plane (SPGW-U)
 
-The helm-charts are tested on [Minikube](https://minikube.sigs.k8s.io/docs/) and [Red Hat Openshift](https://www.redhat.com/fr/technologies/cloud-computing/openshift) 4.10 and 4.12. There are no special resource requirements for AMF. 
+The helm-charts are tested on [Minikube](https://minikube.sigs.k8s.io/docs/) and [Red Hat Openshift](https://www.redhat.com/fr/technologies/cloud-computing/openshift) 4.10 and 4.12. There are no special resource requirements for SPGWU except `priviledged` flag to be true. Because SPGWU needs to create tunnel interface for GTP and it creates NAT rules for packets to go towards internet from N6.
 
 ## Introduction
 
-OAI-AMF follows 3GPP release 16, more information about the feature set can be found on [AMFs WiKi page](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-amf/-/wikis/home). The source code be downloaded from [GitLab](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-amf)
+[OAI-SPGWU-TINY](https://github.com/OPENAIRINTERFACE/openair-spgwu-tiny) is the 4G CUPS S/PGWU. We modified it to work for 5G deployments with GTP-U extension header. 
 
-OAI [Jenkins Platform](https://jenkins-oai.eurecom.fr/job/OAI-CN5G-AMF/) publishes every `develop` and `master` branch image of OAI-AMF on [docker-hub](https://hub.docker.com/r/oaisoftwarealliance/oai-amf) with tag `develop` and `latest` respectively. Apart from that you can find tags for every release `VX.X.X` 
+OAI [Jenkins Platform](https://jenkins-oai.eurecom.fr/job/OAI-CN-SPGWU-TINY/) publishes every `develop` and `master` branch image of OAI-SPGWU-TINY on [docker-hub](https://hub.docker.com/r/oaisoftwarealliance/oai-spgwu-tiny) with tag `develop` and `latest` respectively. Apart from that you can find tags for every release `VX.X.X` 
 
-The helm charts of OAI-AMF creates multiples Kubernetes resources,
+The helm charts of OAI-SPGWU-TINY creates multiples Kubernetes resources,
 
 1. Service
 2. Role Base Access Control (RBAC) (role and role bindings)
 3. Deployment
-4. Configmap (Contains the configuration file for AMF)
+4. Configmap (Contains the configuration file for SPGWU)
 5. Service account
 6. Network-attachment-defination (Optional only when multus is used)
 
@@ -52,51 +52,21 @@ The directory structure
 |podSecurityContext.runAsUser |Integer (0,65534)              |Mandatory to use 0                       |
 |podSecurityContext.runAsGroup|Integer (0,65534)              |Mandatory to use 0                       |
 |multus.create                |true/false                     |default false                            |
-|multus.n2IPadd               |IPV4                           |NA                                       |
-|multus.n2Netmask             |Netmask                        |NA                                       |
+|multus.n3Ip                  |IPV4                           |NA                                       |
+|multus.n3Netmask             |Netmask                        |NA                                       |
 |multus.defaultGateway        |IPV4                           |Default route inside container (optional)|
 |multus.hostInterface         |HostInterface Name             |NA                                       |
 
 
 ### Configuration parameter
 
-|Parameter                      |Mandatory/Optional          |Remark                                      |
-|-------------------------------|----------------------------|--------------------------------------------|
-|config.mcc                     |Mandatory                   |Mobile Country Code                         |
-|config.mnc                     |Mandatory                   |Mobile Network Code                         |
-|config.regionId                |Mandatory                   |Region ID                                   |
-|config.amfSetId                |Mandatory                   |AMF SetID                                   |
-|config.logLevel                |Optional                    |Default info, select info/debug/error       |
-|config.tac                     |Hexadecimal/Mandatory       |Tracking aread code                         |
-|config.sst0                    |Integer 1-256/Mandatory     |Slice Service Type 0                        |
-|config.sd0                     |Integer/Hexadecimal/Optional|                                            |
-|config.sst1                    |Optional                    |                                            |
-|config.sd1                     |Optional                    |                                            |
-|config.amfInterfaceNameForNGAP |eth0/net1/Mandatory         |net1 when multus is used                    |
-|config.amfInterfaceNameForSBI  |eth0/Mandatory              |                                            |
-|config.amfInterfaceSBIHTTPPort |Integer/Mandatory           |Standard port 80                            |
-|config.amfInterfaceSBIHTTP2Port|Integer/Mandatory           |8080 if 80 is already inused                |
-|config.smfFqdn                 |Mandatory                   |SMF ip-address/FQDN                         |
-|config.nrfFqdn                 |Mandatory                   |NRF ip-address/FQDN                         |
-|config.ausfFqdn                |Mandatory                   |AUSF ip-address/FQDN                        |
-|config.nfRegistration          |Mandatory                   |yes/no                                      |
-|config.nrfSelection            |Optional                    |yes/no                                      |
-|config.smfSelection            |Mandatory                   |It helps in selecting the SMF via NRF       |
-|config.externalAusf            |Mandatory                   |Always yes when using AUSF                  |
-|config.useHttp2                |Mandatory (yes/no)          |if using HTTP/2 change the port for HTTP/1.1|
-|config.mySqlServer             |Optional                    |if not using AUSF                           |
-|config.mySqlUser               |Optional                    |if not using AUSF                           |
-|config.externalNssf            |Optional                    |if not using AUSF                           |
-|config.mySqlPass               |Optional                    |if not using AUSF                           |
+All the parameters in `config` block of values.yaml are explained with a comment.
 
 ## Advance Debugging Parameters
 
-Only needed if you are doing advance debugging
-
-
 |Parameter                        |Allowed Values                 |Remark                                        |
 |---------------------------------|-------------------------------|----------------------------------------------|
-|start.amf                        |true/false                     |If true amf container will go in sleep mode   |
+|start.spgwu                      |true/false                     |If true spgwu container will go in sleep mode   |
 |start.tcpdump                    |true/false                     |If true tcpdump container will go in sleepmode|
 |includeTcpDumpContainer          |true/false                     |If false no tcpdump container will be there   |
 |tcpdumpimage.repository          |Image Name                     |                                              |

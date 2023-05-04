@@ -24,7 +24,6 @@ podSecurityContext:
   runAsGroup: 0
 
 #service type is fixed to clusterIP, it is only support for non multus interface (eth0)
-
 service:
   pfcpPort: 8805 # default port no need to change unless necessary
   gtpuPort: 2152 # default port no need to change unless necessary
@@ -44,10 +43,10 @@ config:
   n3If: "eth0"  # net1 if gNB is outside the cluster network and multus creation is true else eth0
   n4If: "eth0" # use for SMF communication
   n6If: "eth0"  # net1 if gNB is outside the cluster network and multus creation is true else eth0 (important because it sends the traffic towards internet)
-  threadsN3Ul: "1"
-  threadsN6Dl: "1"
-  threadsN6Prio: 99
-  threadsN3Prio: 98
+  threadsN3Ul: "1"      #Multi threading is not properly supported
+  threadsN6Dl: "1"      #Multi threading is not properly supported
+  threadsN6Prio: 99       
+  threadsN3Prio: 98 
   threadsN4Prio: 88
   netUeNatOption: "yes"
   bypassUlPfcpRules: "no" #standart feature is no, put yes if you want less UL packet delay
@@ -97,16 +96,18 @@ resources:
     nf:
       cpu: 100m
       memory: 128Mi
-    # tcpdump:
-    #   cpu: 100m
-    #   memory: 128Mi
+    #If tcpdump container is disabled this value will not be used
+    tcpdump:
+      cpu: 100m
+      memory: 128Mi
   requests:
     nf:
       cpu: 100m
       memory: 128Mi
-    # tcpdump:
-    #   cpu: 100m
-    #   memory: 128Mi
+    #If tcpdump container is disabled this value will not be used
+    tcpdump:
+      cpu: 100m
+      memory: 128Mi
 
 readinessProbe: true
 

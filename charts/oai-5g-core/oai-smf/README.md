@@ -1,19 +1,19 @@
-# Helm Chart for OAI Access and Mobility Function (AMF)
+# Helm Chart for OAI Session Management Function (SMF)
 
-The helm-charts are tested on [Minikube](https://minikube.sigs.k8s.io/docs/) and [Red Hat Openshift](https://www.redhat.com/fr/technologies/cloud-computing/openshift) 4.10 and 4.12. There are no special resource requirements for AMF. 
+The helm-charts are tested on [Minikube](https://minikube.sigs.k8s.io/docs/) and [Red Hat Openshift](https://www.redhat.com/fr/technologies/cloud-computing/openshift) 4.10 and 4.12. There are no special resource requirements for SMF. 
 
 ## Introduction
 
-OAI-AMF follows 3GPP release 16, more information about the feature set can be found on [AMFs WiKi page](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-amf/-/wikis/home). The source code be downloaded from [GitLab](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-amf)
+OAI-SMF follows 3GPP release 16, more information about the feature set can be found on [SMFs WiKi page](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-amf/-/wikis/home). The source code be downloaded from [GitLab](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-amf)
 
-OAI [Jenkins Platform](https://jenkins-oai.eurecom.fr/job/OAI-CN5G-AMF/) publishes every `develop` and `master` branch image of OAI-AMF on [docker-hub](https://hub.docker.com/r/oaisoftwarealliance/oai-amf) with tag `develop` and `latest` respectively. Apart from that you can find tags for every release `VX.X.X` 
+OAI [Jenkins Platform](https://jenkins-oai.eurecom.fr/job/OAI-CN5G-SMF/) publishes every `develop` and `master` branch image of OAI-SMF on [docker-hub](https://hub.docker.com/r/oaisoftwarealliance/oai-smf) with tag `develop` and `latest` respectively. Apart from that you can find tags for every release `VX.X.X` 
 
-The helm charts of OAI-AMF creates multiples Kubernetes resources,
+The helm charts of OAI-SMF creates multiples Kubernetes resources,
 
 1. Service
 2. Role Base Access Control (RBAC) (role and role bindings)
 3. Deployment
-4. Configmap (Contains the configuration file for AMF)
+4. Configmap (Contains the configuration file for SMF)
 5. Service account
 6. Network-attachment-defination (Optional only when multus is used)
 
@@ -52,51 +52,19 @@ The directory structure
 |podSecurityContext.runAsUser |Integer (0,65534)              |Mandatory to use 0                       |
 |podSecurityContext.runAsGroup|Integer (0,65534)              |Mandatory to use 0                       |
 |multus.create                |true/false                     |default false                            |
-|multus.n2IPadd               |IPV4                           |NA                                       |
-|multus.n2Netmask             |Netmask                        |NA                                       |
+|multus.n4IPadd               |IPV4                           |NA                                       |
+|multus.n4Netmask             |Netmask                        |NA                                       |
 |multus.defaultGateway        |IPV4                           |Default route inside container (optional)|
 |multus.hostInterface         |HostInterface Name             |NA                                       |
 
-
-### Configuration parameter
-
-|Parameter                      |Mandatory/Optional          |Remark                                      |
-|-------------------------------|----------------------------|--------------------------------------------|
-|config.mcc                     |Mandatory                   |Mobile Country Code                         |
-|config.mnc                     |Mandatory                   |Mobile Network Code                         |
-|config.regionId                |Mandatory                   |Region ID                                   |
-|config.amfSetId                |Mandatory                   |AMF SetID                                   |
-|config.logLevel                |Optional                    |Default info, select info/debug/error       |
-|config.tac                     |Hexadecimal/Mandatory       |Tracking aread code                         |
-|config.sst0                    |Integer 1-256/Mandatory     |Slice Service Type 0                        |
-|config.sd0                     |Integer/Hexadecimal/Optional|                                            |
-|config.sst1                    |Optional                    |                                            |
-|config.sd1                     |Optional                    |                                            |
-|config.amfInterfaceNameForNGAP |eth0/net1/Mandatory         |net1 when multus is used                    |
-|config.amfInterfaceNameForSBI  |eth0/Mandatory              |                                            |
-|config.amfInterfaceSBIHTTPPort |Integer/Mandatory           |Standard port 80                            |
-|config.amfInterfaceSBIHTTP2Port|Integer/Mandatory           |8080 if 80 is already inused                |
-|config.smfFqdn                 |Mandatory                   |SMF ip-address/FQDN                         |
-|config.nrfFqdn                 |Mandatory                   |NRF ip-address/FQDN                         |
-|config.ausfFqdn                |Mandatory                   |AUSF ip-address/FQDN                        |
-|config.nfRegistration          |Mandatory                   |yes/no                                      |
-|config.nrfSelection            |Optional                    |yes/no                                      |
-|config.smfSelection            |Mandatory                   |It helps in selecting the SMF via NRF       |
-|config.externalAusf            |Mandatory                   |Always yes when using AUSF                  |
-|config.useHttp2                |Mandatory (yes/no)          |if using HTTP/2 change the port for HTTP/1.1|
-|config.mySqlServer             |Optional                    |if not using AUSF                           |
-|config.mySqlUser               |Optional                    |if not using AUSF                           |
-|config.externalNssf            |Optional                    |if not using AUSF                           |
-|config.mySqlPass               |Optional                    |if not using AUSF                           |
 
 ## Advance Debugging Parameters
 
 Only needed if you are doing advance debugging
 
-
 |Parameter                        |Allowed Values                 |Remark                                        |
 |---------------------------------|-------------------------------|----------------------------------------------|
-|start.amf                        |true/false                     |If true amf container will go in sleep mode   |
+|start.smf                        |true/false                     |If true smf container will go in sleep mode   |
 |start.tcpdump                    |true/false                     |If true tcpdump container will go in sleepmode|
 |includeTcpDumpContainer          |true/false                     |If false no tcpdump container will be there   |
 |tcpdumpimage.repository          |Image Name                     |                                              |
