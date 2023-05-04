@@ -65,7 +65,7 @@ multus:
 # Example config files --> https://gitlab.eurecom.fr/oai/openairinterface5g/-/tree/develop/targets/PROJECTS/GENERIC-NR-5GC/CONF 
 config:
   mountConfig: false          #If config file is mounted then please edit mount.conf in configmap.yaml properly 
-  rfSimulator: "server"
+  rfSimulator: "server"       #If you are not using in RFsimulator mode then you can leave this empty
   timeZone: "Europe/Paris"
   ## -E is to apply three-quarter of sampling frequency, 23.04 Msps to reduce the data rate on USB/PCIe transfers (only valid for 20 MHz)
   useAdditionalOptions: "--sa -E --rfsim --log_config.global_log_options level,nocolor,time"

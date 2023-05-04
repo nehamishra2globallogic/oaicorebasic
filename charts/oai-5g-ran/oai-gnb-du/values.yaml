@@ -53,8 +53,8 @@ config:
   mountConfig: false          #If config file is mounted then please edit mount.conf in templates/configmap.yaml properly 
   timeZone: "Europe/Paris"
   useAdditionalOptions: "--sa --rfsim --log_config.global_log_options level,nocolor,time"
+  rfSimulator: "server"       #If you are not using in RFsimulator mode then you can leave this empty
   # If mounting the configuration file then below parameters are not used
-  rfSimulator: "server"
   gnbduName: "oai-du-rfsim"
   useSaTDDcu: "yes"
   mcc: "001"   # check the information with AMF, SMF, UPF/SPGWU

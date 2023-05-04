@@ -1,14 +1,14 @@
 # Helm Chart for OAI Network Registry Function (NRF)
 
-The helm-charts are tested on [Minikube](https://minikube.sigs.k8s.io/docs/) and [Red Hat Openshift](https://www.redhat.com/fr/technologies/cloud-computing/openshift) 4.10 and 4.12. There are no special resource requirements for NRF. 
+The helm-chart is tested on [Minikube](https://minikube.sigs.k8s.io/docs/) and [Red Hat Openshift](https://www.redhat.com/fr/technologies/cloud-computing/openshift) 4.10 and 4.12. There are no special resource requirements for NRF. 
 
 ## Introduction
 
 OAI-NRF follows 3GPP release 16, more information about the feature set can be found on [NRFs WiKi page](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-nrf/-/wikis/home). The source code be downloaded from [GitLab](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-nrf)
 
-OAI [Jenkins Platform](https://jenkins-oai.eurecom.fr/job/OAI-CN5G-NRF/) publishes every `develop` and `master` branch image of OAI-NRF on [docker-hub](https://hub.docker.com/r/oaisoftwarealliance/oai-nrf) with tag `develop` and `latest` respectively. Apart from that you can find tags for every release `VX.X.X` 
+OAI [Jenkins Platform](https://jenkins-oai.eurecom.fr/job/OAI-CN5G-NRF/) publishes every `develop` and `master` branch image of OAI-NRF on [docker-hub](https://hub.docker.com/r/oaisoftwarealliance/oai-nrf) with tag `develop` and `latest` respectively. Apart from that you can find tags for every release `VX.X.X`. We only publish Ubuntu 18.04/20.04/22.04 images. We do not publish RedHat/UBI images. These images you have to build from the source code on your RedHat systems or Openshift Platform. You can follow this [tutorial](../../../openshift/README.md) for that. 
 
-The helm charts of OAI-NRF creates multiples Kubernetes resources,
+The helm chart of OAI-NRF creates multiples Kubernetes resources,
 
 1. Service
 2. Role Base Access Control (RBAC) (role and role bindings)
@@ -16,7 +16,6 @@ The helm charts of OAI-NRF creates multiples Kubernetes resources,
 4. Configmap
 5. Service account
 6. PVC (optional only when enabled): It is used for saving pcaps. 
-7. Network-attachment-defination (Optional only when multus is used)
 
 The directory structure
 

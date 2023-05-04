@@ -84,6 +84,11 @@ spec:
               configMapKeyRef:
                 name: {{ .Chart.Name }}-configmap
                 key: timeZone
+          - name: USE_ADDITIONAL_OPTIONS
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Chart.Name }}-configmap
+                key: useAdditionalOptions
           {{- if .Values.config.mountConfig}}
           - name: USE_VOLUMED_CONF
             valueFrom:
@@ -91,6 +96,7 @@ spec:
                 name: {{ .Chart.Name }}-configmap
                 key: mountConfig
           {{- end}}
+          {{- if .Values.config.mountConfig}}
           - name: USE_SA_CU
             valueFrom:
               configMapKeyRef:
@@ -199,11 +205,7 @@ spec:
               configMapKeyRef:
                 name: {{ .Chart.Name }}-configmap
                 key: f1duPort
-          - name: USE_ADDITIONAL_OPTIONS
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: useAdditionalOptions
+          {{- end}}
       {{- if .Values.includeTcpDumpContainer }}
       - name: tcpdump
         image: "{{ .Values.tcpdumpimage.repository }}:{{ .Values.tcpdumpimage.version }}"

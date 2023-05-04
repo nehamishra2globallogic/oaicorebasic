@@ -1,21 +1,20 @@
 # Helm Chart for OAI Unified Data Management (UDM)
 
-The helm-charts are tested on [Minikube](https://minikube.sigs.k8s.io/docs/) and [Red Hat Openshift](https://www.redhat.com/fr/technologies/cloud-computing/openshift) 4.10 and 4.12. There are no special resource requirements for AMF. 
+The helm-chart is tested on [Minikube](https://minikube.sigs.k8s.io/docs/) and [Red Hat Openshift](https://www.redhat.com/fr/technologies/cloud-computing/openshift) 4.10 and 4.12. There are no special resource requirements for AMF. 
 
 ## Introduction
 
 OAI-UDM follows 3GPP release 16, more information about the feature set can be found on [UDMs WiKi page](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-udm/-/wikis/home). The source code be downloaded from [GitLab](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-udm)
 
-OAI [Jenkins Platform](https://jenkins-oai.eurecom.fr/job/OAI-CN5G-UDM/) publishes every `develop` and `master` branch image of OAI-UDM on [docker-hub](https://hub.docker.com/r/oaisoftwarealliance/oai-udm) with tag `develop` and `latest` respectively. Apart from that you can find tags for every release `VX.X.X` 
+OAI [Jenkins Platform](https://jenkins-oai.eurecom.fr/job/OAI-CN5G-UDM/) publishes every `develop` and `master` branch image of OAI-UDM on [docker-hub](https://hub.docker.com/r/oaisoftwarealliance/oai-udm) with tag `develop` and `latest` respectively. Apart from that you can find tags for every release `VX.X.X`. We only publish Ubuntu 18.04/20.04/22.04 images. We do not publish RedHat/UBI images. These images you have to build from the source code on your RedHat systems or Openshift Platform. You can follow this [tutorial](../../../openshift/README.md) for that.
 
-The helm charts of OAI-UDM creates multiples Kubernetes resources,
+The helm chart of OAI-UDM creates multiples Kubernetes resources,
 
 1. Service
 2. Role Base Access Control (RBAC) (role and role bindings)
 3. Deployment
 4. Configmap
 5. Service account
-6. Network-attachment-defination (Optional only when multus is used)
 
 The directory structure
 
@@ -26,7 +25,6 @@ The directory structure
 │   ├── configmap.yaml
 │   ├── deployment.yaml
 │   ├── _helpers.tpl
-│   ├── multus.yaml
 │   ├── NOTES.txt
 │   ├── rbac.yaml
 │   ├── serviceaccount.yaml

@@ -76,6 +76,16 @@ spec:
               configMapKeyRef:
                 name: {{ .Chart.Name }}-configmap
                 key: timeZone
+          - name: USE_ADDITIONAL_OPTIONS
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Chart.Name }}-configmap
+                key: useAdditionalOptions
+          - name: RFSIMULATOR
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Chart.Name }}-configmap
+                key: rfSimulator
           {{- if .Values.config.mountConfig}}
           - name: USE_VOLUMED_CONF
             valueFrom:
@@ -83,11 +93,7 @@ spec:
                 name: {{ .Chart.Name }}-configmap
                 key: mountConfig
           {{- end}}
-          - name: RFSIMULATOR
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: rfSimulator
+          {{- if not .Values.config.mountConfig}}
           - name: USE_SA_TDD_DU
             valueFrom:
               configMapKeyRef:
@@ -196,11 +202,7 @@ spec:
               configMapKeyRef:
                 name: {{ .Chart.Name }}-configmap
                 key: f1duPort
-          - name: USE_ADDITIONAL_OPTIONS
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: useAdditionalOptions
+          {{- end}}
       {{- if .Values.includeTcpDumpContainer }}
       - name: tcpdump
         image: "{{ .Values.tcpdumpimage.repository }}:{{ .Values.tcpdumpimage.version }}"

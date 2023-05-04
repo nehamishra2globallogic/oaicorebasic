@@ -1,21 +1,20 @@
 # Helm Chart for OAI Authentication Server Function (AUSF)
 
-The helm-charts are tested on [Minikube](https://minikube.sigs.k8s.io/docs/) and [Red Hat Openshift](https://www.redhat.com/fr/technologies/cloud-computing/openshift) 4.10 and 4.12. There are no special resource requirements for AUSF. 
+The helm-chart is tested on [Minikube](https://minikube.sigs.k8s.io/docs/) and [Red Hat Openshift](https://www.redhat.com/fr/technologies/cloud-computing/openshift) 4.10 and 4.12. There are no special resource requirements for AUSF. 
 
 ## Introduction
 
 OAI-AUSF follows 3GPP release 16, more information about the feature set can be found on [AUSFs WiKi page](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-ausf/-/wikis/home). The source code be downloaded from [GitLab](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-ausf)
 
-OAI [Jenkins Platform](https://jenkins-oai.eurecom.fr/job/OAI-CN5G-AUSF/) publishes every `develop` and `master` branch image of OAI-AMF on [docker-hub](https://hub.docker.com/r/oaisoftwarealliance/oai-amf) with tag `develop` and `latest` respectively. Apart from that you can find tags for every release `VX.X.X` 
+OAI [Jenkins Platform](https://jenkins-oai.eurecom.fr/job/OAI-CN5G-AUSF/) publishes every `develop` and `master` branch image of OAI-AMF on [docker-hub](https://hub.docker.com/r/oaisoftwarealliance/oai-amf) with tag `develop` and `latest` respectively. Apart from that you can find tags for every release `VX.X.X`. We only publish Ubuntu 18.04/20.04/22.04 images. We do not publish RedHat/UBI images. These images you have to build from the source code on your RedHat systems or Openshift Platform. You can follow this [tutorial](../../../openshift/README.md) for that.
 
-The helm charts of OAI-AUSF creates multiples Kubernetes resources,
+The helm chart of OAI-AUSF creates multiples Kubernetes resources,
 
 1. Service
 2. Role Base Access Control (RBAC) (role and role bindings)
 3. Deployment
 4. Configmap (Contains the configuration file for AMF)
 5. Service account
-6. Network-attachment-defination (Optional only when multus is used)
 
 The directory structure
 
@@ -26,7 +25,6 @@ The directory structure
 │   ├── configmap.yaml
 │   ├── deployment.yaml
 │   ├── _helpers.tpl
-│   ├── multus.yaml
 │   ├── NOTES.txt
 │   ├── rbac.yaml
 │   ├── serviceaccount.yaml
