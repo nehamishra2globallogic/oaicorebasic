@@ -35,6 +35,7 @@ multus:
   create: false
   n3Ip: "172.21.6.95"
   n3Netmask: "22"
+  ## If you don't have a gateway leave the field empty or commented
   defaultGateway: "172.21.7.254"
   hostInterface: "bond0"
 
@@ -87,22 +88,26 @@ securityContext:
 persistent:
   sharedvolume: false
 
+## NF is the network function and tcpdump is the tcpdump container. 
+## To know more about request and limit it is better to understand that how Kubernetes QoS works. 
+## https://kubernetes.io/docs/concepts/configuration/manage-resources-containers
+## https://kubernetes.io/docs/concepts/workloads/pods/pod-qos
 resources:
   define: false
   limits:
-    tcpdump:
-      cpu: 100m
-      memory: 128Mi
     nf:
       cpu: 100m
       memory: 128Mi
+    # tcpdump:
+    #   cpu: 100m
+    #   memory: 128Mi
   requests:
-    tcpdump:
-      cpu: 100m
-      memory: 128Mi
     nf:
       cpu: 100m
       memory: 128Mi
+    # tcpdump:
+    #   cpu: 100m
+    #   memory: 128Mi
 
 readinessProbe: true
 

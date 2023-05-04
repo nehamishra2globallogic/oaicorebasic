@@ -34,6 +34,7 @@ serviceAccount:
 # Multus interface name
 
 multus:
+  # if default gatway is commented or left blank then it will be remove
   defaultGateway: "172.21.7.254"
   n2Interface:
     create: false
@@ -59,12 +60,14 @@ multus:
     #mtu: 1500
     hostInterface: "bond0"      # Interface of the host machine on which this pod will be scheduled
 
-## If you want to change more configuration parameters then you should mount the config file or use it from 
-# https://gitlab.eurecom.fr/oai/openairinterface5g/-/tree/develop/targets/PROJECTS/GENERIC-NR-5GC/CONF 
+## If you want to change more configuration parameters then you should mount the config file  
+# in templates/configmap.yaml
+# Example config files --> https://gitlab.eurecom.fr/oai/openairinterface5g/-/tree/develop/targets/PROJECTS/GENERIC-NR-5GC/CONF 
 config:
   mountConfig: false          #If config file is mounted then please edit mount.conf in configmap.yaml properly 
   rfSimulator: "server"
   timeZone: "Europe/Paris"
+  ## -E is to apply three-quarter of sampling frequency, 23.04 Msps to reduce the data rate on USB/PCIe transfers (only valid for 20 MHz)
   useAdditionalOptions: "--sa -E --rfsim --log_config.global_log_options level,nocolor,time"
   # If mounting the configuration file then below parameters are not used
   useSATddMono: "yes"
@@ -78,10 +81,9 @@ config:
   #entrypoint.sh tries to resolve the amfHost name if the resolution did not work gNB will not start
   amfIpAddress: "oai-amf-svc"  # amf ip-address or service-name oai-amf-svc or 172.21.6.94
   gnbNgaIfName: "eth0"            # net1 in case multus create is true that means another interface is created for ngap interface, n2 to communicate with amf
-  gnbNgaIpAddress: "status.podIP" # n2n3IPadd in case multus create is true
+  gnbNgaIpAddress: "status.podIP" # n2.IPadd in case multus create is true
   gnbNguIfName: "eth0"   #net2/net1 in case multus create is true gtu interface for upf/spgwu
-  gnbNguIpAddress: "status.podIP" # n2n3IPadd in case multus create is true
-  ## -E is to apply three-quarter of sampling frequency, 23.04 Msps to reduce the data rate on USB/PCIe transfers (only valid for 20 MHz)
+  gnbNguIpAddress: "status.podIP" # n3.IPadd in case multus create is true
   threadParallelConfig: "PARALLEL_SINGLE_THREAD"
   sdrAddrs: "serial=XXXXXXX"
 
@@ -103,22 +105,26 @@ tcpdumpimage:
    #pullPolicy: IfNotPresent or Never or Always
    pullPolicy: IfNotPresent
 
+## NF is the network function and tcpdump is the tcpdump container. 
+## To know more about request and limit it is better to understand that how Kubernetes QoS works. 
+## https://kubernetes.io/docs/concepts/configuration/manage-resources-containers
+## https://kubernetes.io/docs/concepts/workloads/pods/pod-qos
 resources:
   define: false
   limits:
-    tcpdump:
-      cpu: 100m
-      memory: 128Mi
     nf:
       cpu: 100m
       memory: 128Mi
+    # tcpdump:
+    #   cpu: 100m
+    #   memory: 128Mi
   requests:
-    tcpdump:
-      cpu: 100m
-      memory: 128Mi
     nf:
       cpu: 100m
       memory: 128Mi
+    # tcpdump:
+    #   cpu: 100m
+    #   memory: 128Mi
 
 tolerations: []
 affinity: {}

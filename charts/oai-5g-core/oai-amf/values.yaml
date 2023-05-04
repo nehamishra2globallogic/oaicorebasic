@@ -44,7 +44,8 @@ multus:
   create: false
   n2IPadd: "172.21.6.94"
   n2Netmask: "22"
-  defaultGateway: "172.21.7.254"
+  ## If you don't have a gateway leave the field empty or commented
+  defaultGateway: "172.21.7.254" 
   hostInterface: "bond0"      # Interface of the host machine on which this pod will be scheduled
 
 ## Incase the pod is not able to resolve the FQDN of other network 
@@ -101,22 +102,26 @@ tcpdumpimage:
 persistent:
   sharedvolume: false
 
+## NF is the network function and tcpdump is the tcpdump container. 
+## To know more about request and limit it is better to understand that how Kubernetes QoS works. 
+## https://kubernetes.io/docs/concepts/configuration/manage-resources-containers
+## https://kubernetes.io/docs/concepts/workloads/pods/pod-qos
 resources:
   define: false
   limits:
-    tcpdump:
-      cpu: 100m
-      memory: 128Mi
     nf:
       cpu: 100m
       memory: 128Mi
+    # tcpdump:
+    #   cpu: 100m
+    #   memory: 128Mi
   requests:
-    tcpdump:
-      cpu: 100m
-      memory: 128Mi
     nf:
       cpu: 100m
       memory: 128Mi
+    # tcpdump:
+    #   cpu: 100m
+    #   memory: 128Mi
 
 readinessProbe: true
 

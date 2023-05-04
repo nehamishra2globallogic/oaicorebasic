@@ -45,7 +45,7 @@ spec:
         {{ toYaml .Values.imagePullSecrets | indent 8 }}
     {{- end }}
       containers:
-      - name: gnbcu
+      - name: gnbcuup
         image: "{{ .Values.nfimage.repository }}:{{ .Values.nfimage.version }}"
         volumeMounts:
           - mountPath: /opt/oai-gnb/etc/mounted.conf
@@ -54,11 +54,11 @@ spec:
         {{- if .Values.resources.define}}
         resources:
           requests:
-            memory: {{ .Values.resources.requests.memory | quote }}
-            cpu: {{ .Values.resources.requests.cpu | quote }}
+            memory: {{ .Values.resources.requests.nf.memory | quote }}
+            cpu: {{ .Values.resources.requests.nf.cpu | quote }}
           limits:
-            memory: {{ .Values.resources.limits.memory | quote }}
-            cpu: {{ .Values.resources.limits.cpu | quote }}
+            memory: {{ .Values.resources.limits.nf.memory | quote }}
+            cpu: {{ .Values.resources.limits.nf.cpu | quote }}
         {{- end}}
         securityContext:
            privileged: true
@@ -66,11 +66,11 @@ spec:
         - containerPort: 2152
           name: n3
           protocol: UDP
-        - containerPort: 36412
-          name: n2
+        - containerPort: 38462
+          name: e1
           protocol: SCTP
-        - containerPort: 2153
-          name: f1
+        - containerPort: 2152
+          name: f1u
           protocol: UDP
         {{- if .Values.start.gnbcuup}}
         {{- else}}
@@ -92,11 +92,11 @@ spec:
         {{- if .Values.resources.define}}
         resources:
           requests:
-            memory: {{ .Values.resources.tcpdump.requests.memory | quote }}
-            cpu: {{ .Values.resources.tcpdump.requests.cpu | quote }}
+            memory: {{ .Values.resources.requests.tcpdump.memory | quote }}
+            cpu: {{ .Values.resources.requests.tcpdump.cpu | quote }}
           limits:
-            memory: {{ .Values.resources.tcpdump.limits.memory | quote }}
-            cpu: {{ .Values.resources.tcpdump.limits.cpu | quote }}
+            memory: {{ .Values.resources.limits.tcpdump.memory | quote }}
+            cpu: {{ .Values.resources.limits.tcpdump.cpu | quote }}
         {{- end}}
         securityContext:
            privileged: true

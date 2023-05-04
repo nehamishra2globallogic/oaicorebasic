@@ -8,17 +8,13 @@ spec:
   type: ClusterIP
   clusterIP: None
   ports:
-    - name: n2
-      port: 36412
-      targetPort: 36412
+    - name: f1c
+      port: 38472
+      targetPort: 38472
       protocol: SCTP
-    - name: n3
+    - name: f1u
       port: 2152
       targetPort: 2152
-      protocol: UDP
-    - name: f1
-      port: 2153
-      targetPort: 2153
       protocol: UDP
   selector:
     {{- include "oai-gnb-du.selectorLabels" . | nindent 4 }}
