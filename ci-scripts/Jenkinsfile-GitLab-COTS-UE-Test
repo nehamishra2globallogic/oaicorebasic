@@ -228,7 +228,11 @@ pipeline {
           sh "docker image inspect --format='Date = {{.Created}}' ${ranFullImage} >> archives/oai-gnb-image-info.log"
           sh "docker image inspect --format='Size = {{.Size}} bytes' ${ranFullImage} >> archives/oai-gnb-image-info.log"
           sh "echo 'OC Pushed Tag is N/A' >> archives/oai-gnb-image-info.log"
-          stash includes: 'archives/oai-gnb-image-info.log', name: 'gNB_image'
+          stash allowEmpty: true, includes: 'archives/oai-gnb-image-info.log', name: 'gNB_image'
+          // Adding capture on SCTP and L2 port 9999
+          sh "sudo rm -f /tmp/oai-gnb-l2-trace.pcap /tmp/oai-gnb-l2-trace.logs"
+          sh 'nohup sudo tshark -i any -f "sctp or udp port 9999" -w /tmp/oai-gnb-l2-trace.pcap > /tmp/oai-gnb-l2-trace.logs 2>&1 &'
+          sleep 2
           // Deploying now
           dir ('ci-scripts/docker-compose/gnb-ci-testbed') {
             sh "sed -i -e 's@image: oaisoftwarealliance/oai-gnb:develop@image: ${ranFullImage}@' docker-compose.yml"
@@ -249,11 +253,16 @@ pipeline {
         }
         unsuccessful {
           script {
+            sh "sudo pkill tshark || true"
+            sleep 2
+            sh "sudo chmod 666 /tmp/oai-gnb-l2-trace.* || true"
             dir ('ci-scripts/docker-compose/gnb-ci-testbed') {
               sh "docker-compose stop -t 3 || true"
               sleep 2
               sh "docker logs sa-b210-gnb > oai-gnb.logs 2>&1 || true"
-              stash includes: 'oai-gnb.logs', name: 'gNB_logs'
+              sh "cp /tmp/oai-gnb-l2-trace.* . || true"
+              sh "sudo rm -f /tmp/oai-gnb-l2-trace.*"
+              stash allowEmpty: true, includes: 'oai-gnb.logs, oai-gnb-l2-trace.*', name: 'gNB_logs'
               sh "docker-compose down -t 3 || true"
             }
             deployedGNB  = false
@@ -349,7 +358,7 @@ pipeline {
             sh 'sudo chmod 666 /tmp/test-st*.log'
             sh 'cp /tmp/test-st*.log archives'
             sh 'sudo rm /tmp/test-st*.log'
-            stash includes: 'archives/*.log', name: 'ue_logs'
+            stash allowEmpty: true, includes: 'archives/*.log', name: 'ue_logs'
           }
         }
       }
@@ -360,13 +369,18 @@ pipeline {
         script {
           echo '\u2705 \u001B[32mUndeploy gNB\u001B[0m'
           if (deployedGNB) {
+            sh "sudo pkill tshark || true"
+            sleep 2
+            sh "sudo chmod 666 /tmp/oai-gnb-l2-trace.* || true"
             dir ('ci-scripts/docker-compose/gnb-ci-testbed') {
               ranFullImage = params.FULL_RAN_TAG
               sh "sed -i -e 's@image: oaisoftwarealliance/oai-gnb:develop@image: ${ranFullImage}@' docker-compose.yml"
               sh "docker-compose stop -t 3 || true"
               sleep 2
               sh "docker logs sa-b210-gnb > oai-gnb.logs 2>&1 || true"
-              stash includes: 'oai-gnb.logs', name: 'gNB_logs'
+              sh "cp /tmp/oai-gnb-l2-trace.* . || true"
+              sh "sudo rm -f /tmp/oai-gnb-l2-trace.*"
+              stash allowEmpty: true, includes: 'oai-gnb.logs, oai-gnb-l2-trace.*', name: 'gNB_logs'
               sh "docker-compose down -t 3 || true"
             }
             deployedGNB = false
