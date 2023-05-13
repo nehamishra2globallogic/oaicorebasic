@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: {{ .Chart.Name }}
   labels:
-    {{- include "oai-flexric.labels" . | nindent 4 }}
+    {{- include "oai-rnis-xapp.labels" . | nindent 4 }}
 spec:
   type: ClusterIP
   clusterIP: None
@@ -17,4 +17,4 @@ spec:
 #      targetPort: 36421
 #      protocol: SCTP
   selector:
-    {{- include "oai-flexric.selectorLabels" . | nindent 4 }}
+    {{- include "oai-rnis-xapp.selectorLabels" . | nindent 4 }}

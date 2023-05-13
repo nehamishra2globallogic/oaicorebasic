@@ -3,25 +3,25 @@ kind: Deployment
 metadata:
   name: {{ .Chart.Name }}
   labels:
-    {{- include "oai-flexric.labels" . | nindent 4 }}
+    {{- include "oai-rnis-xapp.labels" . | nindent 4 }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      {{- include "oai-flexric.selectorLabels" . | nindent 6 }}
+      {{- include "oai-rnis-xapp.selectorLabels" . | nindent 6 }}
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        {{- include "oai-flexric.selectorLabels" . | nindent 8 }}
-        app: oai-flexric
+        {{- include "oai-rnis-xapp.selectorLabels" . | nindent 8 }}
+        app: oai-rnis-xapp
     {{- if .Values.multus.Interface.create }}
       annotations:
         k8s.v1.cni.cncf.io/networks: >-
           [{
                  "name": "{{ .Chart.Name }}-net1",
-                  "mac": "12:34:56:78:90:10"
+                  "mac": "12:34:56:78:90:11"
           }]
     {{- end }}
     spec:
@@ -32,7 +32,7 @@ spec:
         {{ toYaml .Values.imagePullSecrets | indent 8 }}
     {{- end }}
       containers:
-      - name: flexric
+      - name: rnis-xapp
         image: "{{ .Values.nfimage.repository }}:{{ .Values.nfimage.version }}"
         imagePullPolicy: {{ .Values.nfimage.pullPolicy }}
         {{- if .Values.config.mountConfig}}
@@ -40,6 +40,9 @@ spec:
           - mountPath: /usr/local/etc/flexric/flexric.conf
             name: configuration
             subPath: flexric.conf
+          - mountPath: /flexric/build/examples/xApp/python3/config.ini
+            name: configuration
+            subPath: config.ini
         {{- end}}
         {{- if .Values.resources.define}}
         resources:
@@ -64,7 +67,7 @@ spec:
 #        - containerPort: 36422
 #          name: y
 #          protocol: SCTP
-        {{- if .Values.start.flexric}}
+        {{- if .Values.start.xapp }}
         {{- else}}
         command:
           - /bin/sleep

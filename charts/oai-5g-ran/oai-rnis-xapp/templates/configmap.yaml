@@ -21,4 +21,15 @@ data:
       [XAPP]
       DB_PATH = /flexric/db/
       DB_NAME = xapp_rnis_db
+
+  config.ini: |
+      [XAPP]
+      RemoteRabbitmqAddress = 192.168.100.245
+      RemoteRabbitmqPort = 5672
+      RemoteRabbitMqUsername = user
+      RemoteRabbitMqPassword = password
+      SQliteDBPath = /flexric/db/
+      SQliteDBName = xapp_rnis_db
+      LogLevel = info
+      publishTime = 0.01  
 {{- end }}

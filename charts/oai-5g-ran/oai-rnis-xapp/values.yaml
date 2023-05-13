@@ -19,7 +19,7 @@ serviceAccount:
   annotations: {}
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
-  name: "oai-flexric"
+  name: "oai-rnis-xapp"
 
 #service type is fixed to clusterIP, it is only support for non multus interface (eth0)
 
@@ -28,7 +28,7 @@ serviceAccount:
 multus:
   Interface:
     create: true
-    IPadd: "192.168.100.244"
+    IPadd: "192.168.100.245"
     Netmask: "24"
     # if gateway is commented then it will be removed
     #Gateway: ""
@@ -43,7 +43,7 @@ config:
 
 ## Debugging section
 start:
-  flexric: false #If false the network function container will run in sleep mode for manually testing
+  xapp: false #If false the network function container will run in sleep mode for manually testing
   tcpdump: false
 
 includeTcpDumpContainer: false #If true it will add a tcpdump container inside network function pod for debugging

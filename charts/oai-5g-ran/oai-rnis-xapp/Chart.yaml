@@ -20,8 +20,8 @@
 ################################################################################
 
 apiVersion: v2
-name: oai-flexric
-description: A Helm chart for flexric network function
+name: oai-rnis-xapp
+description: A Helm chart for rnis-xapp network function
 
 # A chart can be either an 'application' or a 'library' chart.
 #
