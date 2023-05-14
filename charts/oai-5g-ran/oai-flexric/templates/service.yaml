@@ -12,9 +12,5 @@ spec:
       port: 36421
       targetPort: 36421
       protocol: SCTP
-#    - name: y
-#      port: 36421
-#      targetPort: 36421
-#      protocol: SCTP
   selector:
     {{- include "oai-flexric.selectorLabels" . | nindent 4 }}

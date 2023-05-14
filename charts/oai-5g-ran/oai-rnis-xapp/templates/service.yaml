@@ -9,12 +9,8 @@ spec:
   clusterIP: None
   ports:
     - name: x
-      port: 36421
-      targetPort: 36421
+      port: 36422
+      targetPort: 36422
       protocol: SCTP
-#    - name: y
-#      port: 36421
-#      targetPort: 36421
-#      protocol: SCTP
   selector:
     {{- include "oai-rnis-xapp.selectorLabels" . | nindent 4 }}

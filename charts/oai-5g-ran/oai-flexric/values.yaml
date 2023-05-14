@@ -28,7 +28,7 @@ serviceAccount:
 multus:
   Interface:
     create: true
-    IPadd: "192.168.100.244"
+    IPadd: "192.168.100.245"
     Netmask: "24"
     # if gateway is commented then it will be removed
     #Gateway: ""
