@@ -46,13 +46,13 @@ $: git clone -b <Branch> https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed
 
 The helm charts can be used on any production grade kubernetes cluster or even vanilla kubernetes. We have also tested on a single node 4 CPU and 16 GB ram minikube cluster with docker virtualization environment. In our testing environment we deploy these charts on our inhouse Openshift clusters the cluster information can be found below.
 
-| Software                        | Version                                |
-|:--------------------------------|:---------------------------------------|
-| Openshift Client Version        | 4.9.X                                  |
-| Kubernetes Version              | Kubernetes Version: v1.22.5+5c84e52    |
-| helm                            | v3.6.2+5.el8                           |
-| helm-spray (plugin)             | v4.0.10                                |
-| Base images of Network functions| Ubuntu 18.04/20.04/22.04/UBI 8.X(RHEL8)|
+| Software                        | Version                                 |
+|:--------------------------------|:----------------------------------------|
+| Openshift Client Version        | 4.10.X                                  |
+| Kubernetes Version              | Kubernetes Version: v1.23.12+8a6bfe4    |
+| helm                            | v3.6.2+5.el8                            |
+| helm-spray (plugin)             | v4.0.10                                 |
+| Base images of Network functions| Ubuntu 18.04/20.04/22.04/UBI 8.X(RHEL8) |
 
 We are deploying the helm charts using `helm spray` plugin of `helm` as the network functions have dependency and they are required to be deployed in a certain order. To get more information on helm spray you can follow this [link](https://github.com/ThalesGroup/helm-spray).
 
@@ -161,10 +161,17 @@ Network function discovers each-other using NRF and instead of using the ip-addr
 ```
 ## Example from oai-amf/values.yaml
 multus:
-  create: true
-  n2IPadd: "<provide-an-ip-address>"
-  n2Netmask: "<provide-a-netmask>"
-  n2Gateway: "<Gateway>"
+  ## If you don't want to add a default route in your pod then leave this field empty
+  defaultGateway: "172.21.7.254"
+  n2Interface:
+    create: false
+    Ipadd: "172.21.6.94"
+    Netmask: "22"
+    ## If you do not have a gateway leave the field empty
+    Gateway:
+    ## If you do not want to add any routes in your pod then leave this field empty
+    routes: [{'dst': '10.8.0.0/24','gw': '172.21.7.254'}]
+    hostInterface: "bond0" # Interface of the host machine on which this pod will be scheduled
 ```
 
 #### 3.1.2 Use Single Interface

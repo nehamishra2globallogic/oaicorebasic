@@ -6,9 +6,9 @@ We are in the process of testing the helm-chart with different USRPs, Radio Unit
 
 Before using this helm-chart we recommend you read about OAI codebase and its working from the documents listed on [OAI gitlab](https://gitlab.eurecom.fr/oai/openairinterface5g/-/tree/develop/doc)
 
+**Note**: This chart is tested on [Minikube](https://minikube.sigs.k8s.io/docs/) and [Red Hat Openshift](https://www.redhat.com/fr/technologies/cloud-computing/openshift) 4.10 and 4.12. RFSIM-GNB requires minimum 2CPU and 2Gi RAM and [multus-cni](https://github.com/k8snetworkplumbingwg/multus-cni) plugin for multiple interfaces. 
 
-**Note**: This chart is tested on [Minikube](https://minikube.sigs.k8s.io/docs/) and [Red Hat Openshift](https://www.redhat.com/fr/technologies/cloud-computing/openshift) 4.10 and 4.12. RFSIM requires minimum 2CPU and 2Gi RAM and [multus-cni](https://github.com/k8snetworkplumbingwg/multus-cni) plugin for multiple interfaces. 
- 
+All the extra interfaces/multus interfaces created inside the pod are using `macvlan` mode. If your environment does not allow using `macvlan` then you need to change the multus definations. 
 
 ## Introduction
 
@@ -52,36 +52,38 @@ The directory structure
 [Values.yaml](./values.yaml) contains all the configurable parameters. Below table defines the configurable parameters. You need a dedicated interface for Fronthaul. Creating deadicated interfaces for N2 and N3 is optional. You can use a single interface for N2 and N3.
 
 
-|Parameter                       |Allowed Values                 |Remark                          |
-|--------------------------------|-------------------------------|--------------------------------|
-|kubernetesType                  |Vanilla/Openshift              |Vanilla Kubernetes or Openshift |
-|nfimage.repository              |Image Name                     |                                |
-|nfimage.version                 |Image tag                      |                                |
-|nfimage.pullPolicy              |IfNotPresent or Never or Always|                                |
-|imagePullSecrets.name           |String                         |Good to use for docker hub      |
-|serviceAccount.create           |true/false                     |                                |
-|serviceAccount.annotations      |String                         |                                |
-|serviceAccount.name             |String                         |                                |
-|podSecurityContext.runAsUser    |Integer (0,65534)              |                                |
-|podSecurityContext.runAsGroup   |Integer (0,65534)              |                                |
-|multus.defaultGateway           |Ip-Address                     |default route in the pod        |
-|multus.n2Interface.create       |true/false                     |                                |
-|multus.n2Interface.IPadd        |Ip-Address                     |                                |
-|multus.n2Interface.Netmask      |Netmask                        |                                |
-|multus.n2Interface.Gateway      |Ip-Address                     |                                |
-|multus.n2Interface.hostInterface|host interface                 |                                |
-|multus.n3Interface.create       |true/false                     |                                |
-|multus.n3Interface.IPadd        |Ip-Address)                    |                                |
-|multus.n3Interface.Netmask      |Netmask                        |                                |
-|multus.n3Interface.Gateway      |Ip-Address                     |                                |
-|multus.n3Interface.hostInterface|host interface                 |                                |
-|multus.ruInterface.create       |true/false                     |                                |
-|multus.ruInterface.IPadd        |Ip-Address                     |                                |
-|multus.ruInterface.Netmask      |Netmask                        |                                |
-|multus.ruInterface.Gateway      |Ip-Address                     |                                |
-|multus.ruInterface.hostInterface|host interface                 |                                |
-|multus.ruInterface.mtu          |Integer                        ||Range [0, Parent interface MTU]|
 
+|Parameter                       |Allowed Values                 |Remark                                          |
+|--------------------------------|-------------------------------|------------------------------------------------|
+|kubernetesType                  |Vanilla/Openshift              |Vanilla Kubernetes or Openshift                 |
+|nfimage.repository              |Image Name                     |                                                |
+|nfimage.version                 |Image tag                      |                                                |
+|nfimage.pullPolicy              |IfNotPresent or Never or Always|                                                |
+|imagePullSecrets.name           |String                         |Good to use for docker hub                      |
+|serviceAccount.create           |true/false                     |                                                |
+|serviceAccount.annotations      |String                         |                                                |
+|serviceAccount.name             |String                         |                                                |
+|podSecurityContext.runAsUser    |Integer (0,65534)              |                                                |
+|podSecurityContext.runAsGroup   |Integer (0,65534)              |                                                |
+|multus.defaultGateway           |Ip-Address                     |default route in the pod                        |
+|multus.n2Interface.create       |true/false                     |                                                |
+|multus.n2Interface.IPadd        |Ip-Address                     |                                                |
+|multus.n2Interface.Netmask      |Netmask                        |                                                |
+|multus.n2Interface.Gateway      |Ip-Address                     |                                                |
+|multus.n2Interface.hostInterface|host interface                 |Host interface of the machine where pod will run|
+|multus.n2Interface.routes       |Json                           |Routes you want to add in the pod               |
+|multus.n3Interface.create       |true/false                     |                                                |
+|multus.n3Interface.IPadd        |Ip-Address)                    |                                                |
+|multus.n3Interface.Netmask      |Netmask                        |                                                |
+|multus.n3Interface.Gateway      |Ip-Address                     |                                                |
+|multus.n3Interface.hostInterface|host interface                 |Host interface of the machine where pod will run|
+|multus.n3Interface.routes       |Json                           |Routes you want to add in the pod               |
+|multus.ruInterface.create       |true/false                     |                                                |
+|multus.ruInterface.IPadd        |Ip-Address                     |                                                |
+|multus.ruInterface.Netmask      |Netmask                        |                                                |
+|multus.ruInterface.Gateway      |Ip-Address                     |                                                |
+|multus.ruInterface.hostInterface|host interface                 |Host interface of the machine where pod will run|
+|multus.ruInterface.mtu          |Integer                        |Range [0, Parent interface MTU]                 |
 
 The config parameters mentioned in `config` block of `values.yaml` are limited on purpose to maintain simplicity. They do not allow changing a lot of parameters of oai-gnb. If you want to use your own configuration file for oai-gnb. It is recommended to copy it in `templates/configmap.yaml` and set `config.mountConfig` as `true`. The command line for gnb is provided in `config.useAdditionalOptions`.
 
@@ -89,7 +91,7 @@ The charts are configured to be used with primary CNI of Kubernetes. When you wi
 
 You can find [here](https://gitlab.eurecom.fr/oai/openairinterface5g/-/tree/develop/targets/PROJECTS/GENERIC-NR-5GC/CONF) different sample configuration files for different bandwidths and frequencies. The binary of oai-gnb is called as `nr-softmodem`. To know more about its functioning and command line parameters you can visit this [page](https://gitlab.eurecom.fr/oai/openairinterface5g/-/blob/develop/doc/RUNMODEM.md)
 
-## Advance Debugging Parameters
+## Advanced Debugging Parameters
 
 Only needed if you are doing advance debugging
 
@@ -119,8 +121,27 @@ Only needed if you are doing advance debugging
 
 ## How to use
 
+
+1. If you want to mount your configuration file then you set can `config.mountConfig`. The configuration file should be added in `templates/configmap.yaml`. Once the GNB is configured. 
+
 ```bash
 helm install oai-gnb .
+```
+
+2. Configure the `oai-nr-ue` charts for `oai-gnb`, change `config.rfSimulator` to `oai-gnb` and `useAdditionalOptions` to "--sa -E --rfsim -r 106 --numerology 1 -C 3319680000 --nokrnmod --log_config.global_log_options level,nocolor,time". As the configuration of cu/du is set at this frequency and resource block. If you mount your own configuration file then set the configuration of nr-ue accordingly. 
+
+```bash
+helm install oai-nr-ue ../oai-nr-ue
+```
+
+3. Once NR-UE is connected you can go inside the pod and ping via `oai` interface. If you do not see this interface then the UE is not connected to gNB or have some issues at core network.
+
+```bash
+kubectl exec -it <oai-nr-ue-pod-name> -- bash
+#ping towards spgwu/upf
+ping -I oaitun_ue1 12.1.1.1
+#ping towards google dns
+ping -I oaitun_ue1 8.8.8.8
 ```
 
 ## Note

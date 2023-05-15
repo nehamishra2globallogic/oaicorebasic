@@ -50,7 +50,7 @@ The directory structure
 |podSecurityContext.runAsUser |Integer (0,65534)              |Mandatory to use 0                       |
 |podSecurityContext.runAsGroup|Integer (0,65534)              |Mandatory to use 0                       |
 
-## Advance Debugging Parameters
+## Advanced Debugging Parameters
 
 Only needed if you are doing advance debugging
 
@@ -77,6 +77,14 @@ Only needed if you are doing advance debugging
 |terminationGracePeriodSeconds    |5                              |In seconds (default 5)                        |
 |nodeSelector                     |Node label                     |                                              |
 |nodeName                         |Node Name                      |                                              |
+
+
+## Installation
+
+Better to use the parent charts from:
+
+1. [oai-5g-basic](../oai-5g-basic/README.md) for basic deployment of OAI-5G Core
+2. [oai-5g-slicing](../oai-5g-slicing/README.md) for basic deployment with NSSF extra 
 
 ## Note
 

@@ -15,13 +15,17 @@ spec:
     metadata:
       labels:
         {{- include "oai-amf.selectorLabels" . | nindent 8 }}
-    {{- if .Values.multus.create }}
+    {{- if .Values.multus.n2Interface.create }}
       annotations:
         k8s.v1.cni.cncf.io/networks: >-
           [{
-                 "name": "{{ .Chart.Name }}-n2-net1"
+                 "name": "{{ .Chart.Name }}-n2",
+                 "interface": "n2"
                 {{- if .Values.multus.defaultGateway }}
                  ,"default-route": ["{{ .Values.multus.defaultGateway }}"]
+                {{- end }}
+                {{- if .Values.multus.n2Interface.Gateway }}
+                ,"gateway": "{{ .Values.multus.n2Interface.Gateway }}"
                 {{- end }}
           }]
     {{- end }}

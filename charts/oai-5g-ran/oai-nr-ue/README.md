@@ -43,23 +43,25 @@ The directory structure
 [Values.yaml](./values.yaml) contains all the configurable parameters. Below table defines the configurable parameters. You need a dedicated interface for for NR-UE when it will run on a different cluster then gNB/DU.
 
 
-|Parameter                    |Allowed Values                 |Remark                         |
-|-----------------------------|-------------------------------|-------------------------------|
-|kubernetesType               |Vanilla/Openshift              |Vanilla Kubernetes or Openshift|
-|nfimage.repository           |Image Name                     |                               |
-|nfimage.version              |Image tag                      |                               |
-|nfimage.pullPolicy           |IfNotPresent or Never or Always|                               |
-|imagePullSecrets.name        |String                         |Good to use for docker hub     |
-|serviceAccount.create        |true/false                     |                               |
-|serviceAccount.annotations   |String                         |                               |
-|serviceAccount.name          |String                         |                               |
-|podSecurityContext.runAsUser |Integer (0,65534)              |                               |
-|podSecurityContext.runAsGroup|Integer (0,65534)              |                               |
-|multus.create                |true/false                     |                               |
-|multus.iPadd                 |Ip-Address                     |                               |
-|multus.netmask               |Netmask                        |                               |
-|multus.defaultGateway        |Ip-Address                     |                               |
-|multus.hostInterface         |host interface                 |                               |
+|Parameter                       |Allowed Values                 |Remark                               |
+|--------------------------------|-------------------------------|-------------------------------------|
+|kubernetesType                  |Vanilla/Openshift              |Vanilla Kubernetes or Openshift      |
+|nfimage.repository              |Image Name                     |                                     |
+|nfimage.version                 |Image tag                      |                                     |
+|nfimage.pullPolicy              |IfNotPresent or Never or Always|                                     |
+|imagePullSecrets.name           |String                         |Good to use for docker hub           |
+|serviceAccount.create           |true/false                     |                                     |
+|serviceAccount.annotations      |String                         |                                     |
+|serviceAccount.name             |String                         |                                     |
+|podSecurityContext.runAsUser    |Integer (0,65534)              |                                     |
+|podSecurityContext.runAsGroup   |Integer (0,65534)              |                                     |
+|multus.n2Interface.create       |true/false                     |                                     |
+|multus.n2Interface.Ipadd        |Ip-Address                     |                                     |
+|multus.n2Interface.Netmask      |Netmask                        |                                     |
+|multus.n2Interface.Gateway      |Ip-Address                     |                                     |
+|multus.n2Interface.routes       |Json                           |Routes if you want to add in your pod|
+|multus.n2Interface.hostInterface|host interface                 |Host interface on which pod will run |
+|multus.defaultGateway           |Ip-Address                     |Default route inside pod             |
 
 
 ## Advance Debugging Parameters

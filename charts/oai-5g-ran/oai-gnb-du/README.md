@@ -50,30 +50,32 @@ The directory structure
 [Values.yaml](./values.yaml) contains all the configurable parameters. Below table defines the configurable parameters. You need a dedicated interface for Fronthaul.
 
 
-|Parameter                       |Allowed Values                 |Remark                          |
-|--------------------------------|-------------------------------|--------------------------------|
-|kubernetesType                  |Vanilla/Openshift              |Vanilla Kubernetes or Openshift |
-|nfimage.repository              |Image Name                     |                                |
-|nfimage.version                 |Image tag                      |                                |
-|nfimage.pullPolicy              |IfNotPresent or Never or Always|                                |
-|imagePullSecrets.name           |String                         |Good to use for docker hub      |
-|serviceAccount.create           |true/false                     |                                |
-|serviceAccount.annotations      |String                         |                                |
-|serviceAccount.name             |String                         |                                |
-|podSecurityContext.runAsUser    |Integer (0,65534)              |                                |
-|podSecurityContext.runAsGroup   |Integer (0,65534)              |                                |
-|multus.defaultGateway           |Ip-Address                     |default route in the pod        |
-|multus.f1Interface.create       |true/false                     |                                |
-|multus.f1Interface.IPadd        |Ip-Address                     |                                |
-|multus.f1Interface.Netmask      |Netmask                        |                                |
-|multus.f1Interface.Gateway      |Ip-Address                     |                                |
-|multus.f1Interface.hostInterface|host interface                 |                                |
-|multus.ruInterface.create       |true/false                     |                                |
-|multus.ruInterface.IPadd        |Ip-Address                     |                                |
-|multus.ruInterface.Netmask      |Netmask                        |                                |
-|multus.ruInterface.Gateway      |Ip-Address                     |                                |
-|multus.ruInterface.hostInterface|host interface                 |                                |
-|multus.ruInterface.mtu          |Integer                        ||Range [0, Parent interface MTU]|
+
+|Parameter                       |Allowed Values                 |Remark                           |
+|--------------------------------|-------------------------------|---------------------------------|
+|kubernetesType                  |Vanilla/Openshift              |Vanilla Kubernetes or Openshift  |
+|nfimage.repository              |Image Name                     |                                 |
+|nfimage.version                 |Image tag                      |                                 |
+|nfimage.pullPolicy              |IfNotPresent or Never or Always|                                 |
+|imagePullSecrets.name           |String                         |Good to use for docker hub       |
+|serviceAccount.create           |true/false                     |                                 |
+|serviceAccount.annotations      |String                         |                                 |
+|serviceAccount.name             |String                         |                                 |
+|podSecurityContext.runAsUser    |Integer (0,65534)              |                                 |
+|podSecurityContext.runAsGroup   |Integer (0,65534)              |                                 |
+|multus.defaultGateway           |Ip-Address                     |default route in the pod         |
+|multus.f1Interface.create       |true/false                     |                                 |
+|multus.f1Interface.IPadd        |Ip-Address                     |                                 |
+|multus.f1Interface.Netmask      |Netmask                        |                                 |
+|multus.f1Interface.Gateway      |Ip-Address                     |                                 |
+|multus.f1Interface.routes       |Json                           |Routes you want to add in the pod|
+|multus.f1Interface.hostInterface|host interface                 |Host machine interface name      |
+|multus.ruInterface.create       |true/false                     |                                 |
+|multus.ruInterface.IPadd        |Ip-Address                     |                                 |
+|multus.ruInterface.Netmask      |Netmask                        |                                 |
+|multus.ruInterface.Gateway      |Ip-Address                     |                                 |
+|multus.ruInterface.hostInterface|host interface                 |Host machine interface name      |
+|multus.ruInterface.mtu          |Integer                        ||Range [0, Parent interface MTU] |
 
 
 The config parameters mentioned in `config` block of `values.yaml` are limited on purpose to maintain simplicity. They do not allow changing a lot of parameters of oai-gnb. If you want to use your own configuration file for oai-gnb-du. It is recommended to copy it in `templates/configmap.yaml` and set `config.mountConfig` as `true`. The command line for gnb is provided in `config.useAdditionalOptions`.
@@ -112,8 +114,40 @@ Only needed if you are doing advance debugging
 
 ## How to use
 
+### F1 split only
+
+Make sure core network and `cu` is running before starting the `du`
+
 ```bash
+helm install oai-gnb-cu ../oai-gnb-cu
+#wait for cu to start
 helm install oai-gnb-du .
+```
+### F1 and E1 split
+
+```bash
+helm install oai-gnb-cu-cp ../oai-gnb-cu-cp 
+#wait for cu-cp to start
+helm install oai-gnb-cu-up ../oai-gnb-cu-up 
+helm install oai-gnb-du .
+```
+
+### Connect the UE
+
+1. Configure the `oai-nr-ue` charts for `oai-gnb-du`, change `config.rfSimulator` to `oai-gnb-du` and `useAdditionalOptions` to "--sa --rfsim -r 106 --numerology 1 -C 3619200000 --nokrnmod --log_config.global_log_options level,nocolor,time". As the configuration of cu/du is set at this frequency and resource block. If you mount your own configuration file then set the configuration of nr-ue accordingly. 
+
+```bash
+helm install oai-nr-ue ../oai-nr-ue
+```
+
+2. Once NR-UE is connected you can go inside the pod and ping via `oai` interface. If you do not see this interface then the UE is not connected to gNB or have some issues at core network.
+
+```bash
+kubectl exec -it <oai-nr-ue-pod-name> -- bash
+#ping towards spgwu/upf
+ping -I oaitun_ue1 12.1.1.1
+#ping towards google dns
+ping -I oaitun_ue1 8.8.8.8
 ```
 
 ## Note

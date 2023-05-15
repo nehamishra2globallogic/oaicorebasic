@@ -95,13 +95,19 @@ oai-amf:
   imagePullSecrets:
     - name: "regcred"
   multus:
-    create: false
-    n2IPadd: "172.21.6.94"
-    n2Netmask: "22"
+    ## If you don't want to add a default route in your pod then leave this field empty
     defaultGateway: "172.21.7.254"
-    hostInterface: "bond0"      # Interface of the host machine on which this pod will be scheduled
+    n2Interface:
+      create: false
+      Ipadd: "172.21.6.94"
+      Netmask: "22"
+      ## If you do not have a gateway leave the field empty
+      Gateway:
+      ## If you do not want to add any routes in your pod then leave this field empty
+      routes: [{'dst': '10.8.0.0/24','gw': '172.21.7.254'}]
+      hostInterface: "bond0" # Interface of the host machine on which this pod will be scheduled
   config:
-    amfInterfaceNameForNGAP: "eth0" # If multus creation is true then net1 else eth0
+    amfInterfaceNameForNGAP: "eth0" # If oai-amf.multus.n2Interface.create is true then n2 else eth0
     amfInterfaceNameForSBI: "eth0"  # Service based interface
     externalAusf: "yes"
     externalNssf: "yes"
@@ -136,17 +142,44 @@ oai-spgwu-tiny:
   includeTcpDumpContainer: false #only for taking pcaps inside network function pod
   imagePullSecrets:
     - name: "regcred"
+  # create an extra interface for N3 incase the gNB is outside the cluster network or there is a need to have dedicated interface for N3
+  ## Change these ip-addresses according to your environment
+  ## N4, N6 are optional only if you want that UPF uses different subnets for different 3gpp interfaces. 
   multus:
-    create: false
-    n3Ip: "172.21.6.95"
-    n3Netmask: "22"
     defaultGateway: "172.21.7.254"
-    hostInterface: "bond0"
+    n3Interface:
+      create: false
+      Ipadd: "172.21.6.95"
+      Netmask: "22"
+      ## If you do not have a gateway leave the field empty
+      Gateway: "172.21.7.254"
+      ## If you do not want to add any routes in your pod then leave this field empty
+      routes: [{'dst': '10.8.0.0/24','gw': '172.21.7.254'}, {'dst': '10.9.0.0/24','gw': '172.21.7.254'}]
+      hostInterface: "bond0"
+    n4Interface:
+      create: false
+      Ipadd: "172.21.16.89"
+      Netmask: "22"
+      ## If you do not have a gateway leave the field empty
+      Gateway: "172.21.19.254"
+      ## If you do not want to add any routes in your pod then leave this field empty
+      routes: 
+      hostInterface: "bond1"
+    n6Interface:
+      create: false
+      Ipadd: "172.21.8.80"
+      Netmask: "22"
+      ## If you do not have a gateway leave the field empty
+      Gateway: "172.21.11.254"
+      ## If you do not want to add any routes in your pod then leave this field empty
+      routes: 
+      hostInterface: "bond2"
+  #NOTE: If the interface you selected for n6If is wrong then traffic will not be routed towards internet
   config:
-    n3If: "eth0"  # net1 if gNB is outside the cluster network and multus creation is true else eth0
-    n4If: "eth0" # use for SMF communication
-    n6If: "eth0"  # net1 if gNB is outside the cluster network and multus creation is true else eth0 (important because it sends the traffic towards internet)
-    logLevel: "debug"   #allowed info/error/debug
+    n3If: "eth0"  # n3 if multus.n3Interface.create is true
+    n4If: "eth0" # n4 if multus.n4Interface.create is true
+    n6If: "eth0"  # n6 multus.n6Interface.create is true
+    logLevel: "info"   #allowed info/error/debug
     threadsN3Ul: "1"
     threadsN6Dl: "1"
     threadsN6Prio: 98

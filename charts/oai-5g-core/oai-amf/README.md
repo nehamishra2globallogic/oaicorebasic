@@ -2,6 +2,8 @@
 
 The helm-chart is tested on [Minikube](https://minikube.sigs.k8s.io/docs/) and [Red Hat Openshift](https://www.redhat.com/fr/technologies/cloud-computing/openshift) 4.10 and 4.12. There are no special resource requirements for AMF. 
 
+**NOTE**: All the extra interfaces/multus interfaces created inside the pod are using `macvlan` mode. If your environment does not allow using `macvlan` then you need to change the multus definations.
+
 ## Introduction
 
 OAI-AMF follows 3GPP release 16, more information about the feature set can be found on [AMFs WiKi page](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-amf/-/wikis/home). The source code be downloaded from [GitLab](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-amf)
@@ -89,7 +91,7 @@ The directory structure
 |config.externalNssf            |Optional                    |if not using AUSF                           |
 |config.mySqlPass               |Optional                    |if not using AUSF                           |
 
-## Advance Debugging Parameters
+## Advanced Debugging Parameters
 
 Only needed if you are doing advance debugging
 
@@ -118,6 +120,13 @@ Only needed if you are doing advance debugging
 |nodeSelector                     |Node label                     |                                              |
 |nodeName                         |Node Name                      |                                              |
 
+## Installation
+
+Better to use the parent charts from:
+
+1. [oai-5g-basic](../oai-5g-basic/README.md) for basic deployment of OAI-5G Core
+2. [oai-5g-mini](../oai-5g-mini/README.md) for mini deployment (AMF, SMF, NRF, UPF) of OAI-5G Core. In this type of deployment AMF plays the role of AUSF and UDR
+3. [oai-5g-slicing](../oai-5g-slicing/README.md) for basic deployment with NSSF extra
 
 ## Note
 

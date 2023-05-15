@@ -1,3 +1,4 @@
+{{- if not .Values.config.mountConfig }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -6,9 +7,8 @@ data:
   {{- range $key, $val := .Values.config }}
   {{ $key }}: {{ $val | quote }}
   {{- end }}
-
+{{- else }}
 ---
-{{- if .Values.config.mountConfig }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -16,11 +16,6 @@ metadata:
 data:
   #Taken from --> https://gitlab.eurecom.fr/oai/openairinterface5g/-/blob/develop/ci-scripts/conf_files/gNB_SA_CU.conf
   mounted.conf: |
-      Active_gNBs = ( "oai-cu");
-      # Asn1_verbosity, choice in: none, info, annoying
-      Asn1_verbosity = "none";
-      Num_Threads_PUSCH = 8;
-
       Active_gNBs = ( "oai-cu");
       # Asn1_verbosity, choice in: none, info, annoying
       Asn1_verbosity = "none";
@@ -38,7 +33,7 @@ data:
 
           // Tracking area code, 0x0000 and 0xfffe are reserved values
           tracking_area_code  =  1;
-          plmn_list = ({ mcc = 208; mnc = 99; mnc_length = 2; snssaiList = ({ sst = 1, sd = 0xffffff }) });
+          plmn_list = ({ mcc = 001; mnc = 01; mnc_length = 2; snssaiList = ({ sst = 1, sd = 0xffffff }) });
 
 
           nr_cellid = 12345678L;
@@ -46,9 +41,9 @@ data:
 
           tr_s_preference = "f1";
 
-          local_s_if_name = "lo";
-          local_s_address = "127.0.0.4";
-          remote_s_address = "127.0.0.3";
+          local_s_if_name = "f1";
+          local_s_address = "172.21.6.92";
+          remote_s_address = "127.0.0.1";
           local_s_portc   = 501;
           local_s_portd   = 2152;
           remote_s_portc  = 500;
@@ -192,7 +187,7 @@ data:
 
 
           ////////// AMF parameters:
-          amf_ip_address      = ( { ipv4       = "192.168.70.132";
+          amf_ip_address      = ( { ipv4       = "172.21.6.94";
                                     ipv6       = "192:168:30::17";
                                     active     = "yes";
                                     preference = "ipv4";
@@ -201,10 +196,10 @@ data:
 
           NETWORK_INTERFACES :
           {
-              GNB_INTERFACE_NAME_FOR_NG_AMF            = "demo-oai";
-              GNB_IPV4_ADDRESS_FOR_NG_AMF              = "192.168.70.129/24";
-              GNB_INTERFACE_NAME_FOR_NGU               = "demo-oai";
-              GNB_IPV4_ADDRESS_FOR_NGU                 = "192.168.70.129/24";
+              GNB_INTERFACE_NAME_FOR_NG_AMF            = "n2";
+              GNB_IPV4_ADDRESS_FOR_NG_AMF              = "172.21.6.90";
+              GNB_INTERFACE_NAME_FOR_NGU               = "n3";
+              GNB_IPV4_ADDRESS_FOR_NGU                 = "172.21.6.91";
               GNB_PORT_FOR_S1U                         = 2152; # Spec 2152
           };
         }
@@ -238,6 +233,4 @@ data:
              f1ap_log_level                         ="info";
              ngap_log_level                         ="debug";
           };
-
-
 {{- end }}

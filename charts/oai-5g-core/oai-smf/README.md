@@ -1,6 +1,8 @@
 # Helm Chart for OAI Session Management Function (SMF)
 
-The helm-chart is tested on [Minikube](https://minikube.sigs.k8s.io/docs/) and [Red Hat Openshift](https://www.redhat.com/fr/technologies/cloud-computing/openshift) 4.10 and 4.12. There are no special resource requirements for SMF. 
+The helm-chart is tested on [Minikube](https://minikube.sigs.k8s.io/docs/) and [Red Hat Openshift](https://www.redhat.com/fr/technologies/cloud-computing/openshift) 4.10 and 4.12. There are no special resource requirements for SMF.
+
+**NOTE**: All the extra interfaces/multus interfaces created inside the pod are using `macvlan` mode. If your environment does not allow using `macvlan` then you need to change the multus definations.
 
 ## Introduction
 
@@ -39,26 +41,30 @@ The directory structure
 [Values.yaml](./values.yaml) contains all the configurable parameters. Below table defines the configurable parameters. 
 
 
-|Parameter                    |Allowed Values                 |Remark                                   |
-|-----------------------------|-------------------------------|-----------------------------------------|
-|kubernetesType               |Vanilla/Openshift              |Vanilla Kubernetes or Openshift          |
-|nfimage.repository           |Image Name                     |                                         |
-|nfimage.version              |Image tag                      |                                         |
-|nfimage.pullPolicy           |IfNotPresent or Never or Always|                                         |
-|imagePullSecrets.name        |String                         |Good to use for docker hub               |
-|serviceAccount.create        |true/false                     |                                         |
-|serviceAccount.annotations   |String                         |                                         |
-|serviceAccount.name          |String                         |                                         |
-|podSecurityContext.runAsUser |Integer (0,65534)              |Mandatory to use 0                       |
-|podSecurityContext.runAsGroup|Integer (0,65534)              |Mandatory to use 0                       |
-|multus.create                |true/false                     |default false                            |
-|multus.n4IPadd               |IPV4                           |NA                                       |
-|multus.n4Netmask             |Netmask                        |NA                                       |
-|multus.defaultGateway        |IPV4                           |Default route inside container (optional)|
-|multus.hostInterface         |HostInterface Name             |NA                                       |
+
+|Parameter                       |Allowed Values                 |Remark                               |
+|--------------------------------|-------------------------------|-------------------------------------|
+|kubernetesType                  |Vanilla/Openshift              |Vanilla Kubernetes or Openshift      |
+|nfimage.repository              |Image Name                     |                                     |
+|nfimage.version                 |Image tag                      |                                     |
+|nfimage.pullPolicy              |IfNotPresent or Never or Always|                                     |
+|imagePullSecrets.name           |String                         |Good to use for docker hub           |
+|serviceAccount.create           |true/false                     |                                     |
+|serviceAccount.annotations      |String                         |                                     |
+|serviceAccount.name             |String                         |                                     |
+|podSecurityContext.runAsUser    |Integer (0,65534)              |Mandatory to use 0                   |
+|podSecurityContext.runAsGroup   |Integer (0,65534)              |Mandatory to use 0                   |
+|multus.create                   |true/false                     |default false                        |
+|multus.n4Interface.create       |true/false                     |                                     |
+|multus.n4Interface.Ipadd        |Ip-Address                     |                                     |
+|multus.n4Interface.Netmask      |Netmask                        |                                     |
+|multus.n4Interface.Gateway      |Ip-Address                     |                                     |
+|multus.n4Interface.routes       |Json                           |Routes if you want to add in your pod|
+|multus.n4Interface.hostInterface|host interface                 |Host interface on which pod will run |
+|multus.defaultGateway           |Ip-Address                     |Default route inside pod             |
 
 
-## Advance Debugging Parameters
+## Advanced Debugging Parameters
 
 Only needed if you are doing advance debugging
 
@@ -86,6 +92,14 @@ Only needed if you are doing advance debugging
 |nodeSelector                     |Node label                     |                                              |
 |nodeName                         |Node Name                      |                                              |
 
+
+## Installation
+
+Better to use the parent charts from:
+
+1. [oai-5g-basic](../oai-5g-basic/README.md) for basic deployment of OAI-5G Core
+2. [oai-5g-mini](../oai-5g-mini/README.md) for mini deployment (AMF, SMF, NRF, UPF) of OAI-5G Core. In this type of deployment AMF plays the role of AUSF and UDR
+3. [oai-5g-slicing](../oai-5g-slicing/README.md) for basic deployment with NSSF extra 
 
 ## Note
 

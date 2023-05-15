@@ -72,33 +72,21 @@ spec:
         {{- end}}
         env:
           - name: TZ
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: timeZone
-          - name: USE_ADDITIONAL_OPTIONS
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: useAdditionalOptions
+            value: {{ .Values.config.timeZone }}
           - name: RFSIMULATOR
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: rfSimulator
+            value: {{ .Values.config.rfSimulator }}
+          - name: USE_ADDITIONAL_OPTIONS
+            value: {{ .Values.config.useAdditionalOptions }}
           {{- if .Values.config.mountConfig}}
           - name: USE_VOLUMED_CONF
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: mountConfig
+            value: "yes"
           {{- end}}
           {{- if not .Values.config.mountConfig}}
           - name: USE_SA_TDD_DU
             valueFrom:
               configMapKeyRef:
                 name: {{ .Chart.Name }}-configmap
-                key: useSaTDDcu
+                key: useSaTDDdu
           - name: GNB_NAME
             valueFrom:
               configMapKeyRef:

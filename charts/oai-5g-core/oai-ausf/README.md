@@ -80,6 +80,13 @@ Only needed if you are doing advance debugging
 |nodeSelector                     |Node label                     |                                              |
 |nodeName                         |Node Name                      |                                              |
 
+## Installation
+
+Better to use the parent charts from:
+
+1. [oai-5g-basic](../oai-5g-basic/README.md) for basic deployment of OAI-5G Core
+2. [oai-5g-slicing](../oai-5g-slicing/README.md) for basic deployment with NSSF extra
+
 ## Note
 
 1. If you are using tcpdump container to take pcaps automatically (`start.tcpdump` is true) you can enable `persistent.sharedvolume` and [presistent volume](./oai-nrf/values.yaml) in NRF. To store the pcaps of all the NFs in one location. It is to ease the automated collection of pcaps.

@@ -47,34 +47,36 @@ The directory structure
 [Values.yaml](./values.yaml) contains all the configurable parameters. Below table defines the configurable parameters. You can use the same interface for N2,N3 and F1. If you want you can create dedicated interface for N2, N3 and F1. 
 
 
-|Parameter                       |Allowed Values                 |Remark                          |
-|--------------------------------|-------------------------------|--------------------------------|
-|kubernetesType                  |Vanilla/Openshift              |Vanilla Kubernetes or Openshift |
-|nfimage.repository              |Image Name                     |                                |
-|nfimage.version                 |Image tag                      |                                |
-|nfimage.pullPolicy              |IfNotPresent or Never or Always|                                |
-|imagePullSecrets.name           |String                         |Good to use for docker hub      |
-|serviceAccount.create           |true/false                     |                                |
-|serviceAccount.annotations      |String                         |                                |
-|serviceAccount.name             |String                         |                                |
-|podSecurityContext.runAsUser    |Integer (0,65534)              |                                |
-|podSecurityContext.runAsGroup   |Integer (0,65534)              |                                |
-|multus.defaultGateway           |Ip-Address                     |default route in the pod        |
-|multus.n2Interface.create       |true/false                     |                                |
-|multus.n2Interface.IPadd        |Ip-Address                     |                                |
-|multus.n2Interface.Netmask      |Netmask                        |                                |
-|multus.n2Interface.Gateway      |Ip-Address                     |                                |
-|multus.n2Interface.hostInterface|host interface                 |                                |
-|multus.n3Interface.create       |true/false                     |                                |
-|multus.n3Interface.IPadd        |Ip-Address)                    |                                |
-|multus.n3Interface.Netmask      |Netmask                        |                                |
-|multus.n3Interface.Gateway      |Ip-Address                     |                                |
-|multus.n3Interface.hostInterface|host interface                 |                                |
-|multus.f1Interface.create       |true/false                     |                                |
-|multus.f1Interface.IPadd        |Ip-Address                     |                                |
-|multus.f1Interface.Netmask      |Netmask                        |                                |
-|multus.f1Interface.Gateway      |Ip-Address                     |                                |
-|multus.f1Interface.hostInterface|host interface                 |                                |
+|Parameter                       |Allowed Values                 |Remark                                |
+|--------------------------------|-------------------------------|--------------------------------------|
+|kubernetesType                  |Vanilla/Openshift              |Vanilla Kubernetes or Openshift       |
+|nfimage.repository              |Image Name                     |                                      |
+|nfimage.version                 |Image tag                      |                                      |
+|nfimage.pullPolicy              |IfNotPresent or Never or Always|                                      |
+|imagePullSecrets.name           |String                         |Good to use for docker hub            |
+|serviceAccount.create           |true/false                     |                                      |
+|serviceAccount.annotations      |String                         |                                      |
+|serviceAccount.name             |String                         |                                      |
+|podSecurityContext.runAsUser    |Integer (0,65534)              |                                      |
+|podSecurityContext.runAsGroup   |Integer (0,65534)              |                                      |
+|multus.defaultGateway           |Ip-Address                     |default route in the pod              |
+|multus.n2Interface.create       |true/false                     |                                      |
+|multus.n2Interface.IPadd        |Ip-Address                     |                                      |
+|multus.n2Interface.Netmask      |Netmask                        |                                      |
+|multus.n2Interface.Gateway      |Ip-Address                     |                                      |
+|multus.n2Interface.routes       |Json                           |Routes you want to add in the pod     |
+|multus.n2Interface.hostInterface|host interface                 |Host machine interface name           |
+|multus.n3Interface.create       |true/false                     |                                      |
+|multus.n3Interface.IPadd        |Ip-Address                     |                                      |
+|multus.n3Interface.Netmask      |Netmask                        |                                      |
+|multus.n3Interface.Gateway      |Ip-Address                     |                                      |
+|multus.n3Interface.routes       |Json                           |Routes you want to add in the pod     |
+|multus.n3Interface.hostInterface|host interface                 |Host machine interface name           |
+|multus.f1Interface.create       |true/false                     |                                      |
+|multus.f1Interface.IPadd        |Ip-Address                     |                                      |
+|multus.f1Interface.Netmask      |Netmask                        |                                      |
+|multus.f1Interface.Gateway      |Ip-Address                     |                                      |
+|multus.f1Interface.hostInterface|host interface                 |Host machine interface name           |
 
 
 The config parameters mentioned in `config` block of `values.yaml` are limited on purpose to maintain simplicity. They do not allow changing a lot of parameters of oai-gnb-cu. If you want to use your own configuration file for oai-gnb-cu. It is recommended to copy it in `templates/configmap.yaml` and set `config.mountConfig` as `true`. The command line for gnb is provided in `config.useAdditionalOptions`. 
@@ -113,8 +115,32 @@ Only needed if you are doing advance debugging
 
 ## How to use
 
+1. If you want to mount your configuration file then you set can `config.mountConfig`. The configuration file should be added in `templates/configmap.yaml`. Once the CU is configured. 
+
 ```bash
 helm install oai-gnb-cu .
+```
+
+2. Configure and install the DU, in case you want to mount the configuration file you set can `config.mountConfig`. The configuration file should be added in `templates/configmap.yaml`. Once the DU is configured. 
+
+```bash
+helm install oai-gnb-du ../oai-gnb-du
+```
+
+3. Configure the `oai-nr-ue` charts for `oai-gnb-du`, change `config.rfSimulator` to `oai-gnb-du` and `useAdditionalOptions` to "--sa --rfsim -r 106 --numerology 1 -C 3619200000 --nokrnmod --log_config.global_log_options level,nocolor,time". As the configuration of cu/du is set at this frequency and resource block. If you mount your own configuration file then set the configuration of nr-ue accordingly. 
+
+```bash
+helm install oai-nr-ue ../oai-nr-ue
+```
+
+4. Once NR-UE is connected you can go inside the pod and ping via `oai` interface. If you do not see this interface then the UE is not connected to gNB or have some issues at core network.
+
+```bash
+kubectl exec -it <oai-nr-ue-pod-name> -- bash
+#ping towards spgwu/upf
+ping -I oaitun_ue1 12.1.1.1
+#ping towards google dns
+ping -I oaitun_ue1 8.8.8.8
 ```
 
 ## Note
