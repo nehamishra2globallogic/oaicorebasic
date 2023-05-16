@@ -54,7 +54,7 @@ The directory structure
 |podSecurityContext.runAsGroup|Integer (0,65534)              |Mandatory to use 0                       |
 
 
-Only needed if you are doing advance debugging
+Only needed if you are doing advanced debugging
 
 
 |Parameter                        |Allowed Values                 |Remark                                        |

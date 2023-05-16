@@ -85,9 +85,9 @@ The charts are configured to be used with primary CNI of Kubernetes. When you wi
 
 You can find [here](https://gitlab.eurecom.fr/oai/openairinterface5g/-/tree/develop/targets/PROJECTS/GENERIC-NR-5GC/CONF) different sample configuration files for different bandwidths and frequencies. The binary of oai-gnb is called as `nr-softmodem`. To know more about its functioning and command line parameters you can visit this [page](https://gitlab.eurecom.fr/oai/openairinterface5g/-/blob/develop/doc/RUNMODEM.md)
 
-## Advance Debugging Parameters
+## Advanced Debugging Parameters
 
-Only needed if you are doing advance debugging
+Only needed if you are doing advanced debugging
 
 |Parameter                        |Allowed Values                 |Remark                                        |
 |---------------------------------|-------------------------------|----------------------------------------------|

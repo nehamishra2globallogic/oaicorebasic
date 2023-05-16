@@ -93,7 +93,7 @@ You can find [here](https://gitlab.eurecom.fr/oai/openairinterface5g/-/tree/deve
 
 ## Advanced Debugging Parameters
 
-Only needed if you are doing advance debugging
+Only needed if you are doing advanced debugging
 
 |Parameter                        |Allowed Values                 |Remark                                        |
 |---------------------------------|-------------------------------|----------------------------------------------|

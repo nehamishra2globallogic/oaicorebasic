@@ -64,9 +64,9 @@ The directory structure
 |multus.defaultGateway           |Ip-Address                     |Default route inside pod             |
 
 
-## Advance Debugging Parameters
+## Advanced Debugging Parameters
 
-Only needed if you are doing advance debugging
+Only needed if you are doing advanced debugging
 
 |Parameter                        |Allowed Values                 |Remark                                        |
 |---------------------------------|-------------------------------|----------------------------------------------|
