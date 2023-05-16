@@ -20,6 +20,9 @@ spec:
                         {{- end }}
                 }
         ]
+        {{- if .Values.multus.n2Interface.routes }}
+        ,"routes":  {{- .Values.multus.n2Interface.routes | toJson }}
+        {{- end }}
       }
     }'
 {{- end }}
@@ -45,6 +48,9 @@ spec:
                         {{- end }}
                 }
         ]
+        {{- if .Values.multus.n3Interface.routes }}
+        ,"routes":  {{- .Values.multus.n3Interface.routes | toJson }}
+        {{- end }}
       }
     }'
 {{- end }}
@@ -70,6 +76,9 @@ spec:
                         {{- end }}
                 }
         ]
+        {{- if .Values.multus.f1Interface.routes }}
+        ,"routes":  {{- .Values.multus.f1Interface.routes | toJson }}
+        {{- end }}
       }
     }'
 {{- end }}

@@ -20,19 +20,28 @@ spec:
       annotations:
         k8s.v1.cni.cncf.io/networks: >-
           [{
-                 "name": "{{ .Chart.Name }}-net1"
+                 "name": "{{ .Chart.Name }}-n2",
+                 "interface": "n2",
                 {{- if .Values.multus.defaultGateway }}
                  ,"default-route": ["{{ .Values.multus.defaultGateway }}"]
                 {{- end }}
           }
           {{- if .Values.multus.n3Interface.create }}
           ,{
-                 "name": "{{ .Chart.Name }}-net2"
+                 "name": "{{ .Chart.Name }}-n3",
+                 "interface": "n3",
+                {{- if .Values.multus.n3Interface.Gateway }}
+                ,"gateway": {{ .Values.multus.n3Interface.Gateway }}
+                {{- end }}
           }
           {{- end }}
           {{- if .Values.multus.ruInterface.create }}
           ,{
-                 "name": "{{ .Chart.Name }}-net3"
+                 "name": "{{ .Chart.Name }}-ru",
+                 "interface": "ru",
+                {{- if .Values.multus.ruInterface.Gateway }}
+                ,"gateway": {{ .Values.multus.ruInterface.Gateway }}
+                {{- end }}
           }
           {{- end }}
           ]

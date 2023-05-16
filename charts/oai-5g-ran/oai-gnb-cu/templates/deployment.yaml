@@ -20,19 +20,22 @@ spec:
       annotations:
         k8s.v1.cni.cncf.io/networks: >-
           [{
-                 "name": "{{ .Chart.Name }}-net1"
+                 "name": "{{ .Chart.Name }}-net1",
+                 "interface": "n2"
                   {{- if .Values.multus.defaultGateway }}
                  ,"default-route": ["{{ .Values.multus.defaultGateway }}"]
                   {{- end }}
           }
           {{- if .Values.multus.n3Interface.create }}
           ,{
-                 "name": "{{ .Chart.Name }}-net2"
+                 "name": "{{ .Chart.Name }}-net2",
+                 "interface": "n3"
           }
           {{- end }}
           {{- if .Values.multus.f1Interface.create }}
           ,{
-                 "name": "{{ .Chart.Name }}-net3"
+                 "name": "{{ .Chart.Name }}-net3",
+                 "interface": "f1"
           }
           {{- end }}
           ]
@@ -80,17 +83,14 @@ spec:
         {{- end}}
         env:
           - name: TZ
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: timeZone
+            value: {{ .Values.config.timeZone }}
+          - name: USE_ADDITIONAL_OPTIONS
+            value: {{ .Values.config.useAdditionalOptions }}
           {{- if .Values.config.mountConfig}}
           - name: USE_VOLUMED_CONF
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: mountConfig
+            value: "yes"
           {{- end}}
+          {{- if not .Values.config.mountConfig}}
           - name: USE_SA_CU
             valueFrom:
               configMapKeyRef:
@@ -199,11 +199,7 @@ spec:
               configMapKeyRef:
                 name: {{ .Chart.Name }}-configmap
                 key: f1duPort
-          - name: USE_ADDITIONAL_OPTIONS
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: useAdditionalOptions
+          {{- end}}
       {{- if .Values.includeTcpDumpContainer }}
       - name: tcpdump
         image: "{{ .Values.tcpdumpimage.repository }}:{{ .Values.tcpdumpimage.version }}"

@@ -26,28 +26,31 @@ serviceAccount:
 ## Change these ip-addresses according to your environment
 
 multus:
-  # if default gatway is commented or left blank then it will be remove
+  # if default gatway is empty then it will be removed
   defaultGateway: "172.21.7.254"
   e1Interface:
     create: true
     IPadd: "172.21.6.90"
     Netmask: "22"
-    # if gatway is commented or empty then it will be remove
+    # if gatway is empty then it will be removed
     #Gateway: "172.21.7.254"
+    #routes: [{'dst': '10.8.0.0/24','gw': '172.21.7.254'}, {'dst': '10.9.0.0/24','gw': '172.21.7.254'}]
     hostInterface: "bond0"      # Interface of the host machine on which this pod will be scheduled
   n2Interface:
     create: true
     IPadd: "172.21.6.98"
     Netmask: "22"
-    # if gatway is commented or empty then it will be remove
+    # if gatway is empty then it will be removed
     #Gateway: "172.21.7.254"
+    #routes: 
     hostInterface: "bond0"      # Interface of the host machine on which this pod will be scheduled
   f1cInterface:
     create: true
     IPadd: "172.21.6.92"
     Netmask: "22"
-    # if gatway is commented or empty then it will be remove
+    # if gatway is empty then it will be removed
     #Gateway: "172.21.7.254"
+    #routes: 
     hostInterface: "bond0"      # Interface of the host machine on which this pod will be scheduled
 
 ## configuration file is in template/config.yaml 
@@ -94,16 +97,18 @@ resources:
     nf:
       cpu: 100m
       memory: 128Mi
-    # tcpdump:
-    #   cpu: 100m
-    #   memory: 128Mi
+    #If tcpdump container is disabled this value will not be used
+    tcpdump:
+      cpu: 100m
+      memory: 128Mi
   requests:
     nf:
       cpu: 100m
       memory: 128Mi
-    # tcpdump:
-    #   cpu: 100m
-    #   memory: 128Mi
+    #If tcpdump container is disabled this value will not be used
+    tcpdump:
+      cpu: 100m
+      memory: 128Mi
 
 
 tolerations: []

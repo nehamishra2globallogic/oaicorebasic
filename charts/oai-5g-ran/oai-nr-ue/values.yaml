@@ -38,7 +38,7 @@ config:
   dnn: "oai" 
   nssaiSst: "1"                     # configure according to gnb and amf, smf and upf 
   nssaiSd: "16777215" 
-  useAdditionalOptions: "--sa -E --rfsim -r 106 --numerology 1 -C 3619200000 --nokrnmod --log_config.global_log_options level,nocolor,time" 
+  useAdditionalOptions: "--sa -E --rfsim -r 106 --numerology 1 -C 3319680000 --nokrnmod --log_config.global_log_options level,nocolor,time" 
 
 # in case of du change the command   
 #"--sa --rfsim -r 106 --numerology 1 -C 3619200000 --nokrnmod --log_config.global_log_options level,nocolor,time" 
@@ -68,18 +68,20 @@ resources:
   define: false
   limits:
     nf:
-      cpu: 100m
+      cpu: 1500m
+      memory: 1Gi
+    #If tcpdump container is disabled this value will not be used
+    tcpdump:
+      cpu: 200m
       memory: 128Mi
-    # tcpdump:
-    #   cpu: 100m
-    #   memory: 128Mi
   requests:
     nf:
+      cpu: 1500m
+      memory: 1Gi
+    #If tcpdump container is disabled this value will not be used
+    tcpdump:
       cpu: 100m
       memory: 128Mi
-    # tcpdump:
-    #   cpu: 100m
-    #   memory: 128Mi
 
 terminationGracePeriodSeconds: 5
 

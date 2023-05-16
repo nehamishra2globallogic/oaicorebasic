@@ -20,6 +20,9 @@ spec:
                         {{- end }}
                 }
         ]
+        {{- if .Values.multus.f1Interface.routes }}
+        ,"routes":  {{- .Values.multus.f1Interface.routes | toJson }}
+        {{- end }}
       }
     }'
 {{- end }}
