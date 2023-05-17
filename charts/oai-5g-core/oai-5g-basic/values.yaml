@@ -101,8 +101,8 @@ oai-amf:
     externalAusf: "yes"
     logLevel: "debug"   #allowed info/error/debug
     # Mandatory
-    sst0: "1"         ## 1 slice/SST is mandatory
-    sd0: "0xFFFFFF"   ## Optional 0xFFFFFF means no SD as per 3GPP
+    sst0: "@NSSAI_SST0@"         ## 1 slice/SST is mandatory
+    sd0: "@NSSAI_SD0@"   ## Optional 0xFFFFFF means no SD as per 3GPP
     ## Can add upto 3 more slices. More than that you can do it in the configmap of amf templates/configmap.yaml
     # Note only SST is mandatory for a slice SD is optional
     sst1: "1"
@@ -174,7 +174,7 @@ oai-spgwu-tiny:
     registerNRF: "yes"
     nrfFqdn: "oai-nrf-svc" # make sure this can be resolved by container dns
     #Mandatory to configure atlease one slice
-    nssaiSst0: @NSSAI_SST@   # should match with SMF information
+    nssaiSst0: @NSSAI_SST0@   # should match with SMF information
     nssaiSd0: "@NSSAI_SD0@"  # should match with SMF information (Optional, if removed sd value will be 0xFFFFFF)
     dnn0: "@DNN0@" # should match with SMF information
     #Upto 4 slices can be added from here to add more you need to add manullay in config.yaml. Please follow the same way of adding slices nssaiSST$,nssaiSd$,dnn$ ($=0,1,2,3)
