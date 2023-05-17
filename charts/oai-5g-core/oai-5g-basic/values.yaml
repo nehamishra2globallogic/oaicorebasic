@@ -214,12 +214,16 @@ oai-smf:
     pullPolicy: IfNotPresent
   includeTcpDumpContainer: @TCPDUMP@ #only for taking pcaps inside network function pod
   multus:
-    create: @MULTUS_SMF_N4@
-    n4IPadd: "@IP_SMF_N4@"
-    n4Netmask: "@NETMASK_SMF_N4@"
-# If you don't have a gateway leave the field empty or commented
     defaultGateway: @CN_DEFAULT_GW@
-    hostInterface: "@IF_NAME_SMF_N4@"      # Interface of the host machine on which this pod will be scheduled
+    n4Interface:
+    create: @MULTUS_SMF_N4@
+    IPadd: "@IP_SMF_N4@"
+    Netmask: "@NETMASK_SMF_N4@"
+    ## If you do not have a gateway leave the field empty
+    Gateway: @GW_SMF_N4@
+    ## If you do not want to add any routes in your pod then leave this field empty
+    routes: @ROUTES_SMF_N4@ 
+    hostInterface: "@IF_NAME_SMF_N4@"
   imagePullSecrets:
     - name: "regcred"
   securityContext:
