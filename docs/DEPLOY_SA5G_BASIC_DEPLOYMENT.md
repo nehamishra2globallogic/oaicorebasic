@@ -385,7 +385,7 @@ Make sure you edit the IMSI, opc and key according to the settings of your user 
 
 Your core network is ready you can use it.
 
-You can use `oai-ext-dn` to perform iperf or ping towards the UE, just make sure that the subnet used by the UE is properly defined in the `oai-ext-dn` contianer using `ip route` command.
+You can use `oai-ext-dn` to perform iperf or ping towards the UE, just make sure that the subnet used by the UE is properly defined in the `oai-ext-dn` container using `ip route` command.
 
 ``` shell
 docker-compose-host $: docker exec -it oai-ext-dn bash
