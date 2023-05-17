@@ -16,7 +16,7 @@ oai-nrf:
     version: @NRF_TAG@ ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNo tPresent or Never or Always
     pullPolicy: IfNotPresent
-  includeTcpDumpContainer: false #only for taking pcaps inside network function pod
+  includeTcpDumpContainer: @TCPDUMP@ #only for taking pcaps inside network function pod
   imagePullSecrets:
     - name: "regcred"
   config:
@@ -31,7 +31,7 @@ oai-udr:
     version: @UDR_TAG@  ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
-  includeTcpDumpContainer: false #only for taking pcaps inside network function pod
+  includeTcpDumpContainer: @TCPDUMP@ #only for taking pcaps inside network function pod
   imagePullSecrets:
     - name: "regcred"
   config:
@@ -46,7 +46,7 @@ oai-udm:
     version: @UDM_TAG@ ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
-  includeTcpDumpContainer: false #only for taking pcaps inside network function pod
+  includeTcpDumpContainer: @TCPDUMP@ #only for taking pcaps inside network function pod
   imagePullSecrets:
     - name: "regcred"
   config:
@@ -61,11 +61,11 @@ oai-ausf:
     version: @AUSF_TAG@ ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
-  includeTcpDumpContainer: false #only for taking pcaps inside network function pod
+  includeTcpDumpContainer: @TCPDUMP@ #only for taking pcaps inside network function pod
   imagePullSecrets:
     - name: "regcred"
   securityContext:
-    privileged: false
+    privileged: @PRIVILEGED@
   config:
     logLevel: "debug"   #allowed info/error/debug
   nodeSelector: {}
@@ -78,11 +78,11 @@ oai-amf:
     version: @AMF_TAG@ ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
-  includeTcpDumpContainer: false #only for taking pcaps inside network function pod
+  includeTcpDumpContainer: @TCPDUMP@ #only for taking pcaps inside network function pod
   imagePullSecrets:
     - name: "regcred"
   securityContext:
-    privileged: false
+    privileged: @PRIVILEGED@
   multus:
     ## If you don't want to add a default route in your pod then leave this field empty
     defaultGateway: @CN_DEFAULT_GW@
@@ -114,6 +114,7 @@ oai-amf:
     intAlgoList: '[ "NIA1" , "NIA2" ]'
     ciphAlgoList: '[ "NEA0" , "NEA1" , "NEA2" ]'
   nodeSelector: {}
+  nodeName: @NODE_AMF@
 oai-spgwu-tiny:
   enabled: true
   weight: 5
@@ -123,7 +124,7 @@ oai-spgwu-tiny:
     version: @SPGWU_TAG@ ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
-  includeTcpDumpContainer: false #only for taking pcaps inside network function pod
+  includeTcpDumpContainer: @TCPDUMP@ #only for taking pcaps inside network function pod
   imagePullSecrets:
     - name: "regcred"
   # create an extra interface for N3 incase the gNB is outside the cluster network or there is a need to have dedicated interface for N3
@@ -132,31 +133,31 @@ oai-spgwu-tiny:
   multus:
     defaultGateway: @CN_DEFAULT_GW@
     n3Interface:
-      create: @MULTUS_UPF_N3@
-      Ipadd: "@IP_UPF_N3@"
-      Netmask: "@NETMASK_UPF_N3@"
+      create: @MULTUS_SPGWU_N3@
+      Ipadd: "@IP_SPGWU_N3@"
+      Netmask: "@NETMASK_SPGWU_N3@"
       ## If you do not have a gateway leave the field empty
-      Gateway: @GW_UPF_N3@
+      Gateway: @GW_SPGWU_N3@
       ## If you do not want to add any routes in your pod then leave this field empty
-      routes: @ROUTES_UPF_N3@ 
+      routes: @ROUTES_SPGWU_N3@ 
       hostInterface: "@IF_NAME_SPGWU_N3@"
     n4Interface:
-      create: @MULTUS_UPF_N4@
-      Ipadd: "@IP_UPF_N4@" 
-      Netmask: "@NETMASK_UPF_N4@"
+      create: @MULTUS_SPGWU_N4@
+      Ipadd: "@IP_SPGWU_N4@" 
+      Netmask: "@NETMASK_SPGWU_N4@"
       ## If you do not have a gateway leave the field empty
-      Gateway: @GW_UPF_N4@
+      Gateway: @GW_SPGWU_N4@
       ## If you do not want to add any routes in your pod then leave this field empty
-      routes: @ROUTES_UPF_N4@
+      routes: @ROUTES_SPGWU_N4@
       hostInterface: "@IF_NAME_SPGWU_N4@"
     n6Interface:
-      create: @MULTUS_UPF_N6@
-      Ipadd: "@IP_UPF_N6@" 
-      Netmask: "@NETMASK_UPF_N4@"
+      create: @MULTUS_SPGWU_N6@
+      Ipadd: "@IP_SPGWU_N6@" 
+      Netmask: "@NETMASK_SPGWU_N4@"
       ## If you do not have a gateway leave the field empty
-      Gateway: @GW_UPF_N6@
+      Gateway: @GW_SPGWU_N6@
       ## If you do not want to add any routes in your pod then leave this field empty
-      routes: @ROUTES_UPF_N6@
+      routes: @ROUTES_SPGWU_N6@
       hostInterface: "@IF_NAME_SPGWU_N6@"
   #NOTE: If the interface you selected for n6If is wrong then traffic will not be routed towards internet
   config:
@@ -173,14 +174,15 @@ oai-spgwu-tiny:
     registerNRF: "yes"
     nrfFqdn: "oai-nrf-svc" # make sure this can be resolved by container dns
     #Mandatory to configure atlease one slice
-    nssaiSst0: 1 # should match with SMF information
-    nssaiSd0: "0xFFFFFF"  # should match with SMF information (Optional, if removed sd value will be 0xFFFFFF)
-    dnn0: "oai" # should match with SMF information
+    nssaiSst0: @NSSAI_SST@   # should match with SMF information
+    nssaiSd0: "@NSSAI_SD0@"  # should match with SMF information (Optional, if removed sd value will be 0xFFFFFF)
+    dnn0: "@DNN0@" # should match with SMF information
     #Upto 4 slices can be added from here to add more you need to add manullay in config.yaml. Please follow the same way of adding slices nssaiSST$,nssaiSd$,dnn$ ($=0,1,2,3)
     nssaiSst1: 1 # should match with SMF information (Optional, if removed slice will not be configured)
     nssaiSd1: "0xFFFFFF"  # should match with SMF information (Optional, if removed sd value will be 0xFFFFFF only if nssaiSst1 is configured)
     dnn1: "ims" # should match with SMF information
   nodeSelector: {}
+  nodeName: @NODE_SPGWU@
 #oai-traffic-server:
 #  enabled: false
 #  weight: 6
@@ -210,7 +212,7 @@ oai-smf:
     version: @SMF_TAG@ ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
-  includeTcpDumpContainer: false #only for taking pcaps inside network function pod
+  includeTcpDumpContainer: @TCPDUMP@ #only for taking pcaps inside network function pod
   multus:
     create: @MULTUS_SMF_N4@
     n4IPadd: "@IP_SMF_N4@"
@@ -221,7 +223,7 @@ oai-smf:
   imagePullSecrets:
     - name: "regcred"
   securityContext:
-    privileged: false
+    privileged: @PRIVILEGED@
   config:
     useLocalSubscriptionInfo: "no" #this means ip-address information will be fetched from UDR
     ueMtu: 1500
@@ -231,11 +233,11 @@ oai-smf:
     defaultCSCFIpv4Address: "@IP_CSCF" # For IMS server if needed
     discoverUpf: "yes"              # if NRF is used then it can be used for UPF discovery
     # You can define maximum 4 slices from here in case of more please change the configuration file.
-    dnnNi0: "oai"
+    dnnNi0: "@DNN0@"
     pdusessiontype0: "IPv4"
     ipv4dnnRange0: "12.1.1.2 - 12.1.1.254"
-    nssaiSst0: 1
-    nssaiSd0: "0xFFFFFF"
+    nssaiSst0: @NSSAI_SST0@
+    nssaiSd0: "@NSSAI_SD0@"
     qosProfile5qi0: 2
     sessionAmbrUl0: "1000Mbps"
     sessionAmbrDl0: "1000Mbps"
@@ -249,3 +251,4 @@ oai-smf:
     sessionAmbrUl1: "1000Mbps"
     sessionAmbrDl1: "1000Mbps"
   nodeSelector: {}
+  nodeName: @NODE_SMF@
