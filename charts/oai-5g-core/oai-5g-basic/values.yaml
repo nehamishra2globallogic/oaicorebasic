@@ -234,7 +234,7 @@ oai-smf:
     logLevel: "debug"   #allowed info/error/debug
     dnsIpv4Address: "@IP_DNS1@" # configure the dns for UE don't use Kubernetes DNS
     dnsSecIpv4Address: "@IP_DNS2@" # configure the dns for UE don't use Kubernetes DNS
-    defaultCSCFIpv4Address: "@IP_CSCF@" # For IMS server if needed
+    defaultCSCFIpv4Address: "@IP_CSCF@" # For IMS server. MUST INCLUDE AN IP ADDRESS, ELSE THE POD CRASHES !!! 
     discoverUpf: "yes"              # if NRF is used then it can be used for UPF discovery
     # You can define maximum 4 slices from here in case of more please change the configuration file.
     dnnNi0: "@DNN0@"
