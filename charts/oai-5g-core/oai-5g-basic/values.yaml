@@ -12,9 +12,9 @@ oai-nrf:
   weight: 0
   kubernetesType: Vanilla #Openshift/Vanilla Vanilla for Upstream Kubernetes
   nfimage:  # image name either locally present or in a public/private repository
-    repository: @NRF_REPO@ ## docker.io/oaisoftwarealliance/oai-nrf           ## The image will be pulled from dockerhub
-    version: @NRF_TAG@ #v1.5.0                                    ## The branch to be used to pull from dockerhub
-    # pullPolicy: IfNotPresent or Never or Always
+    repository: @NRF_REPO@  ## docker.io/oaisoftwarealliance/oai-nrf           ## The image will be pulled from dockerhub
+    version: @NRF_TAG@ ## The branch to be used to pull from dockerhub
+    # pullPolicy: IfNo tPresent or Never or Always
     pullPolicy: IfNotPresent
   includeTcpDumpContainer: false #only for taking pcaps inside network function pod
   imagePullSecrets:
@@ -28,7 +28,7 @@ oai-udr:
   kubernetesType: Vanilla #Openshift/Vanilla Vanilla for Upstream Kubernetes
   nfimage:  # image name either locally present or in a public/private repository
     repository: @UDR_REPO@ #docker.io/oaisoftwarealliance/oai-udr           ## The image will be pulled from dockerhub
-    version: @UDR_TAG@ #v1.5.0                                    ## The branch to be used to pull from dockerhub
+    version: @UDR_TAG@  ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
   includeTcpDumpContainer: false #only for taking pcaps inside network function pod
@@ -43,7 +43,7 @@ oai-udm:
   kubernetesType: Vanilla #Openshift/Vanilla Vanilla for Upstream Kubernetes
   nfimage:  # image name either locally present or in a public/private repository
     repository: @UDM_REPO@ #docker.io/oaisoftwarealliance/oai-udm           ## The image will be pulled from dockerhub
-    version: @UDM_TAG@ #v1.5.0                                    ## The branch to be used to pull from dockerhub
+    version: @UDM_TAG@ ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
   includeTcpDumpContainer: false #only for taking pcaps inside network function pod
@@ -58,7 +58,7 @@ oai-ausf:
   kubernetesType: Vanilla #Openshift/Vanilla Vanilla for Upstream Kubernetes
   nfimage:  # image name either locally present or in a public/private repository
     repository: @AUSF_REPO@ #docker.io/oaisoftwarealliance/oai-ausf           ## The image will be pulled from dockerhub
-    version: @AUSF_TAG@ #v1.5.0                                    ## The branch to be used to pull from dockerhub
+    version: @AUSF_TAG@ ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
   includeTcpDumpContainer: false #only for taking pcaps inside network function pod
@@ -75,7 +75,7 @@ oai-amf:
   kubernetesType: Vanilla #Openshift/Vanilla Vanilla for Upstream Kubernetes
   nfimage:  # image name either locally present or in a public/private repository
     repository: @AMF_REPO@ #docker.io/oaisoftwarealliance/oai-amf           ## The image will be pulled from dockerhub
-    version: @AMF_TAG@ #v1.5.0                                    ## The branch to be used to pull from dockerhub
+    version: @AMF_TAG@ ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
   includeTcpDumpContainer: false #only for taking pcaps inside network function pod
@@ -85,18 +85,18 @@ oai-amf:
     privileged: false
   multus:
     ## If you don't want to add a default route in your pod then leave this field empty
-    defaultGateway: "172.21.7.254"
+    defaultGateway: @CN_DEFAULT_GW@
     n2Interface:
-      create: false
-      Ipadd: "172.21.6.94"
-      Netmask: "22"
+      create: @MULTUS_AMF_N2@
+      Ipadd: "@IP_AMF_N2@"
+      Netmask: "@NETMASK_AMF_N2@"
       ## If you do not have a gateway leave the field empty
-      Gateway:
+      Gateway: @GW_AMF_N2@
       ## If you do not want to add any routes in your pod then leave this field empty
-      routes: [{'dst': '10.8.0.0/24','gw': '172.21.7.254'}]
-      hostInterface: "bond0" # Interface of the host machine on which this pod will be scheduled
+      routes: @ROUTES_AMF_N2@
+      hostInterface: "@IF_NAME_AMF_N2@" # Interface of the host machine on which this pod will be scheduled
   config:
-    amfInterfaceNameForNGAP: "eth0" # If oai-amf.multus.n2Interface.create is true then n2 else eth0
+    amfInterfaceNameForNGAP: "@IF_N2@" # If oai-amf.multus.n2Interface.create is true then n2 else eth0
     amfInterfaceNameForSBI: "eth0"  # Service based interface
     externalAusf: "yes"
     logLevel: "debug"   #allowed info/error/debug
@@ -120,7 +120,7 @@ oai-spgwu-tiny:
   kubernetesType: Vanilla #Openshift/Vanilla Vanilla for Upstream Kubernetes
   nfimage:  # image name either locally present or in a public/private repository
     repository: @SPGWU_REPO@ #docker.io/oaisoftwarealliance/oai-spgwu-tiny    ## The image will be pulled from dockerhub
-    version: @SPGWU_TAG@ #v1.5.0                                    ## The branch to be used to pull from dockerhub
+    version: @SPGWU_TAG@ ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
   includeTcpDumpContainer: false #only for taking pcaps inside network function pod
@@ -130,39 +130,39 @@ oai-spgwu-tiny:
   ## Change these ip-addresses according to your environment
   ## N4, N6 are optional only if you want that UPF uses different subnets for different 3gpp interfaces. 
   multus:
-    defaultGateway: "172.21.7.254"
+    defaultGateway: @CN_DEFAULT_GW@
     n3Interface:
-      create: false
-      Ipadd: "172.21.6.95"
-      Netmask: "22"
+      create: @MULTUS_UPF_N3@
+      Ipadd: "@IP_UPF_N3@"
+      Netmask: "@NETMASK_UPF_N3@"
       ## If you do not have a gateway leave the field empty
-      Gateway: "172.21.7.254"
+      Gateway: @GW_UPF_N3@
       ## If you do not want to add any routes in your pod then leave this field empty
-      routes: [{'dst': '10.8.0.0/24','gw': '172.21.7.254'}, {'dst': '10.9.0.0/24','gw': '172.21.7.254'}]
-      hostInterface: "bond0"
+      routes: @ROUTES_UPF_N3@ 
+      hostInterface: "@IF_NAME_SPGWU_N3@"
     n4Interface:
-      create: false
-      Ipadd: "172.21.16.89"
-      Netmask: "22"
+      create: @MULTUS_UPF_N4@
+      Ipadd: "@IP_UPF_N4@" 
+      Netmask: "@NETMASK_UPF_N4@"
       ## If you do not have a gateway leave the field empty
-      Gateway: "172.21.19.254"
+      Gateway: @GW_UPF_N4@
       ## If you do not want to add any routes in your pod then leave this field empty
-      routes: 
-      hostInterface: "bond1"
+      routes: @ROUTES_UPF_N4@
+      hostInterface: "@IF_NAME_SPGWU_N4@"
     n6Interface:
-      create: false
-      Ipadd: "172.21.8.80"
-      Netmask: "22"
+      create: @MULTUS_UPF_N6@
+      Ipadd: "@IP_UPF_N6@" 
+      Netmask: "@NETMASK_UPF_N4@"
       ## If you do not have a gateway leave the field empty
-      Gateway: "172.21.11.254"
+      Gateway: @GW_UPF_N6@
       ## If you do not want to add any routes in your pod then leave this field empty
-      routes: 
-      hostInterface: "bond2"
+      routes: @ROUTES_UPF_N6@
+      hostInterface: "@IF_NAME_SPGWU_N6@"
   #NOTE: If the interface you selected for n6If is wrong then traffic will not be routed towards internet
   config:
-    n3If: "eth0"  # n3 if multus.n3Interface.create is true
-    n4If: "eth0" # n4 if multus.n4Interface.create is true
-    n6If: "eth0"  # n6 multus.n6Interface.create is true
+    n3If: "@IF_N3@"  # n3 if multus.n3Interface.create is true
+    n4If: "@IF_N4@" # n4 if multus.n4Interface.create is true
+    n6If: "@IF_N6@"  # n6 multus.n6Interface.create is true
     logLevel: "info"   #allowed info/error/debug
     threadsN3Ul: "1"
     threadsN6Dl: "1"
@@ -195,7 +195,7 @@ oai-spgwu-tiny:
 #    create: true
 #    IPadd: "172.21.6.99"
 #    Netmask: "22"
-#    defaultGateway: "172.21.7.254"
+#    defaultGateway: @CN_DEFAULT_GW@
 #    hostInterface: "bond0"	# Interface of the host machine on which this pod will be scheduled
 #  config:
 #    ueroute: 12.1.1.0/24
@@ -207,18 +207,17 @@ oai-smf:
   kubernetesType: Vanilla #Openshift/Vanilla Vanilla for Upstream Kubernetes
   nfimage:  # image name either locally present or in a public/private repository
     repository: @SMF_REPO@ #docker.io/oaisoftwarealliance/oai-smf           ## The image will be pulled from dockerhub
-    version: @SMF_TAG@ #v1.5.0                                    ## The branch to be used to pull from dockerhub
+    version: @SMF_TAG@ ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
   includeTcpDumpContainer: false #only for taking pcaps inside network function pod
-# TT: multus part commented to prevent demo-oai.sh to enable multus for smf
-#  multus:
-#    create: false
-#    n4IPadd: "172.21.6.98"
-#    n4Netmask: "22"
-## If you don't have a gateway leave the field empty or commented
-#    defaultGateway: "172.21.7.254"
-#    hostInterface: "bond0"      # Interface of the host machine on which this pod will be scheduled
+  multus:
+    create: @MULTUS_SMF_N4@
+    n4IPadd: "@IP_SMF_N4@"
+    n4Netmask: "@NETMASK_SMF_N4@"
+# If you don't have a gateway leave the field empty or commented
+    defaultGateway: @CN_DEFAULT_GW@
+    hostInterface: "@IF_NAME_SMF_N4@"      # Interface of the host machine on which this pod will be scheduled
   imagePullSecrets:
     - name: "regcred"
   securityContext:
@@ -227,9 +226,9 @@ oai-smf:
     useLocalSubscriptionInfo: "no" #this means ip-address information will be fetched from UDR
     ueMtu: 1500
     logLevel: "debug"   #allowed info/error/debug
-    dnsIpv4Address: "172.21.3.100" # configure the dns for UE don't use Kubernetes DNS
-    dnsSecIpv4Address: "172.21.3.100" # configure the dns for UE don't use Kubernetes DNS
-    defaultCSCFIpv4Address: "172.21.6.96" # For IMS server if needed
+    dnsIpv4Address: "@IP_DNS1@" # configure the dns for UE don't use Kubernetes DNS
+    dnsSecIpv4Address: "@IP_DNS2@" # configure the dns for UE don't use Kubernetes DNS
+    defaultCSCFIpv4Address: "@IP_CSCF" # For IMS server if needed
     discoverUpf: "yes"              # if NRF is used then it can be used for UPF discovery
     # You can define maximum 4 slices from here in case of more please change the configuration file.
     dnnNi0: "oai"

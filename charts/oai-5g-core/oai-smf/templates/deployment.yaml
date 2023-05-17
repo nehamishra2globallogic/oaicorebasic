@@ -20,7 +20,8 @@ spec:
         k8s.v1.cni.cncf.io/networks: >-
           [{
                  "name": "{{ .Chart.Name }}-n4",
-                 "interface": "n4"
+                 "interface": "n4",
+                 "12:34:56:78:90:20"
                 {{- if .Values.multus.defaultGateway }}
                  ,"default-route": ["{{ .Values.multus.defaultGateway }}"]
                 {{- end }}
