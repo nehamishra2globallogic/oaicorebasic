@@ -107,7 +107,9 @@ oai-amf:
     # Note only SST is mandatory for a slice SD is optional
     sst1: "1"
     sd1: "1"
-    tac: "0x0001"
+    mcc: "@MCC@"
+    mnc: "@MNC@"
+    tac: "@TAC@"
     nfRegistration: "yes"
     smfSelection: "no"        #Bug in SMF can not have SMF selection when using UDR to fetch user-information
     useHttp2: "no"
