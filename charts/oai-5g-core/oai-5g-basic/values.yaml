@@ -216,14 +216,14 @@ oai-smf:
   multus:
     defaultGateway: @CN_DEFAULT_GW@
     n4Interface:
-    create: @MULTUS_SMF_N4@
-    IPadd: "@IP_SMF_N4@"
-    Netmask: "@NETMASK_SMF_N4@"
-    ## If you do not have a gateway leave the field empty
-    Gateway: @GW_SMF_N4@
-    ## If you do not want to add any routes in your pod then leave this field empty
-    routes: @ROUTES_SMF_N4@ 
-    hostInterface: "@IF_NAME_SMF_N4@"
+      create: @MULTUS_SMF_N4@
+      IPadd: "@IP_SMF_N4@"
+      Netmask: "@NETMASK_SMF_N4@"
+      ## If you do not have a gateway leave the field empty
+      Gateway: @GW_SMF_N4@
+      ## If you do not want to add any routes in your pod then leave this field empty
+      routes: @ROUTES_SMF_N4@ 
+      hostInterface: "@IF_NAME_SMF_N4@"
   imagePullSecrets:
     - name: "regcred"
   securityContext:
