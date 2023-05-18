@@ -33,8 +33,8 @@ serviceAccount:
 ## Change these ip-addresses according to your environment
 
 multus:
-  # if default gatway is empty then it will be removed
-  defaultGateway: "172.21.7.254"
+  # if default gateway is empty then it will be removed
+  defaultGateway: @DEFAULT_GW_GNB@
   n2Interface:
     create: @MULTUS_GNB_N2@
     # #name inside the pod is hardcoded right now
@@ -55,16 +55,27 @@ multus:
     Gateway:  @GW_GNB_N3@
     routes: @ROUTES_GNB_N3@
     hostInterface: "@IF_NAME_GNB_N3@" # Interface of the host machine on which this pod will be scheduled
-  ruInterface:
-    create: @MULTUS_GNB_RU@
-    IPadd: "@IP_GNB_RU@"
+  ru1Interface:
+    create: @MULTUS_GNB_RU1@
+    IPadd: "@IP_GNB_RU1@"
     # #name inside the pod is hardcoded right now
-    # name: "ru"
-    Netmask: "@NETMASK_GNB_RU@"
+    # name: "ru1"
+    Netmask: "@NETMASK_GNB_RU1@"
     # if gateway is commented then it will be removed
-    Gateway: @ROUTES_GNB_RU@  #In case you don't have a gateway remove it from here
-    mtu: @MTU_GNB_RU@ 
-    hostInterface: "@IF_NAME_GNB_RU@"
+    Gateway: @GW_GNB_RU1@  #In case you don't have a gateway remove it from here
+    mtu: @MTU_GNB_RU1@ 
+    hostInterface: "@IF_NAME_GNB_RU1@"
+  # ru2 can be useful for USRP N3XX when the 2 SFP NICs use 2 different PHY links to the server that hosts oai-gnb
+  ru2Interface:
+    create: @MULTUS_GNB_RU2@
+    IPadd: "@IP_GNB_RU2@"
+    # #name inside the pod is hardcoded right now
+    # name: "ru2"
+    Netmask: "@NETMASK_GNB_RU2@"
+    # if gateway is commented then it will be removed
+    Gateway: @GW_GNB_RU2@  #In case you don't have a gateway remove it from here
+    mtu: @MTU_GNB_RU2@ 
+    hostInterface: "@IF_NAME_GNB_RU2@"
 
 config:
   mountConfig: @MOUNTCONFIG_GNB@ #If config file is mounted then please edit mount.conf in configmap.yaml properly
