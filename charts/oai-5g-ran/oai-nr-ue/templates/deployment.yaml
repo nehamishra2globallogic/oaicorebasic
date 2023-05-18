@@ -21,9 +21,9 @@ spec:
         k8s.v1.cni.cncf.io/networks: >-
           [{
                  "name": "{{ .Chart.Name }}-net1",
-                 "mac": "12:34:56:78:90:40",
+                 "mac": "12:34:56:78:90:40"
                  {{- if .Values.multus.defaultGateway}}
-                 "default-route": ["{{ .Values.multus.defaultGateway }}"]
+                 , "default-route": ["{{ .Values.multus.defaultGateway }}"]
                  {{- end}}
           }]
     {{- end}}
