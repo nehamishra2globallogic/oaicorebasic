@@ -23,6 +23,9 @@ services:
     oai-udr:
         container_name: "oai-udr"
         image: oaisoftwarealliance/oai-udr:develop
+        expose:
+            - 80/tcp
+            - 8080/tcp
         environment:
             - TZ=Europe/Paris
             - UDR_NAME=OAI_UDR
@@ -36,6 +39,9 @@ services:
             - REGISTER_NRF=yes
             - NRF_IPV4_ADDRESS=192.168.70.130
             - NRF_FQDN=oai-nrf
+            # changes for HTTP2
+            - USE_HTTP2=yes
+            - NRF_PORT=8080
         depends_on:
             - mysql
             - oai-nrf
@@ -45,16 +51,23 @@ services:
     oai-udm:
         container_name: "oai-udm"
         image: oaisoftwarealliance/oai-udm:develop
+        expose:
+            - 80/tcp
+            - 8080/tcp
         environment:
             - TZ=Europe/Paris
             - UDM_NAME=OAI_UDM
             - SBI_IF_NAME=eth0
-            - REGISTER_NRF=yes
             - USE_FQDN_DNS=yes
             - UDR_IP_ADDRESS=192.168.70.136
+            - UDR_PORT=8080
             - UDR_FQDN=oai-udr
+            - REGISTER_NRF=yes
             - NRF_IPV4_ADDRESS=192.168.70.130
             - NRF_FQDN=oai-nrf
+            # changes for HTTP2
+            - USE_HTTP2=yes
+            - NRF_PORT=8080
         depends_on:
             - oai-udr
         networks:
@@ -63,16 +76,23 @@ services:
     oai-ausf:
         container_name: "oai-ausf"
         image: oaisoftwarealliance/oai-ausf:develop
+        expose:
+            - 80/tcp
+            - 8080/tcp
         environment:
             - TZ=Europe/Paris
             - AUSF_NAME=OAI_AUSF
             - SBI_IF_NAME=eth0
             - USE_FQDN_DNS=yes
-            - REGISTER_NRF=yes
             - UDM_IP_ADDRESS=192.168.70.137
             - UDM_FQDN=oai-udm
+            - REGISTER_NRF=yes
             - NRF_IPV4_ADDRESS=192.168.70.130
             - NRF_FQDN=oai-nrf
+            # changes for HTTP2
+            - USE_HTTP2=yes
+            - UDM_PORT=8080
+            - NRF_PORT=8080
         depends_on:
             - oai-udm
         networks:
@@ -81,15 +101,26 @@ services:
     oai-nrf:
         container_name: "oai-nrf"
         image: oaisoftwarealliance/oai-nrf:develop
+        expose:
+            - 80/tcp
+            - 8080/tcp
         environment:
             - TZ=Europe/Paris
             - NRF_INTERFACE_NAME_FOR_SBI=eth0
+            # The default HTTP2 port is 8080 for all network functions
+            # It is shown here as example.
+            # If you wish to change, you have to specify it for each NF
+            - NRF_INTERFACE_HTTP2_PORT_FOR_SBI=8080
         networks:
             public_net:
                 ipv4_address: 192.168.70.130
     oai-amf:
         container_name: "oai-amf"
         image: oaisoftwarealliance/oai-amf:develop
+        expose:
+            - 80/tcp
+            - 8080/tcp
+            - 38412/sctp
         environment:
             - TZ=Europe/Paris
             - MCC=208
@@ -121,8 +152,8 @@ services:
             - SMF_IPV4_ADDR_0=192.168.70.133
             - SELECTED_0=true
             - NF_REGISTRATION=yes
-            - SMF_SELECTION=yes
             - USE_FQDN_DNS=yes
+            - SMF_SELECTION=yes
             - EXTERNAL_AUSF=yes
             - EXTERNAL_UDM=no
             - EXTERNAL_NSSF=no
@@ -132,6 +163,11 @@ services:
             - AUSF_FQDN=oai-ausf
             - UDM_IPV4_ADDRESS=192.168.70.137
             - UDM_FQDN=oai-udm
+            # changes for HTTP2
+            - USE_HTTP2=yes
+            - NRF_PORT=8080
+            - AUSF_PORT=8080
+            - UDM_PORT=8080
         depends_on:
             - mysql
             - vpp-upf
@@ -143,6 +179,10 @@ services:
     oai-smf:
         container_name: "oai-smf"
         image: oaisoftwarealliance/oai-smf:develop
+        expose:
+            - 80/tcp
+            - 8080/tcp
+            - 8805/udp
         environment:
             - TZ=Europe/Paris
             - SMF_INTERFACE_NAME_FOR_N4=eth0
@@ -163,6 +203,12 @@ services:
             - DISCOVER_UPF=yes
             - USE_FQDN_DNS=yes
             - ENABLE_USAGE_REPORTING=yes
+            # changes for HTTP2
+            - HTTP_VERSION=2
+            - AMF_PORT=8080
+            - UDM_PORT=8080
+            - NRF_PORT=8080
+            - UE_MTU=1500
             # Slice 0 (1, 0xFFFFFF)
             - DNN_NI0=oai
             - TYPE0=IPv4
@@ -224,8 +270,9 @@ services:
             - DNN=default
             - REGISTER_NRF=yes
             - NRF_IP_ADDR=192.168.70.130
-            - NRF_PORT=80
-            - HTTP_VERSION=1
+            #changes for HTTP2
+            - NRF_PORT=8080
+            - HTTP_VERSION=2
         depends_on:
             - oai-nrf
         healthcheck:

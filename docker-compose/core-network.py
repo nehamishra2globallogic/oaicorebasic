@@ -170,6 +170,8 @@ def undeploy(file_name):
     if res is None:
         exit(f'\033[0;31m Incorrect/Unsupported executing command {cmd}')
     print(res)
+    cmd = f'docker volume prune -f'
+    run_cmd(cmd, True)
     logging.debug('\033[0;32m OAI 5G core components are UnDeployed\033[0m....')
 
 
@@ -227,8 +229,8 @@ def check_config(file_name):
                 logging.debug('\033[0;32m AMF, SMF and UPF are registered to NRF\033[0m....')
         if file_name == BASIC_VPP_W_NRF:
             logging.debug('\033[0;34m Checking if SMF is able to connect with UPF\033[0m....')
-            cmd1 = 'docker logs oai-smf | grep "Received N4 ASSOCIATION SETUP RESPONSE from an UPF"'
-            cmd2 = 'docker logs oai-smf | grep "Node ID Type FQDN: vpp-upf"'
+            cmd1 = 'docker logs oai-smf 2>&1 | grep "Received N4 ASSOCIATION SETUP RESPONSE from an UPF"'
+            cmd2 = 'docker logs oai-smf 2>&1 | grep "Node ID Type FQDN: vpp-upf"'
             upf_logs1 = run_cmd(cmd1)
             upf_logs2 = run_cmd(cmd2)
             if upf_logs1 is None or upf_logs2 is None:
@@ -236,17 +238,17 @@ def check_config(file_name):
                 exit(-1)
             else:
                 logging.debug('\033[0;32m UPF did answer to N4 Association request from SMF\033[0m....')
-            cmd1 = 'docker logs oai-smf | grep "PFCP HEARTBEAT PROCEDURE"'
+            cmd1 = 'docker logs oai-smf 2>&1 | grep "PFCP HEARTBEAT PROCEDURE"'
             upf_logs1 = run_cmd(cmd1)
             if upf_logs1 is None:
-                logging.error('\033[0;31m SMF not receiving heartbeats from UPF\033[0m....')
+                logging.error('\033[0;31m SMF is NOT receiving heartbeats from UPF\033[0m....')
                 exit(-1)
             else:
-                logging.debug('\033[0;32m SMF receiving heathbeats from UPF\033[0m....')
+                logging.debug('\033[0;32m SMF is receiving heartbeats from UPF\033[0m....')
         elif file_name == BASIC_W_NRF:
             logging.debug('\033[0;34m Checking if SMF is able to connect with UPF\033[0m....')
-            cmd1 = 'docker logs oai-smf | grep "Received N4 ASSOCIATION SETUP RESPONSE from an UPF"'
-            cmd2 = 'docker logs oai-smf | grep "Node ID Type FQDN: oai-spgwu"'
+            cmd1 = 'docker logs oai-smf 2>&1 | grep "Received N4 ASSOCIATION SETUP RESPONSE from an UPF"'
+            cmd2 = 'docker logs oai-smf 2>&1 | grep "Node ID Type FQDN: oai-spgwu"'
             upf_logs1 = run_cmd(cmd1)
             upf_logs2 = run_cmd(cmd2)
             if upf_logs1 is None or upf_logs2 is None:
@@ -254,30 +256,30 @@ def check_config(file_name):
                 exit(-1)
             else:
                 logging.debug('\033[0;32m UPF did answer to N4 Association request from SMF\033[0m....')
-            cmd1 = 'docker logs oai-smf | grep "PFCP HEARTBEAT PROCEDURE"'
+            cmd1 = 'docker logs oai-smf 2>&1 | grep "PFCP HEARTBEAT PROCEDURE"'
             upf_logs1 = run_cmd(cmd1)
             if upf_logs1 is None:
-                logging.error('\033[0;31m SMF not receiving heartbeats from UPF\033[0m....')
+                logging.error('\033[0;31m SMF is NOT receiving heartbeats from UPF\033[0m....')
                 exit(-1)
             else:
-                logging.debug('\033[0;32m SMF receiving heathbeats from UPF\033[0m....')
+                logging.debug('\033[0;32m SMF is receiving heartbeats from UPF\033[0m....')
         else:
             logging.debug('\033[0;34m Checking if SMF is able to connect with UPF\033[0m....')
-            cmd1 = 'docker logs oai-spgwu | grep "Received SX HEARTBEAT RESPONSE"'
-            cmd2 = 'docker logs oai-spgwu | grep "Received SX HEARTBEAT REQUEST"'
+            cmd1 = 'docker logs oai-spgwu 2>&1 | grep "Received SX HEARTBEAT RESPONSE"'
+            cmd2 = 'docker logs oai-spgwu 2>&1 | grep "Received SX HEARTBEAT REQUEST"'
             upf_logs1 = run_cmd(cmd1)
             upf_logs2 = run_cmd(cmd2)
             if upf_logs1 is None and upf_logs2 is None:
-                logging.error('\033[0;31m UPF not receiving heartbeats from SMF\033[0m....')
+                logging.error('\033[0;31m UPF is NOT receiving heartbeats from SMF\033[0m....')
                 exit(-1)
             else:
-                logging.debug('\033[0;32m UPF receiving heathbeats from SMF\033[0m....')
+                logging.debug('\033[0;32m UPF is receiving heartbeats from SMF\033[0m....')
     # With noNRF configuration checks
     elif args.scenario == '2':
         logging.debug('\033[0;34m Checking if SMF is able to connect with UPF\033[0m....')
         if file_name == BASIC_VPP_NO_NRF:
-            cmd1 = 'docker logs oai-smf | grep "Received N4 ASSOCIATION SETUP RESPONSE from an UPF"'
-            cmd2 = 'docker logs oai-smf | grep "Node ID Type FQDN: gw1"'
+            cmd1 = 'docker logs oai-smf 2>&1 | grep "Received N4 ASSOCIATION SETUP RESPONSE from an UPF"'
+            cmd2 = 'docker logs oai-smf 2>&1 | grep "Node ID Type FQDN: gw1"'
             upf_logs1 = run_cmd(cmd1)
             upf_logs2 = run_cmd(cmd2)
             if upf_logs1 is None or upf_logs2 is None:
@@ -287,14 +289,14 @@ def check_config(file_name):
                 logging.debug('\033[0;32m UPF did answer to N4 Association request from SMF\033[0m....')
         status = 0
         for x in range(4):
-            cmd = "docker logs oai-smf | grep  'handle_receive(16 bytes)'"
+            cmd = "docker logs oai-smf 2>&1 | grep  'handle_receive(16 bytes)'"
             res = run_cmd(cmd)
             if res is None:
-               logging.error('\033[0;31m UPF not receiving heartbeats from SMF, re-trying\033[0m....')
+               logging.error('\033[0;31m UPF is NOT receiving heartbeats from SMF, re-trying\033[0m....')
             else:
                 status += 1
         if status > 2:
-            logging.debug('\033[0;32m UPF receiving heathbeats from SMF\033[0m....')
+            logging.debug('\033[0;32m UPF is receiving heartbeats from SMF\033[0m....')
     logging.debug('\033[0;32m OAI 5G Core network is configured and healthy\033[0m....')
 
 def run_cmd(cmd, silent=True):
@@ -328,14 +330,18 @@ if __name__ == '__main__':
             deploy(BASIC_W_NRF)
         # Basic function without NRF
         elif args.scenario == '2':
-            deploy(BASIC_NO_NRF)
+            #deploy(BASIC_NO_NRF)
+            logging.error('Basic deployments without NRF are no longer supported')
+            sys.exit(-1)
     elif args.type == 'start-basic-vpp':
         # Basic function with NRF and VPP-UPF
         if args.scenario == '1':
             deploy(BASIC_VPP_W_NRF, True)
         # Basic function without NRF but with VPP-UPF
         elif args.scenario == '2':
-            deploy(BASIC_VPP_NO_NRF, True)
+            #deploy(BASIC_VPP_NO_NRF, True)
+            logging.error('Basic deployments without NRF are no longer supported')
+            sys.exit(-1)
     elif args.type == 'stop-mini':
         if args.scenario == '1':
             undeploy(MINI_W_NRF)

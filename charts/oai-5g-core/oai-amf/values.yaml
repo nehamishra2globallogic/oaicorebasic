@@ -24,14 +24,6 @@ podSecurityContext:
   runAsUser: 0
   runAsGroup: 0
 
-## OPENSHIFT terminology
-securityContext:
-  privileged: true
-
-start:
-  amf: true
-  tcpdump: false # WARNING: start tcpdump collection to analyse but beware it will take a lot of space in the container/persistent volume
-
 # AMF needs two seperate interface one for http (for SBI) and other one for SCTP (N1/N2) to communicate with gNB. 
 # But for experimentation only one interface can be used. 
 # When you need multus:

@@ -64,7 +64,6 @@ tcpdumpimage:
 
 
 #To store PCAP of NF in a sharedVolume so it can be easily fetched (PVC is created with NRF charts so make sure in NRF it is true)
-
 persistent:
   sharedvolume: false
 

@@ -168,7 +168,7 @@ Since this is not the `default` behavior, you **have to** edit the docker-compos
 
 - Though the bridge can be automatically created using docker-compose file if there is no need to capture initial packets.
 
-This is the `default` version in the [docker-compose-basic-nrf.yaml](../docker-compose/docker-compose-basic-nrf.yaml) or `docker-compose-basic-nonrf.yaml`.
+This is the `default` version in the [docker-compose-basic-nrf.yaml](../docker-compose/docker-compose-basic-nrf.yaml).
 
 The bottom section SHALL look like this:
 

@@ -7,4 +7,3 @@
    Also for good performance it is better to use MTU 9000 for Fronthaul interface. 
 5. If you want to configure for a particular band then copy the configuration file in templates/configmap.yaml from here https://gitlab.eurecom.fr/oai/openairinterface5g/-/tree/develop/targets/PROJECTS/GENERIC-NR-5GC/CONF
 6. r2lab-rrus charts aim to work with USRP B210, N3XX and AW2S jaguar/panther RRU hardware on Kubernetes Cluster
-

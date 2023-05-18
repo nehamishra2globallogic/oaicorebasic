@@ -8,18 +8,18 @@ configuration:
         sst: 128
         sd: '128'
       nsiInformationList:
-        nrfId: http://192.168.70.136:80/nnrf-disc/v1/nf-instances
+        nrfId: http://192.168.70.136:8080/nnrf-disc/v1/nf-instances
         nsiId: '11'
     - snssai:
         sst: 1
       nsiInformationList:
-        nrfId: http://192.168.70.136:80/nnrf-disc/v1/nf-instances
+        nrfId: http://192.168.70.136:8080/nnrf-disc/v1/nf-instances
         nsiId: '12'
     - snssai:
         sst: 130
         sd: '130'
       nsiInformationList:
-        nrfId: http://192.168.70.137:80/nnrf-disc/v1/nf-instances
+        nrfId: http://192.168.70.137:8080/nnrf-disc/v1/nf-instances
         nsiId: '12'
     - snssai:
         sst: 222

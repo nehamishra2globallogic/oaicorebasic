@@ -8,6 +8,7 @@ Welcome to the tutorial home page of the OAI 5g Core project. Here you can find 
 
 ## Table of contents
 
+- [List of COTS UEs tested with OAI](./LIST_OF_TESTED_COTSUE.md)
 - [Pre-requisites](./DEPLOY_PRE_REQUISITES.md)
 - How to get the container images
     - [Pull the container images](./RETRIEVE_OFFICIAL_IMAGES.md)
