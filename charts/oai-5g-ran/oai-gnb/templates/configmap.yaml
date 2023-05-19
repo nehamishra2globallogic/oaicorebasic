@@ -9,13 +9,13 @@ data:
   {{- end }}
 {{- else }}
 ---
-## Configuration file for band77 and 51 PRB tested with B210
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ .Chart.Name }}-configmap
 data:
   mounted.conf: |
+      ## Configuration file for band77 and 51 PRB tested with B210
       Active_gNBs = ( "oai-gnb-rfsim");
       # Asn1_verbosity, choice in: none, info, annoying
       Asn1_verbosity = "none";
