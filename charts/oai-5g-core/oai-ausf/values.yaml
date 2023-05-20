@@ -64,7 +64,6 @@ tcpdumpimage:
 
 
 #To store PCAP of NF in a sharedVolume so it can be easily fetched (PVC is created with NRF charts so make sure in NRF it is true)
-
 persistent:
   sharedvolume: false
 
@@ -78,16 +77,18 @@ resources:
     nf:
       cpu: 100m
       memory: 128Mi
-    # tcpdump:
-    #   cpu: 100m
-    #   memory: 128Mi
+    #If tcpdump container is disabled this value will not be used
+    tcpdump:
+      cpu: 100m
+      memory: 128Mi
   requests:
     nf:
       cpu: 100m
       memory: 128Mi
-    # tcpdump:
-    #   cpu: 100m
-    #   memory: 128Mi
+    #If tcpdump container is disabled this value will not be used
+    tcpdump:
+      cpu: 100m
+      memory: 128Mi
 
 readinessProbe: true
 

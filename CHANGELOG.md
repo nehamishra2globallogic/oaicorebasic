@@ -1,5 +1,64 @@
 # RELEASE NOTES: #
 
+## v1.5.1 -- May 2023 ##
+
+* Tutorials:
+  * All basic-based tutorials are now only in HTTP/2 mode and with NRF
+    - All non-NRF basic deployments have been obsoleted
+* Update the helm charts and helm chart tutorial
+* Testing:
+  * Load tester for 5000 PDU sessions
+* Common features/fixes for all Network Functions:
+  * Code Refactoring for:
+    * Logging mechanism (runtime log level selection)
+    * Installation / build scripts
+    * Continuous Integration scripts
+  * Published images on Docker-Hub is using now Ubuntu-20 as base image
+    * We will soon obsolete the build system for Ubuntu18.04
+* `AMF` changes:
+  * Fix Service Request handling (Service Type: Signalling)
+  * Fix N2 handover
+  * Support usage of SUPI-type IMSI
+  * Fix mapping between RAN UE NGAP ID and UE context
+  * Fix SBI port for UDM in case of FQDN resolution
+  * Fix TMSI handling
+  * Fix PDU Session Ressource Release Response message
+  * Fix issue for decoding MSIN with an odd number of digits
+  * Fix usage of lower-case for DNN value (case insensitive)
+  * Fix: NSSF port number was not read from config file
+  * Code Refactoring for:
+    * NAS layer
+    * Registration Complete Message
+    * UE context refactor
+* `NRF` changes:
+  * Tentative fix for a failed assertion of Boost signal
+  * HTTP2 fix for json response data formatting
+* `PCF` changes:
+  * Add HTTP/2 support
+* `SMF` changes:
+  * Fix N1N2 Content message
+  * Remove ranInfo field in n2infocontainer
+  * Fix encoding NAS header
+  * Resolved QoS Flow info missing in N2 Handover Preparation
+  * Fix SUPI format: Use IMSI as SUPI
+  * Fix: Send PDU Session Reject when PDU session fails before SMF procedure is started
+  * Fix HTTP header
+  * Fixing config parameter read
+  * Fix for IE Redirect Information
+  * Fix: Associate node id based on node id type
+  * Use N3 ip address from NF profile if provided
+  * Fix: UL TEID for multiple created PDR
+  * Fix for encode/decode of create QER IE
+  * Support for DL PDR in session establishment
+  * Use NWI from config file when no UPF profile is associated
+  * Fix HTTP/2 issue with PCF
+* `UDM` changes:
+  * HTTP2 Fix: Removed duplicate request handler
+* `UDR` changes:
+  * Fix PLMN ID for SessionManagementSubscriptionData (HTTP2)
+  * logging: Add UE ID in the log
+  * Retry NF Register if registration failed
+
 ## v1.5.0 -- January 2023 ##
 
 * New tutorials:

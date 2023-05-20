@@ -15,7 +15,8 @@ metadata:
   name: {{ .Chart.Name }}-configmap
 data:
   mounted.conf: |
-      Active_gNBs = ( "gnb-in-docker");
+      ## Configuration file for band77 and 51 PRB tested with B210
+      Active_gNBs = ( "oai-gnb-rfsim");
       # Asn1_verbosity, choice in: none, info, annoying
       Asn1_verbosity = "none";
 
@@ -24,7 +25,7 @@ data:
        {
           ////////// Identification parameters:
           gNB_ID    =  0xe00;
-          gNB_name  =  "gnb-in-docker";
+          gNB_name  =  "oai-gnb-rfsim";
 
           // Tracking area code, 0x0000 and 0xfffe are reserved values
           tracking_area_code  = 1 ;
@@ -192,10 +193,10 @@ data:
 
           NETWORK_INTERFACES :
           {
-              GNB_INTERFACE_NAME_FOR_NG_AMF            = "enp3s0";
-              GNB_IPV4_ADDRESS_FOR_NG_AMF              = "172.21.19.40/22";
-              GNB_INTERFACE_NAME_FOR_NGU               = "enp3s0";
-              GNB_IPV4_ADDRESS_FOR_NGU                 = "172.21.19.40/22";
+              GNB_INTERFACE_NAME_FOR_NG_AMF            = "n2";
+              GNB_IPV4_ADDRESS_FOR_NG_AMF              = "172.21.6.90";
+              GNB_INTERFACE_NAME_FOR_NGU               = "n3";
+              GNB_IPV4_ADDRESS_FOR_NGU                 = "172.21.6.91";
               GNB_PORT_FOR_S1U                         = 2152; # Spec 2152
           };
 
@@ -231,7 +232,7 @@ data:
         nb_rx          = 1
         att_tx         = 14;
         att_rx         = 14;
-        bands          = [78];
+        bands          = [77];
         max_pdschReferenceSignalPower = -27;
         max_rxgain                    = 114;
         eNB_instances  = [0];

@@ -7,9 +7,9 @@ data:
     SMF =
     {
         FQDN          = "oai-smf";
-        INSTANCE      = 0;         # 0 is the default
-        PID_DIRECTORY = "/var/run";  # /var/run is the default
-        LOG_LEVEL = "{{ .Values.config.logLevel }}";
+        INSTANCE      = 0;
+        PID_DIRECTORY = "/var/run";
+        LOG_LEVEL     = "{{ .Values.config.logLevel }}"
 
         INTERFACES :
         {

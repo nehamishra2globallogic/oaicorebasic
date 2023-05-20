@@ -20,19 +20,44 @@ spec:
       annotations:
         k8s.v1.cni.cncf.io/networks: >-
           [{
-                 "name": "{{ .Chart.Name }}-net1"
+                 "name": "{{ .Chart.Name }}-n2",
+                 "interface": "n2",
+                 "mac": "12:34:56:78:90:51"
                 {{- if .Values.multus.defaultGateway }}
                  ,"default-route": ["{{ .Values.multus.defaultGateway }}"]
+                {{- end }}
+                {{- if .Values.multus.n2Interface.Gateway }}
+                 ,"gateway": ["{{ .Values.multus.n2Interface.Gateway }}"]
                 {{- end }}
           }
           {{- if .Values.multus.n3Interface.create }}
           ,{
-                 "name": "{{ .Chart.Name }}-net2"
+                 "name": "{{ .Chart.Name }}-n3",
+                 "interface": "n3",
+                 "mac": "12:34:56:78:90:52"
+                {{- if .Values.multus.n3Interface.Gateway }}
+                 ,"gateway": ["{{ .Values.multus.n3Interface.Gateway }}"]
+                {{- end }}
           }
           {{- end }}
-          {{- if .Values.multus.ruInterface.create }}
+          {{- if .Values.multus.ru1Interface.create }}
           ,{
-                 "name": "{{ .Chart.Name }}-net3"
+                 "name": "{{ .Chart.Name }}-ru1",
+                 "interface": "ru1",
+                 "mac": "12:34:56:78:90:53"
+                {{- if .Values.multus.ru1Interface.Gateway }}
+                 ,"gateway": ["{{ .Values.multus.ru1Interface.Gateway }}"]
+                {{- end }}
+          }
+          {{- end }}
+          {{- if .Values.multus.ru2Interface.create }}
+          ,{
+                 "name": "{{ .Chart.Name }}-ru2",
+                 "interface": "ru2",
+                 "mac": "12:34:56:78:90:54"
+                {{- if .Values.multus.ru2Interface.Gateway }}
+                 ,"gateway": ["{{ .Values.multus.ru2Interface.Gateway }}"]
+                {{- end }}
           }
           {{- end }}
           ]
@@ -50,7 +75,11 @@ spec:
         imagePullPolicy: {{ .Values.nfimage.pullPolicy }}
         {{- if .Values.config.mountConfig}}
         volumeMounts:
+        {{- if eq .Values.config.rru "aw2s" }}
+          - mountPath: /opt/oai-gnb-aw2s/etc/mounted.conf
+        {{- else }}
           - mountPath: /opt/oai-gnb/etc/mounted.conf
+        {{- end }}
             name: configuration
             subPath: mounted.conf
         {{- end}}
@@ -96,6 +125,22 @@ spec:
         {{- if .Values.config.mountConfig}}
           - name: USE_VOLUMED_CONF
             value: "yes"
+        {{- if eq .Values.config.rru "b210" }}
+          - name: USE_B2XX
+            value: "True"
+          - name: GNB_NGA_IP_ADDRESS
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+          - name: GNB_NGU_IP_ADDRESS
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+        {{- end}}
+        {{- if eq .Values.config.rru "n3xx" }}
+          - name: USE_N3XX
+            value: "True"
+        {{- end}}
         {{- end}}
         {{- if not .Values.config.mountConfig}}
           - name: USE_SA_TDD_MONO
@@ -210,15 +255,29 @@ spec:
         command:
           - /bin/sh
           - -c
-          - /usr/sbin/tcpdump -i any -w /tmp/pcap/{{ .Chart.Name }}_`date +%Y-%m-%d_%H_%M-%S-%Z`.pcap
+        {{- if eq .Values.config.rru "b210" }}
+          - /usr/sbin/tcpdump -ni any -w /pcap/oai-gnb-n2_`date +%Y-%m-%d_%H_%M-%S-%Z`.pcap
+        {{- else}}
+          - /usr/sbin/tcpdump -ni n2 src {{ .Values.config.amfIpAddress }} or dst {{ .Values.config.amfIpAddress }} -w /pcap/oai-gnb-n2_`date +%Y-%m-%d_%H_%M-%S-%Z`.pcap
+        {{- end}}
         {{- else}}
         command:
           - /bin/sleep
           - infinity
         {{- end}}
+        {{- if .Values.persistent.sharedvolume }}
+        volumeMounts:
+        - mountPath: "/pcap"
+          name: oai5g-pv
+        {{- end}}
       {{- end }}
-      {{- if.Values.config.mountConfig }}  
       volumes:
+      {{- if .Values.persistent.sharedvolume }}
+      - name: oai5g-pv
+        persistentVolumeClaim:
+          claimName: oai5g-pvc
+      {{- end }}
+      {{- if .Values.config.mountConfig }}
       - configMap:
           name: {{ .Chart.Name }}-configmap
         name: configuration
@@ -238,3 +297,5 @@ spec:
       {{- if .Values.nodeName}}
       nodeName: {{ .Values.nodeName }}
       {{- end }}
+
+

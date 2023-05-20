@@ -168,7 +168,7 @@ Since this is not the `default` behavior, you **have to** edit the docker-compos
 
 - Though the bridge can be automatically created using docker-compose file if there is no need to capture initial packets.
 
-This is the `default` version in the [docker-compose-basic-nrf.yaml](../docker-compose/docker-compose-basic-nrf.yaml) or `docker-compose-basic-nonrf.yaml`.
+This is the `default` version in the [docker-compose-basic-nrf.yaml](../docker-compose/docker-compose-basic-nrf.yaml).
 
 The bottom section SHALL look like this:
 
@@ -385,7 +385,7 @@ Make sure you edit the IMSI, opc and key according to the settings of your user 
 
 Your core network is ready you can use it.
 
-You can use `oai-ext-dn` to perform iperf or ping towards the UE, just make sure that the subnet used by the UE is properly defined in the `oai-ext-dn` contianer using `ip route` command.
+You can use `oai-ext-dn` to perform iperf or ping towards the UE, just make sure that the subnet used by the UE is properly defined in the `oai-ext-dn` container using `ip route` command.
 
 ``` shell
 docker-compose-host $: docker exec -it oai-ext-dn bash

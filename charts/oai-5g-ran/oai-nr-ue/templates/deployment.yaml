@@ -17,13 +17,16 @@ spec:
         {{- include "oai-nr-ue.selectorLabels" . | nindent 8 }}
         app: oai-nr-ue
       annotations:
-    {{- if .Values.multus.create }}
+    {{- if .Values.multus.create}}
         k8s.v1.cni.cncf.io/networks: >-
           [{
                  "name": "{{ .Chart.Name }}-net1",
-                 "default-route": ["{{ .Values.multus.defaultGateway }}"]
+                 "mac": "12:34:56:78:90:40"
+                 {{- if .Values.multus.defaultGateway}}
+                 , "default-route": ["{{ .Values.multus.defaultGateway }}"]
+                 {{- end}}
           }]
-    {{- end }}
+    {{- end}}
     spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
@@ -44,7 +47,7 @@ spec:
             cpu: {{ .Values.resources.limits.nf.cpu | quote }}
         {{- end}}
         securityContext:
-           privileged: true
+          privileged: true
         {{- if .Values.start.nrue}}
         {{- else}}
         command:
@@ -127,6 +130,17 @@ spec:
           - /bin/sleep
           - infinity
         {{- end}}
+        {{- if .Values.persistent.sharedvolume}}
+        volumeMounts:
+        - mountPath: "/pcap"
+          name: oai5g-pv
+        {{- end}}
+      {{- end}}
+      volumes:
+      {{- if .Values.persistent.sharedvolume}}
+      - name: oai5g-pv
+        persistentVolumeClaim:
+          claimName: oai5g-pvc
       {{- end }}
       dnsPolicy: ClusterFirst
       restartPolicy: Always

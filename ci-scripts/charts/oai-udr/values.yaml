@@ -51,7 +51,6 @@ config:
   tz: "Europe/Paris"
   instance: "0"
   udrname: "oai-udr"
-  logLevel: "debug"
   pidDirectory: "/var/run"
   logLevel: "debug"
   sbiIfName: "eth0"

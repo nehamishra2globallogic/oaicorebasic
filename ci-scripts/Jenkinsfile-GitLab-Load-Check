@@ -49,7 +49,7 @@ upstreamTagToUse = params.upstreamTagToUse
 // Flags
 doTsharkCaptureRegistration = true
 doTsharkCapturePDUSession = true
-doTsharkCapturePDUSessionHttp2 = true
+doTsharkCapturePDURelease = true
 
 //-------------------------------------------------------------------------------
 // Pipeline start
@@ -204,7 +204,7 @@ pipeline {
         }
       }
     }
-    stage ('Deploy OAI-CN5G in Basic-NRF variant - Registration Test') {
+    stage ('Deploy OAI-CN5G in Basic variant - Registration Test') {
       steps {
         script {
           echo 'Silencing all NFs to reduce size of logs'
@@ -298,7 +298,7 @@ pipeline {
         }
       }
     }
-    stage ('Deploy OAI-CN5G in Basic-NRF variant - PDU Sess Est Test') {
+    stage ('Deploy OAI-CN5G in Basic variant - PDU Sess Est Test') {
       steps {
         script {
           echo 'Silencing all NFs to reduce size of logs'
@@ -392,28 +392,28 @@ pipeline {
         }
       }
     }
-    stage ('Deploy OAI-CN5G in Basic-NRF - Deregistration Test - HTTP2') {
+    stage ('Deploy OAI-CN5G in Basic variant - Deregistration Test') {
       steps {
         script {
           echo 'Silencing all NFs to reduce size of logs'
-          sh './ci-scripts/silentCN5G-NF.py --docker-compose-file docker-compose/docker-compose-basic-nrf-http2.yaml --all-log-level error'
-          updateDockerCompose('docker-compose/docker-compose-basic-nrf-http2.yaml', gnbsimTag)
+          sh './ci-scripts/silentCN5G-NF.py --docker-compose-file docker-compose/docker-compose-basic-nrf.yaml --all-log-level error'
+          updateDockerCompose('docker-compose/docker-compose-basic-nrf.yaml', gnbsimTag)
           dir ('docker-compose') {
             echo 'Adding 16000 Users to database'
             sh '../ci-scripts/addUsersToDatabase.py --database-file database/oai_db2.sql --nb-users 16000'
             sh '../ci-scripts/increaseDnnRange.py --docker-compose-file docker-compose-basic-nrf.yaml --nb-users 16000'
-            sh 'docker-compose -f docker-compose-basic-nrf-http2.yaml up -d mysql'
+            sh 'docker-compose -f docker-compose-basic-nrf.yaml up -d mysql'
             sleep 2
             sh 'sudo rm -f /tmp/oai-cn5g-load-test.*'
-            if (doTsharkCapturePDUSessionHttp2) {
+            if (doTsharkCapturePDURelease) {
               sh 'nohup sudo tshark -i demo-oai -f "sctp or port 80 or port 8080 or port 8805 or icmp or port 3306" -w /tmp/oai-cn5g-load-test.pcap > /tmp/oai-cn5g-load-test.log 2>&1 &'
               sh '../ci-scripts/checkTsharkCapture.py --log_file /tmp/oai-cn5g-load-test.log --timeout 30'
               sh 'sudo chmod 666 /tmp/oai-cn5g-load-test.*'
             }
-            sh 'docker-compose -f docker-compose-basic-nrf-http2.yaml up -d'
+            sh 'docker-compose -f docker-compose-basic-nrf.yaml up -d'
             sh '../ci-scripts/checkContainerStatus.py --container_name mysql --timeout 40'
             sh '../ci-scripts/checkContainerStatus.py --container_name oai-spgwu --timeout 40'
-            sh 'docker-compose -f docker-compose-basic-nrf-http2.yaml ps -a'
+            sh 'docker-compose -f docker-compose-basic-nrf.yaml ps -a'
           }
         }
       }
@@ -421,12 +421,12 @@ pipeline {
         unsuccessful {
           script {
             dir ('docker-compose') {
-              sh 'docker-compose -f docker-compose-basic-nrf-http2.yaml stop -t 3'
+              sh 'docker-compose -f docker-compose-basic-nrf.yaml stop -t 3'
             }
             sleep 5
-            retrieveLogs('archives/deregistration-http2', 'docker-compose/docker-compose-basic-nrf-http2.yaml')
+            retrieveLogs('archives/deregistration', 'docker-compose/docker-compose-basic-nrf.yaml')
             dir ('docker-compose') {
-              sh 'docker-compose -f docker-compose-basic-nrf-http2.yaml down -t 3'
+              sh 'docker-compose -f docker-compose-basic-nrf.yaml down -t 3'
             }
             cleanUpDockerCompose()
           }
@@ -434,7 +434,7 @@ pipeline {
       }
     }
     // PDU Session Establishment Test should not fail
-    stage ('Deregistration Test - HTTP2') {
+    stage ('Deregistration Test') {
       steps {
         script {
           dir ('ci-scripts/docker-compose/load-test-gnbsim') {
@@ -445,7 +445,7 @@ pipeline {
             // 125 UE x 3.7 = 460 seconds (ie 8 minutes)
             sh '../../checkOmecGnbsimStatus.py --timeout 500'
           }
-          retrieveGnbsimLogs('archives/deregistration-http2', 'ci-scripts/docker-compose/load-test-gnbsim')
+          retrieveGnbsimLogs('archives/deregistration', 'ci-scripts/docker-compose/load-test-gnbsim')
           dir ('ci-scripts/docker-compose/load-test-gnbsim') {
             sh 'docker-compose -f docker-compose-omec-gnbsim.yaml down -t 0'
           }
@@ -454,33 +454,33 @@ pipeline {
       post {
         unsuccessful {
           script {
-            retrieveGnbsimLogs('archives/deregistration-http2', 'ci-scripts/docker-compose/load-test-gnbsim')
+            retrieveGnbsimLogs('archives/deregistration', 'ci-scripts/docker-compose/load-test-gnbsim')
             dir ('ci-scripts/docker-compose/load-test-gnbsim') {
               sh 'docker-compose -f docker-compose-omec-gnbsim.yaml down -t 0'
             }
             dir ('docker-compose') {
-              sh 'docker-compose -f docker-compose-basic-nrf-http2.yaml stop -t 3'
+              sh 'docker-compose -f docker-compose-basic-nrf.yaml stop -t 3'
             }
             sleep 5
-            retrieveLogs('archives/deregistration-http2', 'docker-compose/docker-compose-basic-nrf-http2.yaml')
+            retrieveLogs('archives/deregistration', 'docker-compose/docker-compose-basic-nrf.yaml')
             dir ('docker-compose') {
-              sh 'docker-compose -f docker-compose-basic-nrf-http2.yaml down -t 3'
+              sh 'docker-compose -f docker-compose-basic-nrf.yaml down -t 3'
             }
             cleanUpDockerCompose()
           }
         }
       }
     }
-    stage ('Undeploy OAI-CN5G - Deregistration Test - HTTP2') {
+    stage ('Undeploy OAI-CN5G - Deregistration Test') {
       steps {
         script {
           dir ('docker-compose') {
-            sh 'docker-compose -f docker-compose-basic-nrf-http2.yaml stop -t 3'
+            sh 'docker-compose -f docker-compose-basic-nrf.yaml stop -t 3'
           }
           sleep 5
-          retrieveLogs('archives/deregistration-http2', 'docker-compose/docker-compose-basic-nrf-http2.yaml')
+          retrieveLogs('archives/deregistration', 'docker-compose/docker-compose-basic-nrf.yaml')
           dir ('docker-compose') {
-            sh 'docker-compose -f docker-compose-basic-nrf-http2.yaml down -t 3'
+            sh 'docker-compose -f docker-compose-basic-nrf.yaml down -t 3'
           }
           cleanUpDockerCompose()
         }
