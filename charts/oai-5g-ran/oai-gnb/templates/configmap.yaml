@@ -7,6 +7,15 @@ data:
   {{- range $key, $val := .Values.config }}
   {{ $key }}: {{ $val | quote }}
   {{- end }}
+  {{- if .Values.config.mountConfigRnis}}
+  flexric.conf: |
+      [NEAR-RIC]
+      NEAR_RIC_IP = 192.168.100.245
+
+      [XAPP]
+      DB_PATH = /flexric/db/
+      DB_NAME = xapp_rnis_db
+  {{- end}}     
 {{- else }}
 ---
 apiVersion: v1

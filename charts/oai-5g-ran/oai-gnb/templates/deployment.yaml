@@ -83,6 +83,14 @@ spec:
             name: configuration
             subPath: mounted.conf
         {{- end}}
+        {{- if .Values.config.mountConfigRnis}}
+          - mountPath: /usr/local/etc/flexric/flexric.conf
+            name: configuration
+            subPath: flexric.conf
+          - mountPath: /usr/local/lib/flexric
+            name: flexric-lib
+            #subPath: flexric
+        {{- end}}
           ## USRP B210/B200 Mini
           # - mountPath: /dev/bus/usb/
           #   name: usrp
@@ -277,6 +285,12 @@ spec:
         persistentVolumeClaim:
           claimName: oai5g-pvc
       {{- end }}
+      {{- if .Values.config.mountConfigRnis}}
+      - name: flexric-lib
+        hostPath:
+          path: /tmp
+          type: Directory
+      {{- end}}
       {{- if .Values.config.mountConfig }}
       - configMap:
           name: {{ .Chart.Name }}-configmap
