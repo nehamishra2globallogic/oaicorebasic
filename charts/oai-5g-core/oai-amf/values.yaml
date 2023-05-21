@@ -39,6 +39,8 @@ multus:
     create: false
     Ipadd: "172.21.6.94"
     Netmask: "22"
+    ## If you do not need a specific mac address leave the field empty
+    Mac:
     ## If you do not have a gateway leave the field empty
     Gateway:
     ## If you do not want to add any routes in your pod then leave this field empty

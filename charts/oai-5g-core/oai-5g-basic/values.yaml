@@ -90,6 +90,8 @@ oai-amf:
       create: @MULTUS_AMF_N2@
       Ipadd: "@IP_AMF_N2@"
       Netmask: "@NETMASK_AMF_N2@"
+      ## If you do not need a specific mac address leave the field empty
+      Mac: "@MAC_AMF_N2@"
       ## If you do not have a gateway leave the field empty
       Gateway: @GW_AMF_N2@
       ## If you do not want to add any routes in your pod then leave this field empty
@@ -138,6 +140,8 @@ oai-spgwu-tiny:
       create: @MULTUS_SPGWU_N3@
       Ipadd: "@IP_SPGWU_N3@"
       Netmask: "@NETMASK_SPGWU_N3@"
+      ## If you do not need a specific mac address leave the field empty
+      Mac: "@MAC_SPGWU_N3@"
       ## If you do not have a gateway leave the field empty
       Gateway: @GW_SPGWU_N3@
       ## If you do not want to add any routes in your pod then leave this field empty
@@ -147,6 +151,8 @@ oai-spgwu-tiny:
       create: @MULTUS_SPGWU_N4@
       Ipadd: "@IP_SPGWU_N4@" 
       Netmask: "@NETMASK_SPGWU_N4@"
+      ## If you do not need a specific mac address leave the field empty
+      Mac: "@MAC_SPGWU_N4@"
       ## If you do not have a gateway leave the field empty
       Gateway: @GW_SPGWU_N4@
       ## If you do not want to add any routes in your pod then leave this field empty
@@ -155,7 +161,9 @@ oai-spgwu-tiny:
     n6Interface:
       create: @MULTUS_SPGWU_N6@
       Ipadd: "@IP_SPGWU_N6@" 
-      Netmask: "@NETMASK_SPGWU_N4@"
+      Netmask: "@NETMASK_SPGWU_N6@"
+      ## If you do not need a specific mac address leave the field empty
+      Mac: "@MAC_SPGWU_N6@"
       ## If you do not have a gateway leave the field empty
       Gateway: @GW_SPGWU_N6@
       ## If you do not want to add any routes in your pod then leave this field empty
@@ -200,7 +208,7 @@ oai-spgwu-tiny:
 #    IPadd: "172.21.6.99"
 #    Netmask: "22"
 #    defaultGateway: @CN_DEFAULT_GW@
-#    hostInterface: "bond0"	# Interface of the host machine on which this pod will be scheduled
+#    hostInterface: "bond0" # Interface of the host machine on which this pod will be scheduled
 #  config:
 #    ueroute: 12.1.1.0/24
 #    upfIpadd: 172.21.6.95
@@ -221,6 +229,8 @@ oai-smf:
       create: @MULTUS_SMF_N4@
       IPadd: "@IP_SMF_N4@"
       Netmask: "@NETMASK_SMF_N4@"
+      ## If you do not need a specific mac address leave the field empty
+      Mac: "@MAC_SMF_N4@"
       ## If you do not have a gateway leave the field empty
       Gateway: @GW_SMF_N4@
       ## If you do not want to add any routes in your pod then leave this field empty

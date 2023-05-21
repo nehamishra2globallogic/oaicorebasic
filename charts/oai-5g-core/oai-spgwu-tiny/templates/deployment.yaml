@@ -21,7 +21,9 @@ spec:
           [{
                  "name": "{{ .Chart.Name }}-n3",
                  "interface": "n3",
-                 "mac": "12:34:56:78:90:10"
+                {{- if .Values.multus.n3Interface.Mac }}
+                 "mac":  "{{ .Values.multus.n3Interface.Mac }}"
+                {{- end }}
                 {{- if .Values.multus.defaultGateway }}
                  ,"default-route": ["{{ .Values.multus.defaultGateway }}"]
                 {{- end }}

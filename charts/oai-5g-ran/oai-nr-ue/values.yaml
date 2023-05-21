@@ -25,6 +25,7 @@ multus:
   create: @MULTUS_NRUE@
   ipadd: "@IP_NRUE@"  # interface needed to connect with gnb
   netmask: "@NETMASK_NRUE@"
+  mac: "@MAC_NRUE@"
   defaultGateway: @DEFAULT_GW_NRUE@
   hostInterface: "@IF_NAME_NRUE@"
 

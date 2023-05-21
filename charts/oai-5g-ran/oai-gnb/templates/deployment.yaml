@@ -22,7 +22,9 @@ spec:
           [{
                  "name": "{{ .Chart.Name }}-n2",
                  "interface": "n2",
-                 "mac": "12:34:56:78:90:51"
+                {{- if .Values.multus.n2Interface.Mac }}
+                 "mac":  "{{ .Values.multus.n2Interface.Mac }}"
+                {{- end }}
                 {{- if .Values.multus.defaultGateway }}
                  ,"default-route": ["{{ .Values.multus.defaultGateway }}"]
                 {{- end }}
@@ -34,7 +36,9 @@ spec:
           ,{
                  "name": "{{ .Chart.Name }}-n3",
                  "interface": "n3",
-                 "mac": "12:34:56:78:90:52"
+                {{- if .Values.multus.n3Interface.Mac }}
+                 "mac":  "{{ .Values.multus.n3Interface.Mac }}"
+                {{- end }}
                 {{- if .Values.multus.n3Interface.Gateway }}
                  ,"gateway": ["{{ .Values.multus.n3Interface.Gateway }}"]
                 {{- end }}
@@ -44,7 +48,9 @@ spec:
           ,{
                  "name": "{{ .Chart.Name }}-ru1",
                  "interface": "ru1",
-                 "mac": "12:34:56:78:90:53"
+                {{- if .Values.multus.ru1Interface.Mac }}
+                 "mac":  "{{ .Values.multus.ru1Interface.Mac }}"
+                {{- end }}
                 {{- if .Values.multus.ru1Interface.Gateway }}
                  ,"gateway": ["{{ .Values.multus.ru1Interface.Gateway }}"]
                 {{- end }}
@@ -54,7 +60,9 @@ spec:
           ,{
                  "name": "{{ .Chart.Name }}-ru2",
                  "interface": "ru2",
-                 "mac": "12:34:56:78:90:54"
+                {{- if .Values.multus.ru2Interface.Mac }}
+                 "mac":  "{{ .Values.multus.ru2Interface.Mac }}"
+                {{- end }}
                 {{- if .Values.multus.ru2Interface.Gateway }}
                  ,"gateway": ["{{ .Values.multus.ru2Interface.Gateway }}"]
                 {{- end }}

@@ -41,6 +41,8 @@ multus:
     # name: "n2"
     IPadd: "@IP_GNB_N2@"
     Netmask: "@NETMASK_GNB_N2@"
+    # if mac is empty then it will be removed
+    Mac: "@MAC_GNB_N2@"
     # if gateway is empty then it will be removed
     Gateway: @GW_GNB_N2@
     routes: @ROUTES_GNB_N2@ #[{'dst': '10.8.0.0/24','gw': '172.21.7.254'}, {'dst': '10.9.0.0/24','gw': '172.21.7.254'}]
@@ -51,6 +53,8 @@ multus:
     # name: "n3"
     IPadd: "@IP_GNB_N3@"
     Netmask: "@NETMASK_GNB_N3@"
+    # if mac is empty then it will be removed
+    Mac: "@MAC_GNB_N3@"
     # if gateway is empty then it will be removed
     Gateway:  @GW_GNB_N3@
     routes: @ROUTES_GNB_N3@
@@ -61,6 +65,8 @@ multus:
     # #name inside the pod is hardcoded right now
     # name: "ru1"
     Netmask: "@NETMASK_GNB_RU1@"
+    # if mac is empty then it will be removed
+    Mac: "@MAC_GNB_RU1@"
     # if gateway is commented then it will be removed
     Gateway: @GW_GNB_RU1@  #In case you don't have a gateway remove it from here
     mtu: @MTU_GNB_RU1@ 
@@ -72,6 +78,8 @@ multus:
     # #name inside the pod is hardcoded right now
     # name: "ru2"
     Netmask: "@NETMASK_GNB_RU2@"
+    # if mac is empty then it will be removed
+    Mac: "@MAC_GNB_RU2@"
     # if gateway is commented then it will be removed
     Gateway: @GW_GNB_RU2@  #In case you don't have a gateway remove it from here
     mtu: @MTU_GNB_RU2@ 
