@@ -61,11 +61,15 @@ oai-ausf:
     version: @AUSF_TAG@ ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
-  includeTcpDumpContainer: @TCPDUMP@ #only for taking pcaps inside network function pod
+  start:
+    tcpdump: @START_TCPDUMP@
+  includeTcpDumpContainer: @TCPDUMP_CONTAINER@ #only for taking pcaps inside network function pod
   imagePullSecrets:
     - name: "regcred"
   securityContext:
     privileged: @PRIVILEGED@
+  persistent:
+    sharedvolume: @SHAREDVOLUME@
   config:
     logLevel: "debug"   #allowed info/error/debug
   nodeSelector: {}
@@ -78,11 +82,15 @@ oai-amf:
     version: @AMF_TAG@ ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
-  includeTcpDumpContainer: @TCPDUMP@ #only for taking pcaps inside network function pod
+  start:
+    tcpdump: @START_TCPDUMP@
+  includeTcpDumpContainer: @TCPDUMP_CONTAINER@ #only for taking pcaps inside network function pod
   imagePullSecrets:
     - name: "regcred"
   securityContext:
     privileged: @PRIVILEGED@
+  persistent:
+    sharedvolume: @SHAREDVOLUME@
   multus:
     ## If you don't want to add a default route in your pod then leave this field empty
     defaultGateway: @CN_DEFAULT_GW@
@@ -128,7 +136,9 @@ oai-spgwu-tiny:
     version: @SPGWU_TAG@ ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
-  includeTcpDumpContainer: @TCPDUMP@ #only for taking pcaps inside network function pod
+  start:
+    tcpdump: @START_TCPDUMP@
+  includeTcpDumpContainer: @TCPDUMP_CONTAINER@ #only for taking pcaps inside network function pod or running iperf
   imagePullSecrets:
     - name: "regcred"
   # create an extra interface for N3 incase the gNB is outside the cluster network or there is a need to have dedicated interface for N3
@@ -170,6 +180,8 @@ oai-spgwu-tiny:
       routes: @ROUTES_SPGWU_N6@
       hostInterface: "@IF_NAME_SPGWU_N6@"
   #NOTE: If the interface you selected for n6If is wrong then traffic will not be routed towards internet
+  persistent:
+    sharedvolume: @SHAREDVOLUME@
   config:
     n3If: "@IF_N3@"  # n3 if multus.n3Interface.create is true
     n4If: "@IF_N4@" # n4 if multus.n4Interface.create is true
@@ -222,7 +234,9 @@ oai-smf:
     version: @SMF_TAG@ ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
-  includeTcpDumpContainer: @TCPDUMP@ #only for taking pcaps inside network function pod
+  start:
+    tcpdump: @START_TCPDUMP@
+  includeTcpDumpContainer: @TCPDUMP_CONTAINER@ #only for taking pcaps inside network function pod
   multus:
     defaultGateway: @CN_DEFAULT_GW@
     n4Interface:
@@ -240,6 +254,8 @@ oai-smf:
     - name: "regcred"
   securityContext:
     privileged: @PRIVILEGED@
+  persistent:
+    sharedvolume: @SHAREDVOLUME@
   config:
     useLocalSubscriptionInfo: "no" #this means ip-address information will be fetched from UDR
     ueMtu: 1500

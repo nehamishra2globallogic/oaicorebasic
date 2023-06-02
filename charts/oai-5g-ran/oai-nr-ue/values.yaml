@@ -49,9 +49,9 @@ podSecurityContext:
 
 start:
   nrue: true
-  tcpdump: @TCPDUMP_NRUE_START@  # if false then started in sleep mode else it will start capturing packets, nr ue will have a lot of packets per sec better avoid this or add a filter in the deployment.yaml
+  tcpdump: @START_TCPDUMP@  # if false then started in sleep mode else it will start capturing packets, nr ue will have a lot of packets per sec better avoid this or add a filter in the deployment.yaml
 
-includeTcpDumpContainer: @TCPDUMP_CONTAINER_NRUE_CREATE@ #If true it will add a tcpdump container inside network function pod for debugging
+includeTcpDumpContainer: @TCPDUMP_CONTAINER@ #If true it will add a tcpdump container inside network function pod for debugging
 
 ## For openshift you can use rhel8/support-tools:8.7-13
 tcpdumpimage:
@@ -85,7 +85,7 @@ resources:
       memory: 128Mi
 
 persistent:
-  sharedvolume: @SHARED_VOL_NRUE@
+  sharedvolume: @SHAREDVOLUME@
   volumeName: oai5g-volume
   size: 1Gi
 

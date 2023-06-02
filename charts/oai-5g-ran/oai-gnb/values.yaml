@@ -112,9 +112,9 @@ config:
 ## Debugging section
 start:
   gnb: true  #If false the network function container will run in sleep mode for manually testing
-  tcpdump: @TCPDUMP_GNB_START@
+  tcpdump: @START_TCPDUMP@
 
-includeTcpDumpContainer: @TCPDUMP_CONTAINER_GNB_CREATE@ #If true it will add a tcpdump container inside network function pod for debugging
+includeTcpDumpContainer: @TCPDUMP_CONTAINER@ #If true it will add a tcpdump container inside network function pod for debugging
 
 podSecurityContext:
   runAsUser: 0
@@ -128,7 +128,7 @@ tcpdumpimage:
 
 
 persistent:
-  sharedvolume: @GNB_SHARED_VOL@
+  sharedvolume: @SHAREDVOLUME@
   volumeName: oai5g-volume
   size: 1Gi
 
