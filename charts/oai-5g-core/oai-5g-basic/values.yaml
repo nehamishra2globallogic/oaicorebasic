@@ -16,7 +16,7 @@ oai-nrf:
     version: @NRF_TAG@ ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNo tPresent or Never or Always
     pullPolicy: IfNotPresent
-  includeTcpDumpContainer: @TCPDUMP@ #only for taking pcaps inside network function pod
+  includeTcpDumpContainer: @TCPDUMP_CONTAINER@ #only for taking pcaps inside network function pod
   imagePullSecrets:
     - name: "regcred"
   config:
@@ -31,7 +31,7 @@ oai-udr:
     version: @UDR_TAG@  ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
-  includeTcpDumpContainer: @TCPDUMP@ #only for taking pcaps inside network function pod
+  includeTcpDumpContainer: @TCPDUMP_CONTAINER@ #only for taking pcaps inside network function pod
   imagePullSecrets:
     - name: "regcred"
   config:
@@ -46,7 +46,7 @@ oai-udm:
     version: @UDM_TAG@ ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
-  includeTcpDumpContainer: @TCPDUMP@ #only for taking pcaps inside network function pod
+  includeTcpDumpContainer: @TCPDUMP_CONTAINER@ #only for taking pcaps inside network function pod
   imagePullSecrets:
     - name: "regcred"
   config:
