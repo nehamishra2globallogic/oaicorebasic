@@ -110,7 +110,7 @@ oai-amf:
     amfInterfaceNameForNGAP: "eth0" # If oai-amf.multus.n2Interface.create is true then n2 else eth0
     amfInterfaceNameForSBI: "eth0"  # Service based interface
     externalAusf: "yes"
-    externalNssf: "yes"
+    enableNssf: "yes"
     nrfSelection: "yes"
     nfRegistration: "yes"
     smfSelection: "no"

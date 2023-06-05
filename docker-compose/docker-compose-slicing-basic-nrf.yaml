@@ -182,11 +182,11 @@ services:
             - SST_2=130
             - SD_2=130
             - AMF_INTERFACE_NAME_FOR_NGAP=eth0
-            - AMF_INTERFACE_NAME_FOR_N11=eth0
+            - AMF_INTERFACE_NAME_FOR_SBI=eth0
             # First SMF instance
             - SMF_INSTANCE_ID_0=1
-            - SMF_FQDN_0=oai_smf_slice1
-            - SMF_HTTP_VERSION_0=v1
+            - SMF_FQDN=oai_smf_slice1
+            - SMF_API_VERSION=v1
             - SELECTED_0=true
             # Second SMF instance
             - SMF_INSTANCE_ID_1=2
@@ -199,7 +199,7 @@ services:
             - SMF_SELECTION=yes
             - USE_FQDN_DNS=yes
             - EXTERNAL_AUSF=yes
-            - EXTERNAL_NSSF=yes
+            - ENABLE_NSSF=yes
             - INT_ALGO_LIST=["NIA1" , "NIA2"]
             - CIPH_ALGO_LIST=["NEA1" , "NEA2"]
             # Other NF

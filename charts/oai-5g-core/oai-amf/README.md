@@ -86,10 +86,10 @@ The directory structure
 |config.smfSelection            |Mandatory                   |It helps in selecting the SMF via NRF       |
 |config.externalAusf            |Mandatory                   |Always yes when using AUSF                  |
 |config.useHttp2                |Mandatory (yes/no)          |if using HTTP/2 change the port for HTTP/1.1|
-|config.mySqlServer             |Optional                    |if not using AUSF                           |
-|config.mySqlUser               |Optional                    |if not using AUSF                           |
-|config.externalNssf            |Optional                    |if not using AUSF                           |
-|config.mySqlPass               |Optional                    |if not using AUSF                           |
+|config.mySqlServer             |Optional                    |MySQL server addr/name                      |
+|config.mySqlUser               |Optional                    |MySQL username                              |
+|config.enableNssf              |Optional                    |if not using NSSF                           |
+|config.mySqlPass               |Optional                    |MySQL password                              |
 
 ## Advanced Debugging Parameters
 

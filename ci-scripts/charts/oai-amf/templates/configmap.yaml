@@ -111,7 +111,7 @@ data:
          SMF_SELECTION   = "{{ .Values.config.smfSelection }}";    # Set to yes to enable SMF discovery and selection
          EXTERNAL_AUSF   = "{{ .Values.config.externalAusf }}";    # Set to yes if AMF works with an external AUSF
          EXTERNAL_UDM    = "{{ .Values.config.externalUdm }}";     # Set to yes if AMF works with an external UDM
-         EXTERNAL_NSSF   = "{{ .Values.config.externalNssf }}";    # Set to yes if AMF works with an external NSSF
+         ENABLE_NSSF     = "{{ .Values.config.enableNssf }}";      # Set to yes if AMF works with an external NSSF
          USE_FQDN_DNS    = "yes";   # Set to yes if AMF relies on a DNS to resolve NRF/SMF/UDM/AUSF's FQDN
          USE_HTTP2       = "{{ .Values.config.useHttp2 }}";        # Set to yes to enable HTTP2 for AMF server
       }

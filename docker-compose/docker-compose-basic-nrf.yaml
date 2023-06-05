@@ -149,18 +149,18 @@ services:
             - SST_2=222
             - SD_2=123
             - AMF_INTERFACE_NAME_FOR_NGAP=eth0
-            - AMF_INTERFACE_NAME_FOR_N11=eth0
+            - AMF_INTERFACE_NAME_FOR_SBI=eth0
             # One single SMF instance
             - SMF_INSTANCE_ID_0=1
-            - SMF_FQDN_0=oai-smf
-            - SMF_IPV4_ADDR_0=192.168.70.133
+            - SMF_FQDN=oai-smf
+            - SMF_IPV4_ADDR=192.168.70.133
             - SELECTED_0=true
             - NF_REGISTRATION=yes
             - USE_FQDN_DNS=yes
             - SMF_SELECTION=yes
             - EXTERNAL_AUSF=yes
             - EXTERNAL_UDM=no
-            - EXTERNAL_NSSF=no
+            - ENABLE_NSSF=no
             - NRF_IPV4_ADDRESS=192.168.70.130
             - NRF_FQDN=oai-nrf
             - AUSF_IPV4_ADDRESS=192.168.70.138

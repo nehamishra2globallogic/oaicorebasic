@@ -51,7 +51,7 @@ services:
             - SST_2=222
             - SD_2=123
             - AMF_INTERFACE_NAME_FOR_NGAP=eth0
-            - AMF_INTERFACE_NAME_FOR_N11=eth0
+            - AMF_INTERFACE_NAME_FOR_SBI=eth0
             # mysql definition in AMF is mandatory in mini deployment.
             - MYSQL_SERVER=192.168.70.131
             - MYSQL_USER=root
@@ -59,8 +59,8 @@ services:
             - MYSQL_DB=oai_db
             # One single SMF instance
             - SMF_INSTANCE_ID_0=1
-            - SMF_FQDN_0=oai-smf
-            - SMF_IPV4_ADDR_0=192.168.70.133
+            - SMF_FQDN=oai-smf
+            - SMF_IPV4_ADDR=192.168.70.133
             - SELECTED_0=true
             - USE_FQDN_DNS=yes
         depends_on:

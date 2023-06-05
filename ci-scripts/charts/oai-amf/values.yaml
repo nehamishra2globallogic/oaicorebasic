@@ -83,7 +83,7 @@ config:
   externalAusf: "yes"
   externalUdm: "no"
   externalNrf: "no"
-  externalNssf: "no"
+  enableNssf: "no"
   useHttp2: "no"
   intAlgoList: '[ "NIA1" , "NIA1" , "NIA2" ]'
   ciphAlgoList: '[ "NEA0" , "NEA1" , "NEA2" ]'
