@@ -1,4 +1,6 @@
 mysql:
+  image: "@MYSQL_REPO@"
+  imageTag: "@MYSQL_TAG@"
   enabled: true
   weight: 0
   imagePullPolicy: IfNotPresent
