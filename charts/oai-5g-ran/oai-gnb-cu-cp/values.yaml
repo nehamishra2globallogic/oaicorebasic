@@ -68,8 +68,7 @@ config:
   mnc: "01"    # check the information with AMF, SMF, UPF/SPGWU
   mncLength: "2" # check the information with AMF, SMF, UPF/SPGWU
   tac: "1"     # check the information with AMF
-  nssaiSst: "1"  #currently only 4 standard values are allowed 1,2,3,4 
-  nssaiSd: "0xffffff"    #values in hexa-decimal format
+  snssaiList: "({ sst = 1, sd = 0xffffff })"
   amfIpAddress: "172.21.6.94"  # amf ip-address
   e1IpAddress: "192.168.18.13"  ## CU-UP ip-address 
   #Normally you don't have to set this but at the moment it is required
