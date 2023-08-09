@@ -32,7 +32,7 @@ data:
 
           // Tracking area code, 0x0000 and 0xfffe are reserved values
           tracking_area_code  =  1;
-          plmn_list = ({ mcc = 001; mnc = 01; mnc_length = 2; snssaiList = ({ sst = 1, sd = 0xffffff }) });
+          plmn_list = ({ mcc = 001; mnc = 01; mnc_length = 2; snssaiList = {{ .Values.config.snssaiList }} });
 
 
           nr_cellid = 12345678L;
@@ -190,9 +190,9 @@ data:
           local_n_address = "172.21.6.100";
           remote_n_address = "172.21.6.92";
           local_n_portc   = 500;
-          local_n_portd   = 2152;
+          local_n_portd   = 2153;
           remote_n_portc  = 501;
-          remote_n_portd  = 2152;
+          remote_n_portd  = 2153;
           pusch_TargetSNRx10          = 200;
           pucch_TargetSNRx10          = 200;
           ulsch_max_frame_inactivity = 1;

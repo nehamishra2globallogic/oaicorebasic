@@ -149,4 +149,3 @@ oai-smf:
   nodeSelector: {}
   imagePullSecrets:
     - name: "regcred"
-  nodeSelector: {}

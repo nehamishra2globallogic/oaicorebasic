@@ -14,7 +14,7 @@ mysql:
     enabled: false
 oai-nrf:
   enabled: true
-  kubernetesType: Vanilla #Openshift/Vanilla Vanilla for Upstream Kubernetes
+  kubernetesType: Openshift #Openshift/Vanilla Vanilla for Upstream Kubernetes
   nfimage:  # image name either locally present or in a public/private repository
     repository: docker.io/oaisoftwarealliance/oai-nrf          ## The image will be pulled from dockerhub
     version: develop                          ## The branch to be used to pull from dockerhub
@@ -28,7 +28,7 @@ oai-nrf:
   nodeSelector: {}
 oai-udr:
   enabled: true
-  kubernetesType: Vanilla #Openshift/Vanilla Vanilla for Upstream Kubernetes
+  kubernetesType: Openshift #Openshift/Vanilla Vanilla for Upstream Kubernetes
   nfimage:  # image name either locally present or in a public/private repository
     repository: docker.io/oaisoftwarealliance/oai-udr           ## The image will be pulled from dockerhub
     version: develop                                    ## The branch to be used to pull from dockerhub
@@ -42,7 +42,7 @@ oai-udr:
   nodeSelector: {}
 oai-udm:
   enabled: true
-  kubernetesType: Vanilla #Openshift/Vanilla Vanilla for Upstream Kubernetes
+  kubernetesType: Openshift #Openshift/Vanilla Vanilla for Upstream Kubernetes
   nfimage:  # image name either locally present or in a public/private repository
     repository: docker.io/oaisoftwarealliance/oai-udm           ## The image will be pulled from dockerhub
     version: develop                                    ## The branch to be used to pull from dockerhub
@@ -56,7 +56,7 @@ oai-udm:
   nodeSelector: {}
 oai-ausf:
   enabled: true
-  kubernetesType: Vanilla #Openshift/Vanilla Vanilla for Upstream Kubernetes
+  kubernetesType: Openshift #Openshift/Vanilla Vanilla for Upstream Kubernetes
   nfimage:  # image name either locally present or in a public/private repository
     repository: docker.io/oaisoftwarealliance/oai-ausf           ## The image will be pulled from dockerhub
     version: develop                                    ## The branch to be used to pull from dockerhub
@@ -70,7 +70,7 @@ oai-ausf:
   nodeSelector: {}
 oai-amf:
   enabled: true
-  kubernetesType: Vanilla #Openshift/Vanilla Vanilla for Upstream Kubernetes
+  kubernetesType: Openshift #Openshift/Vanilla Vanilla for Upstream Kubernetes
   nfimage:  # image name either locally present or in a public/private repository
     repository: docker.io/oaisoftwarealliance/oai-amf           ## The image will be pulled from dockerhub
     version: develop                                    ## The branch to be used to pull from dockerhub
@@ -84,7 +84,7 @@ oai-amf:
     defaultGateway: ""
     n2Interface:
       create: false
-      Ipadd: "172.21.6.94"
+      Ipadd: "172.21.6.185"
       Netmask: "22"
       # #name inside the pod is hardcoded right now
       # name: "n2"
@@ -96,7 +96,7 @@ oai-amf:
   nodeSelector: {}
 oai-upf:
   enabled: true
-  kubernetesType: Vanilla #Openshift/Vanilla Vanilla for Upstream Kubernetes
+  kubernetesType: Openshift #Openshift/Vanilla Vanilla for Upstream Kubernetes
   nfimage:  # image name either locally present or in a public/private repository
     repository: docker.io/oaisoftwarealliance/oai-upf    ## The image will be pulled from dockerhub
     version: develop                                    ## The branch to be used to pull from dockerhub
@@ -113,7 +113,7 @@ oai-upf:
     defaultGateway: ""
     n3Interface:
       create: false
-      Ipadd: "172.21.8.95"
+      Ipadd: "172.21.8.195"
       Netmask: "22"
       # #name inside the pod is hardcoded right now
       # name: "n3"
@@ -150,7 +150,7 @@ oai-upf:
 # oai-traffic-server:
 #  enabled: false
 #  weight: 6
-#  kubernetesType: Vanilla
+#  kubernetesType: Openshift
 #  trafficServer:
 #    repository: docker.io/oaisoftwarealliance/trf-gen-cn5g
 #    version: latest
@@ -169,7 +169,7 @@ oai-upf:
 #    noOfIperf3Server: 10
 oai-smf:
   enabled: true
-  kubernetesType: Vanilla #Openshift/Vanilla Vanilla for Upstream Kubernetes
+  kubernetesType: Openshift #Openshift/Vanilla Vanilla for Upstream Kubernetes
   nfimage:  # image name either locally present or in a public/private repository
     repository: docker.io/oaisoftwarealliance/oai-smf           ## The image will be pulled from dockerhub
     version: develop                         ## The branch to be used to pull from dockerhub
