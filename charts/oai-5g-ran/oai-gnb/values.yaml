@@ -86,7 +86,7 @@ multus:
     hostInterface: "@IF_NAME_GNB_RU2@"
 
 config:
-  mountConfig: @MOUNTCONFIG_GNB@ #If config file is mounted then please edit mount.conf in configmap.yaml properly
+  mountConfig: @MOUNTCONFIG_GNB@ #If config file is mounted then please edit gnb.conf in configmap.yaml properly
   rru: "@RRU_TYPE@"
   useAdditionalOptions: "@ADD_OPTIONS_GNB@"
   amfIpAddress: "@AMF_IP_ADDRESS@"  # amf ip-address or service-name oai-amf-svc

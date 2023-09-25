@@ -84,12 +84,12 @@ spec:
         {{- if .Values.config.mountConfig}}
         volumeMounts:
         {{- if eq .Values.config.rru "aw2s" }}
-          - mountPath: /opt/oai-gnb-aw2s/etc/mounted.conf
+          - mountPath: /opt/oai-gnb-aw2s/etc/gnb.conf
         {{- else }}
-          - mountPath: /opt/oai-gnb/etc/mounted.conf
+          - mountPath: /opt/oai-gnb/etc/gnb.conf
         {{- end }}
             name: configuration
-            subPath: mounted.conf
+            subPath: gnb.conf
         {{- end}}
           ## USRP B210/B200 Mini
           # - mountPath: /dev/bus/usb/
@@ -131,8 +131,6 @@ spec:
           - name: USE_ADDITIONAL_OPTIONS
             value: {{ .Values.config.useAdditionalOptions }}
         {{- if .Values.config.mountConfig}}
-          - name: USE_VOLUMED_CONF
-            value: "yes"
         {{- if eq .Values.config.rru "b210" }}
           - name: USE_B2XX
             value: "True"

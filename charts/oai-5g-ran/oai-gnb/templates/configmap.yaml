@@ -14,7 +14,7 @@ kind: ConfigMap
 metadata:
   name: {{ .Chart.Name }}-configmap
 data:
-  mounted.conf: |
+  gnb.conf: |
       ## Configuration file for band77 and 51 PRB tested with B210
       Active_gNBs = ( "oai-gnb-rfsim");
       # Asn1_verbosity, choice in: none, info, annoying
