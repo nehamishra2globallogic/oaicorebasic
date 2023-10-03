@@ -83,7 +83,7 @@ config:
   dnnNi1: "ims"
   pdusessiontype1: "IPv4v6"
   ipv4dnnRange1: "12.2.1.41 - 12.2.1.254"
-  nssaiSst1: 1
+  nssaiSst1: 2
   nssaiSd1: "0xFFFFFF"
   qosProfile5qi1: 1
   sessionAmbrUl1: "1000Mbps"

@@ -36,7 +36,7 @@ multus:
   ## If you don't want to add a default route in your pod then leave this field empty
   defaultGateway: "172.21.7.254"
   n2Interface:
-    create: false
+    create: true
     Ipadd: "172.21.6.94"
     Netmask: "22"
     ## If you do not have a gateway leave the field empty
@@ -50,7 +50,7 @@ multus:
 
 config:
   logLevel: "debug" #info/debug/error
-  amfInterfaceNameForNGAP: "eth0" # If multus.n2Interface.create is true then n2 else eth0
+  amfInterfaceNameForNGAP: "n2" # If multus.n2Interface.create is true then n2 else eth0
   amfInterfaceNameForSBI: "eth0"  # Service based interface
   amfInterfaceSBIHTTPPort: 80  # Service based interface
   amfInterfaceSBIHTTP2Port: 8080  # Service based interface
@@ -63,8 +63,8 @@ config:
   sd0: "0xFFFFFF"   ## Optional 0xFFFFFF means no SD as per 3GPP
   ## Can add upto 3 more slices. More than that you can do it in the configmap of amf templates/configmap.yaml
   # Note only SST is mandatory for a slice SD is optional
-  sst1: "1"
-  sd1: "1"
+  sst1: "2"
+  sd1: "0xFFFFFF"
   smfFqdn: "oai-smf-svc"     # amf communicates using FQDN/Service Name
   nrfFqdn: "oai-nrf-svc"     # amf communicates using FQDN/Service Name
   ausfFqdn: "oai-ausf-svc"   #only needed if ausf is used and externalAusf is true else internal ausf will be used

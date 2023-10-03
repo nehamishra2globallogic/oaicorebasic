@@ -112,7 +112,7 @@ spec:
         command:
           - /bin/sh
           - -c
-          - /usr/sbin/tcpdump -i any -w /tmp/pcap/{{ .Chart.Name }}_`date +%Y-%m-%d_%H_%M-%S-%Z`.pcap
+          - 'mkdir -p /tmp/pcap && /usr/sbin/tcpdump -i any  port 2152 or port 2153 or port 38462 or port 38472 or port 38412 or icmp -w /tmp/pcap/{{ .Chart.Name }}_`date +%Y-%m-%d_%H_%M-%S-%Z`.pcap'
         {{- else}}
         command:
           - /bin/sleep
