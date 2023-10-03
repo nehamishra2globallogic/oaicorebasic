@@ -134,14 +134,14 @@ spec:
         {{- if eq .Values.config.rru "b210" }}
           - name: USE_B2XX
             value: "True"
-          - name: GNB_NGA_IP_ADDRESS
+          - name: GNB_IP_ADDRESS
             valueFrom:
               fieldRef:
                 fieldPath: status.podIP
-          - name: GNB_NGU_IP_ADDRESS
-            valueFrom:
-              fieldRef:
-                fieldPath: status.podIP
+        lifecycle:
+          postStart:
+            exec:
+              command: ["/bin/sed", "s/@GNB_IP_ADDRESS@/$GNB_IP_ADDRESS/", "/opt/oai-gnb/etc/gnb.conf"]
         {{- end}}
         {{- if eq .Values.config.rru "n3xx" }}
           - name: USE_N3XX
