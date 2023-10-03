@@ -118,6 +118,13 @@ spec:
           name: n2
           protocol: SCTP
         {{- if .Values.start.gnb}}
+        {{- if eq .Values.config.rru "b210"}}
+        command: [ "/bin/bash", "-c" ]
+        args:
+         -  sed s/@GNB_IP_ADDRESS@/$GNB_IP_ADDRESS/g /opt/oai-gnb/etc/gnb.conf | tee /tmp/gnb.conf;
+            /opt/oai-gnb/bin/uhd_images_downloader.py -t b2xx; 
+            /opt/oai-gnb/bin/nr-softmodem -O /tmp/gnb.conf $USE_ADDITIONAL_OPTIONS;
+        {{- end}}
         {{- else}}
         command:
           - /bin/sleep
