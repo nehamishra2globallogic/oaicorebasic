@@ -92,8 +92,8 @@ spec:
             subPath: gnb.conf
         {{- end}}
           ## USRP B210/B200 Mini
-          # - mountPath: /dev/bus/usb/
-          #   name: usrp
+          - mountPath: /dev/bus/usb/
+            name: usrp
         {{- if .Values.resources.define}}
         resources:
           requests:
@@ -288,9 +288,9 @@ spec:
           name: {{ .Chart.Name }}-configmap
         name: configuration
       {{- end}}
-      # - name: usrp
-      #   hostPath:
-      #     path: /dev/bus/usb/
+      - name: usrp
+        hostPath:
+          path: /dev/bus/usb/
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
