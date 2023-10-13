@@ -34,7 +34,7 @@ serviceAccount:
 
 multus:
   # if default gateway is empty then it will be removed
-  defaultGateway: @DEFAULT_GW_GNB@
+  defaultGateway: "@DEFAULT_GW_GNB@"
   n2Interface:
     create: @MULTUS_GNB_N2@
     # #name inside the pod is hardcoded right now
@@ -44,8 +44,8 @@ multus:
     # if mac is empty then it will be removed
     Mac: "@MAC_GNB_N2@"
     # if gateway is empty then it will be removed
-    Gateway: @GW_GNB_N2@
-    routes: @ROUTES_GNB_N2@ #[{'dst': '10.8.0.0/24','gw': '172.21.7.254'}, {'dst': '10.9.0.0/24','gw': '172.21.7.254'}]
+    Gateway: "@GW_GNB_N2@"
+    routes: "@ROUTES_GNB_N2@" #[{'dst': '10.8.0.0/24','gw': '172.21.7.254'}, {'dst': '10.9.0.0/24','gw': '172.21.7.254'}]
     hostInterface: "@IF_NAME_GNB_N2@" # Interface of the host machine on which this pod will be scheduled
   n3Interface:
     create: @MULTUS_GNB_N3@
@@ -56,8 +56,8 @@ multus:
     # if mac is empty then it will be removed
     Mac: "@MAC_GNB_N3@"
     # if gateway is empty then it will be removed
-    Gateway:  @GW_GNB_N3@
-    routes: @ROUTES_GNB_N3@
+    Gateway:  "@GW_GNB_N3@"
+    routes: "@ROUTES_GNB_N3@"
     hostInterface: "@IF_NAME_GNB_N3@" # Interface of the host machine on which this pod will be scheduled
   ru1Interface:
     create: @MULTUS_GNB_RU1@
@@ -68,7 +68,7 @@ multus:
     # if mac is empty then it will be removed
     Mac: "@MAC_GNB_RU1@"
     # if gateway is commented then it will be removed
-    Gateway: @GW_GNB_RU1@  #In case you don't have a gateway remove it from here
+    Gateway: "@GW_GNB_RU1@"  #In case you don't have a gateway remove it from here
     mtu: @MTU_GNB_RU1@ 
     hostInterface: "@IF_NAME_GNB_RU1@"
   # ru2 can be useful for USRP N3XX when the 2 SFP NICs use 2 different PHY links to the server that hosts oai-gnb
@@ -81,7 +81,7 @@ multus:
     # if mac is empty then it will be removed
     Mac: "@MAC_GNB_RU2@"
     # if gateway is commented then it will be removed
-    Gateway: @GW_GNB_RU2@  #In case you don't have a gateway remove it from here
+    Gateway: "@GW_GNB_RU2@"  #In case you don't have a gateway remove it from here
     mtu: @MTU_GNB_RU2@ 
     hostInterface: "@IF_NAME_GNB_RU2@"
 

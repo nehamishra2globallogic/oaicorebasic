@@ -95,7 +95,7 @@ oai-amf:
     sharedvolume: @SHAREDVOLUME@
   multus:
     ## If you don't want to add a default route in your pod then leave this field empty
-    defaultGateway: @CN_DEFAULT_GW@
+    defaultGateway: "@CN_DEFAULT_GW@"
     n2Interface:
       create: @MULTUS_AMF_N2@
       Ipadd: "@IP_AMF_N2@"
@@ -103,9 +103,9 @@ oai-amf:
       ## If you do not need a specific mac address leave the field empty
       Mac: "@MAC_AMF_N2@"
       ## If you do not have a gateway leave the field empty
-      Gateway: @GW_AMF_N2@
+      Gateway: "@GW_AMF_N2@"
       ## If you do not want to add any routes in your pod then leave this field empty
-      routes: @ROUTES_AMF_N2@
+      routes: "@ROUTES_AMF_N2@"
       hostInterface: "@IF_NAME_AMF_N2@" # Interface of the host machine on which this pod will be scheduled
   config:
     amfInterfaceNameForNGAP: "@IF_N2@" # If oai-amf.multus.n2Interface.create is true then n2 else eth0
@@ -147,7 +147,7 @@ oai-spgwu-tiny:
   ## Change these ip-addresses according to your environment
   ## N4, N6 are optional only if you want that UPF uses different subnets for different 3gpp interfaces. 
   multus:
-    defaultGateway: @CN_DEFAULT_GW@
+    defaultGateway: "@CN_DEFAULT_GW@"
     n3Interface:
       create: @MULTUS_SPGWU_N3@
       Ipadd: "@IP_SPGWU_N3@"
@@ -155,9 +155,9 @@ oai-spgwu-tiny:
       ## If you do not need a specific mac address leave the field empty
       Mac: "@MAC_SPGWU_N3@"
       ## If you do not have a gateway leave the field empty
-      Gateway: @GW_SPGWU_N3@
+      Gateway: "@GW_SPGWU_N3@"
       ## If you do not want to add any routes in your pod then leave this field empty
-      routes: @ROUTES_SPGWU_N3@ 
+      routes: "@ROUTES_SPGWU_N3@" 
       hostInterface: "@IF_NAME_SPGWU_N3@"
     n4Interface:
       create: @MULTUS_SPGWU_N4@
@@ -166,9 +166,9 @@ oai-spgwu-tiny:
       ## If you do not need a specific mac address leave the field empty
       Mac: "@MAC_SPGWU_N4@"
       ## If you do not have a gateway leave the field empty
-      Gateway: @GW_SPGWU_N4@
+      Gateway: "@GW_SPGWU_N4@"
       ## If you do not want to add any routes in your pod then leave this field empty
-      routes: @ROUTES_SPGWU_N4@
+      routes: "@ROUTES_SPGWU_N4@"
       hostInterface: "@IF_NAME_SPGWU_N4@"
     n6Interface:
       create: @MULTUS_SPGWU_N6@
@@ -177,9 +177,9 @@ oai-spgwu-tiny:
       ## If you do not need a specific mac address leave the field empty
       Mac: "@MAC_SPGWU_N6@"
       ## If you do not have a gateway leave the field empty
-      Gateway: @GW_SPGWU_N6@
+      Gateway: "@GW_SPGWU_N6@"
       ## If you do not want to add any routes in your pod then leave this field empty
-      routes: @ROUTES_SPGWU_N6@
+      routes: "@ROUTES_SPGWU_N6@"
       hostInterface: "@IF_NAME_SPGWU_N6@"
   #NOTE: If the interface you selected for n6If is wrong then traffic will not be routed towards internet
   persistent:
@@ -221,7 +221,7 @@ oai-spgwu-tiny:
 #    create: true
 #    IPadd: "172.21.6.99"
 #    Netmask: "22"
-#    defaultGateway: @CN_DEFAULT_GW@
+#    defaultGateway: "@CN_DEFAULT_GW@"
 #    hostInterface: "bond0" # Interface of the host machine on which this pod will be scheduled
 #  config:
 #    ueroute: 12.1.1.0/24
@@ -240,17 +240,17 @@ oai-smf:
     tcpdump: @START_TCPDUMP@
   includeTcpDumpContainer: @TCPDUMP_CONTAINER@ #only for taking pcaps inside network function pod
   multus:
-    defaultGateway: @CN_DEFAULT_GW@
+    defaultGateway: "@CN_DEFAULT_GW@"
     n4Interface:
       create: @MULTUS_SMF_N4@
       IPadd: "@IP_SMF_N4@"
       Netmask: "@NETMASK_SMF_N4@"
       ## If you do not need a specific mac address leave the field empty
       Mac: "@MAC_SMF_N4@"
-      ## If you do not have a gateway leave the field empty
-      Gateway: @GW_SMF_N4@
+      ## If you do not have a gateway leave the field with ""
+      Gateway: "@GW_SMF_N4@"
       ## If you do not want to add any routes in your pod then leave this field empty
-      routes: @ROUTES_SMF_N4@ 
+      routes: "@ROUTES_SMF_N4@" 
       hostInterface: "@IF_NAME_SMF_N4@"
   imagePullSecrets:
     - name: "regcred"
