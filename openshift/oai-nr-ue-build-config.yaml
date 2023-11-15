@@ -36,18 +36,17 @@ spec:
   output: 
     to: 
       kind: ImageStreamTag
-      name: "oai-nr-ue:develop"
+      name: "oai-nr-ue:2023.w45"
   runPolicy: Serial
   strategy:
     type: Docker
   source: 
     dockerfile: |
-        FROM image-registry.openshift-image-registry.svc:5000/oai-tutorial/oai-ran-base:develop AS nr-ue-base
+        FROM image-registry.openshift-image-registry.svc:5000/engage5g/oai-ran-base:2023.w45 AS nr-ue-base
 
-        FROM image-registry.openshift-image-registry.svc:5000/oai-tutorial/oai-ran-build:develop AS nr-ue-build
+        FROM image-registry.openshift-image-registry.svc:5000/engage5g/oai-ran-build:2023.w45 AS nr-ue-build
 
-        RUN python3 ./docker/scripts/generateTemplate.py ./docker/scripts/nr_ue_parameters.yaml && \
-            cp /oai-ran/docker/scripts/nr_ue_entrypoint.sh /oai-ran/docker/scripts/entrypoint.sh
+        RUN cp /oai-ran/docker/scripts/nr_ue_entrypoint.sh /oai-ran/docker/scripts/entrypoint.sh
 
         #start from scratch for target executable
         FROM registry.access.redhat.com/ubi8/ubi:latest as oai-nr-ue
@@ -78,12 +77,6 @@ spec:
             /oai-ran/docker/scripts/entrypoint.sh \
             ./
 
-        WORKDIR /opt/oai-nr-ue/etc
-        COPY --from=nr-ue-build \
-            /oai-ran/ci-scripts/conf_files/nr-ue-sim.conf \
-            /oai-ran/docker/etc/nr-ue.nfapi.conf \
-            ./
-
         COPY --from=nr-ue-build \
             /oai-ran/cmake_targets/ran_build/build/liboai_eth_transpro.so \
             /oai-ran/cmake_targets/ran_build/build/librfsimulator.so \
@@ -100,25 +93,25 @@ spec:
             /usr/local/lib/
 
         COPY --from=nr-ue-base \
-            /lib64/libconfig.so.9 \
+            /lib64/libconfig.so.11 \
             /lib64/libblas.so.3 \
             /lib64/liblapack.so.3 \
             /lib64/liblapacke.so.3 \
             /lib64/libforms.so.2 \
-            /lib64/libboost_chrono.so.1.66.0 \
-            /lib64/libboost_date_time.so.1.66.0 \
-            /lib64/libboost_filesystem.so.1.66.0 \
-            /lib64/libboost_program_options.so.1.66.0 \
-            /lib64/libboost_serialization.so.1.66.0 \
-            /lib64/libboost_thread.so.1.66.0 \
-            /lib64/libboost_system.so.1.66.0 \
-            /lib64/libboost_unit_test_framework.so.1.66.0 \
-            /lib64/libboost_atomic.so.1.66.0 \
-            /lib64/libboost_timer.so.1.66.0 \
-            /lib64/libboost_regex.so.1.66.0 \
-            /lib64/libicudata.so.60 \
-            /lib64/libicui18n.so.60 \
-            /lib64/libicuuc.so.60 \
+            /lib64/libboost_chrono.so.1.75.0 \
+            /lib64/libboost_date_time.so.1.75.0 \
+            /lib64/libboost_filesystem.so.1.75.0 \
+            /lib64/libboost_program_options.so.1.75.0 \
+            /lib64/libboost_serialization.so.1.75.0 \
+            /lib64/libboost_thread.so.1.75.0 \
+            /lib64/libboost_system.so.1.75.0 \
+            /lib64/libboost_unit_test_framework.so.1.75.0 \
+            /lib64/libboost_atomic.so.1.75.0 \
+            /lib64/libboost_timer.so.1.75.0 \
+            /lib64/libboost_regex.so.1.75.0 \
+            /lib64/libicudata.so.67 \
+            /lib64/libicui18n.so.67 \
+            /lib64/libicuuc.so.67 \
             /lib64/
 
         # Now we are copying from builder-image the UHD files.
