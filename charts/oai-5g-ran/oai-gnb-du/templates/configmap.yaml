@@ -15,7 +15,7 @@ metadata:
   name: {{ .Chart.Name }}-configmap
 #https://gitlab.eurecom.fr/oai/openairinterface5g/-/blob/develop/ci-scripts/conf_files/gNB_SA_DU.conf
 data:
-  mounted.conf: |
+  gnb.conf: |
       Active_gNBs = ( "oai-du-rfsim");
       # Asn1_verbosity, choice in: none, info, annoying
       Asn1_verbosity = "none";

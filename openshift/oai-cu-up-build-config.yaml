@@ -36,19 +36,18 @@ spec:
   output:
     to:
       kind: ImageStreamTag
-      name: "oai-cu-up:2023.w19"
+      name: "oai-cu-up:2023.w45"
   runPolicy: Serial
   strategy:
     type: Docker
   source:
     dockerfile: |
-        FROM image-registry.openshift-image-registry.svc:5000/engage5g/oai-ran-base:2023.w19 AS gnb-base
+        FROM image-registry.openshift-image-registry.svc:5000/engage5g/oai-ran-base:2023.w45 AS gnb-base
 
-        FROM image-registry.openshift-image-registry.svc:5000/engage5g/oai-ran-build:2023.w19 AS gnb-build
+        FROM image-registry.openshift-image-registry.svc:5000/engage5g/oai-ran-build:2023.w45 AS gnb-build
 
         RUN cp /oai-ran/docker/scripts/gnb_entrypoint.sh /oai-ran/docker/scripts/entrypoint.sh
 
-        #start from scratch for target executable
         #start from scratch for target executable
         FROM registry.access.redhat.com/ubi8/ubi:latest as oai-nr-cuup
         ENV TZ=Europe/Paris
@@ -77,7 +76,7 @@ spec:
             /usr/local/lib/
 
         COPY --from=gnb-base \
-            /lib64/libconfig.so.9 \
+            /lib64/libconfig.so.11 \
             /lib64/libblas.so.3 \
             /lib64/liblapack.so.3 \
             /lib64/liblapacke.so.3 \

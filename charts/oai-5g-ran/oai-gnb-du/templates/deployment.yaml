@@ -45,9 +45,9 @@ spec:
       - name: gnbdu
         image: "{{ .Values.nfimage.repository }}:{{ .Values.nfimage.version }}"
         volumeMounts:
-          - mountPath: /opt/oai-gnb/etc/mounted.conf
+          - mountPath: /opt/oai-gnb/etc/gnb.conf
             name: configuration
-            subPath: mounted.conf
+            subPath: gnb.conf
         {{- if .Values.resources.define}}
         resources:
           requests:

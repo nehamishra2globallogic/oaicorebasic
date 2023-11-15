@@ -87,7 +87,7 @@ Once done you need to build builder image
 #### 2.2 Creating builder image
 
 ```bash
-oc create -f ran-build/ran-build.yaml 
+oc create -f oai-ran-builder-build-config.yaml
 oc start-build ran-build
 ```
 

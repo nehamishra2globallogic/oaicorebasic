@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: {{ .Chart.Name }}-configmap
 data:
-  mounted.conf: |
+  gnb.conf: |
       Active_gNBs = ( "oai-cu-up");
       # Asn1_verbosity, choice in: none, info, annoying
       Asn1_verbosity = "none";
