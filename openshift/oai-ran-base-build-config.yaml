@@ -37,7 +37,7 @@ spec:
     source:
         git:
             uri: "https://gitlab.eurecom.fr/oai/openairinterface5g.git"
-            ref: "2023.w19"
+            ref: "2023.w45"
         secrets:
           - secret:
               name: etc-pki-entitlement
@@ -51,8 +51,8 @@ spec:
             destinationDir: rhsm-ca
     strategy:
         dockerStrategy:
-            dockerfilePath: "docker/Dockerfile.base.rhel8.2"
+            dockerfilePath: "docker/Dockerfile.base.rhel9"
     output:
         to:
             kind: "ImageStreamTag"
-            name: "oai-ran-base:2023.w19"
+            name: "oai-ran-base:2023.w45"

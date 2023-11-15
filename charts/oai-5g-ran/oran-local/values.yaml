@@ -4,7 +4,7 @@ oai-gnb-cu-cp:
   kubernetesType: Openshift #Openshift/Vanilla Vanilla for Upstream Kubernetes
   nfimage:   # image name either locally present or in a public/private repository
     repository: image-registry.openshift-image-registry.svc:5000/engage5g/oai-gnb
-    version: 2023.w19 # image tag or develop
+    version: 2023.w45 # image tag or develop
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
   includeTcpDumpContainer: false #only for taking pcaps inside network function pod
@@ -72,7 +72,7 @@ oai-gnb-cu-up:
   ## To know more about them follow this tutorial https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed/-/tree/master/openshift
   nfimage:   # image name either locally present or in a public/private repository
     repository: image-registry.openshift-image-registry.svc:5000/engage5g/oai-cu-up  ## dockerhub oaisoftwarealliance/oai-gnb  
-    version: 2023.w19 # image tag or develop
+    version: 2023.w45 # image tag or develop
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
 
@@ -145,7 +145,7 @@ oai-gnb-du:
   ## To know more about them follow this tutorial https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed/-/tree/master/openshift
   nfimage:   # image name either locally present or in a public/private repository
     repository: image-registry.openshift-image-registry.svc:5000/engage5g/oai-gnb ## dockerhub oaisoftwarealliance/oai-gnb
-    version: 2023.w19 # image tag or develop
+    version: 2023.w45 # image tag or develop
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
   ## good to use when pulling images from docker-hub mention

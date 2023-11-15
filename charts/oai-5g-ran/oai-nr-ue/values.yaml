@@ -4,7 +4,7 @@ kubernetesType: Openshift  #Vanilla for community kubernetes distribution else O
 ## To know more about them follow this tutorial https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed/-/tree/master/openshift
 nfimage:
   repository: oai-nr-ue           # dockehub oaisoftwarealliance/oai-nr-ue
-  version: 2023.w19 # image tag or develop 
+  version: 2023.w45 # image tag or develop 
   # pullPolicy: IfNotPresent or Never or Always
   pullPolicy: IfNotPresent
 
