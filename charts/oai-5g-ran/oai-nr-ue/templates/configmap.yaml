@@ -7,18 +7,19 @@ data:
   {{ $key }}: {{ $val | quote }}
   {{- end }}
 
-# ---
-# apiVersion: v1
-# kind: ConfigMap
-# metadata:
-#   name: {{ .Chart.Name }}-configmap
-# data:
-#   nrue.conf: |
-#       uicc0 = {
-#       imsi = "{{ .Values.config.fullImsi }}";
-#       key = "{{ .Values.config.fullKey }}";
-#       opc= "{{ .Values.config.opc }}";
-#       dnn= "{{ .Values.config.dnn }}";
-#       nssai_sst="{{ .Values.config.nssaiSst }}";
-#       nssai_sd="{{ .Values.config.nssaiSd }}";
-#       }
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Chart.Name }}-fileconf-configmap
+data:
+  nr-ue.conf: |
+      uicc0 = {
+      imsi = "{{ .Values.config.fullImsi }}";
+      key = "{{ .Values.config.fullKey }}";
+      opc= "{{ .Values.config.opc }}";
+      dnn= "{{ .Values.config.dnn }}";
+      nssai_sst="{{ .Values.config.nssaiSst }}";
+      nssai_sd="{{ .Values.config.nssaiSd }}";
+      }
+

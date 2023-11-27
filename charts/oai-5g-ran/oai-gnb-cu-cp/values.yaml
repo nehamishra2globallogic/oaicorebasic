@@ -122,6 +122,8 @@ affinity: {}
 
 terminationGracePeriodSeconds: 5
 
-nodeSelector: {}
+nodeSelector: {
+  worker: telco
+}
 
 nodeName: 

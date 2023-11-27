@@ -49,15 +49,17 @@ spec:
         RUN cp /oai-ran/docker/scripts/gnb_entrypoint.sh /oai-ran/docker/scripts/entrypoint.sh
 
         #start from scratch for target executable
-        FROM registry.access.redhat.com/ubi8/ubi:latest as oai-gnb
+        FROM registry.access.redhat.com/ubi9/ubi:latest as oai-gnb
         ENV TZ=Europe/Paris
 
         RUN yum repolist --disablerepo=* && \
             yum update -y && \
-            yum install -y --enablerepo="ubi-8-codeready-builder" \
+            yum install -y --enablerepo="ubi-9-codeready-builder" \
                 procps-ng \
                 libXpm \
                 libX11 \
+                openssl \
+                openssl-devel \
                 atlas \
                 lksctp-tools \
                 tzdata \
@@ -113,7 +115,7 @@ spec:
             /lib64/libicui18n.so.67 \
             /lib64/libicuuc.so.67 \
             /lib64/
-
+            
         # Now we are copying from builder-image the UHD files.
         COPY --from=gnb-base /usr/local/bin/uhd_find_devices /usr/local/bin
         COPY --from=gnb-base /usr/local/lib64/libuhd.so.4.4.0 /usr/local/lib64

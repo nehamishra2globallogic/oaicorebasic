@@ -23,16 +23,17 @@ serviceAccount:
 
 ## Change these ip-addresses according to your environment
 multus:
-  create: false
-  ipadd: "172.21.6.27"  # subnet should be able to reach the gNB
+  create: true
+  #ipadd: "172.21.6.27"  # subnet should be able to reach the gNB
+  ipadd: "192.168.20.17"  # subnet should be able to reach the gNB
   netmask: "22"
   # if default route is not needed then leave the field empty
-  defaultGateway: "172.21.7.254"
+  #defaultGateway: "172.21.7.254"
   hostInterface: "bond0"
 
 config:
   timeZone: "Europe/Paris"
-  rfSimulator: "oai-gnb-du"    # ip-address of gnb rf-sim or service name oai-gnb in case of du change it with oai-gnb-du if multus is true then provide ip-address of oai-gnb
+  #rfSimulator: "oai-gnb-du"    # ip-address of gnb rf-sim or service name oai-gnb in case of du change it with oai-gnb-du if multus is true then provide ip-address of oai-gnb
   fullImsi: "001010000000100"       # make sure all the below entries are present in the subscriber database
   fullKey: "fec86ba6eb707ed08905757b1bb44b8f" 
   opc: "C42449363BBAD02B66D16BC975D77CC1"
@@ -41,7 +42,7 @@ config:
   nssaiSd: "16777215" 
   #useAdditionalOptions: "--sa -E --rfsim -r 106 --numerology 1 -C 3319680000 --nokrnmod --log_config.global_log_options level,nocolor,time" 
   #useAdditionalOptions: "--sa --rfsim -r 106 --numerology 1 -C 3619200000 --nokrnmod --log_config.global_log_options level,nocolor,time"
-  useAdditionalOptions: "--sa --rfsim -r 106 --numerology 1 -C 3619200000 --log_config.global_log_options level,nocolor,time"
+  useAdditionalOptions: "--sa --rfsim -r 106 --rfsimulator.serveraddr 192.168.20.13 --numerology 1 -C 3619200000 --log_config.global_log_options level,nocolor,time"
 
 # in case of du change the command   
 #"--sa --rfsim -r 106 --numerology 1 -C 3619200000 --nokrnmod --log_config.global_log_options level,nocolor,time" 
@@ -90,4 +91,4 @@ terminationGracePeriodSeconds: 5
 
 nodeSelector: {}
 
-nodeName:
+nodeName: 

@@ -18,6 +18,8 @@ DU=`oc get pods -o custom-columns=POD:.metadata.name --no-headers | grep oai-gnb
 echo "DU=$DU"
 oc logs $DU  -c gnbdu > du-start.log
 
+sleep 4
+
 helm install -f ../oai-nr-ue/Chart.yaml ue1 ../oai-nr-ue
 while [[ $(kubectl get pods -l app=oai-nr-ue -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}') != "True" ]]; do echo "waiting for pod oai-nr-ue" && sleep 1; done
 UE=`oc get pods -o custom-columns=POD:.metadata.name --no-headers | grep oai-nr-ue`

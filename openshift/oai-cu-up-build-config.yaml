@@ -49,13 +49,15 @@ spec:
         RUN cp /oai-ran/docker/scripts/gnb_entrypoint.sh /oai-ran/docker/scripts/entrypoint.sh
 
         #start from scratch for target executable
-        FROM registry.access.redhat.com/ubi8/ubi:latest as oai-nr-cuup
+        FROM registry.access.redhat.com/ubi9/ubi:latest as oai-nr-cuup
         ENV TZ=Europe/Paris
 
         RUN dnf update -y && \
             dnf install -y \
                 procps-ng \
                 lksctp-tools \
+                openssl \
+                openssl-devel \
                 tzdata \
                 atlas \
                 net-tools \

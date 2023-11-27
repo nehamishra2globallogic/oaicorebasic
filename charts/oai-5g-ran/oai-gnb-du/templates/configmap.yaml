@@ -26,7 +26,7 @@ data:
           ////////// Identification parameters:
           gNB_ID = 0xe00;
 
-      #     cell_type =  "CELL_MACRO_GNB";
+        # cell_type =  "CELL_MACRO_GNB";
 
           gNB_name  =  "oai-du-rfsim";
 
