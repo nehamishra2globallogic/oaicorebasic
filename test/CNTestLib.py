@@ -1,7 +1,8 @@
 import shutil
 import time
-from docker_api import DockerApi
+
 from common import *
+from docker_api import DockerApi
 from vars import *
 
 DOCKER_COMPOSE_TEMPLATE = "template/docker-compose-all-nfs.yaml"
@@ -28,6 +29,7 @@ class CNTestLib:
         self.conf_path = ""
         self.docker_compose_path = ""
         self.running_traces = {}
+        self.list_of_containers = []
         prepare_folders()
 
     def prepare_scenario(self, list_of_containers, tc_name):
@@ -37,14 +39,16 @@ class CNTestLib:
         :param tc_name: name of the test case
         :return:
         """
-        self.docker_compose_path = os.path.join(OUT_PATH, f"docker-compose-{tc_name}.yaml")
-        self.conf_path = os.path.join(OUT_PATH, f"conf-{tc_name}.yaml")
+        self.docker_compose_path = os.path.join(get_out_dir(), f"docker-compose-{tc_name}.yaml")
+        self.conf_path = os.path.join(get_out_dir(), f"conf-{tc_name}.yaml")
         shutil.copy(os.path.join(DIR_PATH, CONF_TEMPLATE), self.conf_path)
-
+        self.list_of_containers = list_of_containers
         if "oai-pcf" in list_of_containers:
-            shutil.copytree(os.path.join(DIR_PATH, POLICY_PATH), os.path.join(OUT_PATH, "policies"), dirs_exist_ok=True)
+            shutil.copytree(os.path.join(DIR_PATH, POLICY_PATH), os.path.join(get_out_dir(), "policies"),
+                            dirs_exist_ok=True)
         if "mysql" in list_of_containers:
-            shutil.copytree(os.path.join(DIR_PATH, MYSQL_PATH), os.path.join(OUT_PATH, "mysql"), dirs_exist_ok=True)
+            shutil.copytree(os.path.join(DIR_PATH, MYSQL_PATH), os.path.join(get_out_dir(), "mysql"),
+                            dirs_exist_ok=True)
 
         list_of_containers.append(TRACE_DUMMY_CONTAINER_NAME)
         # here we remove the unused NFs
@@ -65,6 +69,9 @@ class CNTestLib:
                         nf["depends_on"].append("oai-nrf")
                     else:
                         nf["depends_on"] = ["oai-nrf"]
+                # replace with tag
+                if service in image_tags:
+                    nf["image"] = image_tags[service]
 
             with open(self.docker_compose_path, "w") as out_file:
                 yaml.dump(parsed, out_file)
@@ -97,7 +104,7 @@ class CNTestLib:
 
     def collect_all_logs(self):
         all_services = get_docker_compose_services(self.docker_compose_path)
-        self.docker_api.store_all_logs(LOG_DIR, all_services)
+        self.docker_api.store_all_logs(get_log_dir(), all_services)
 
     def configure_default_qos(self, five_qi=9, session_ambr=50):
         print("TODO implement me")
@@ -177,7 +184,7 @@ class CNTestLib:
         if self.running_traces.get(name):
             self.stop_trace(name)
             raise Exception("There is already a trace running!")
-        trace_path = os.path.join(OUT_PATH, f"{name}.pcapng")
+        trace_path = os.path.join(get_out_dir(), f"{name}.pcapng")
         self.running_traces[name] = subprocess.Popen(
             ["tshark", "-i", TEST_NETWORK_NAME, "-f", trace_filter, "-w", trace_path], stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL)
@@ -191,8 +198,17 @@ class CNTestLib:
         del self.running_traces[name]
         logging.info(f"Trace {name} is stopped")
 
+    def create_cn_documentation(self):
+        docu = " = Core Network Images = \n"
+        docu += create_image_info_header()
+        for container in self.list_of_containers:
+            if container not in image_tags:
+                continue
+            size, date = self.docker_api.get_image_info(image_tags[container])
+            docu += create_image_info_line(container, image_tags[container], size, date)
+        return docu
+
     def __del__(self):
         logging.info("Stopping CNTestLib. Stop all traces")
         for key in self.running_traces.copy():
             self.stop_trace(key)
-

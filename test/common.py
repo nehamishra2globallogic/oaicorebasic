@@ -1,10 +1,16 @@
+import logging
 import os
 import subprocess
-import logging
 import sys
-import yaml
 
-GENERATED_DIR = "out"
+import robot.libraries.BuiltIn
+import yaml
+from robot.libraries.BuiltIn import BuiltIn
+
+from image_tags import image_tags
+
+GENERATED_DIR = "archives/robot_framework"
+GENERATED_DIR_NGAP = "archives_ngap/framework"
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -13,8 +19,22 @@ logging.basicConfig(
 )
 
 DIR_PATH = os.path.split(os.path.abspath(__file__))[0]
-OUT_PATH = os.path.join(DIR_PATH, GENERATED_DIR)
-LOG_DIR = os.path.join(OUT_PATH, "logs")
+
+
+def get_out_dir():
+    try:
+        suite_name = BuiltIn().get_variable_value("${SUITE_NAME}")
+    except robot.libraries.BuiltIn.RobotNotRunningError:
+        suite_name = "local"
+    dir_to_use = GENERATED_DIR
+    if "ngap tester" in suite_name.lower():
+        dir_to_use = GENERATED_DIR_NGAP
+    out_path = os.path.join(os.getcwd(), dir_to_use)
+    return os.path.join(out_path, suite_name)
+
+
+def get_log_dir():
+    return os.path.join(get_out_dir(), "logs")
 
 
 # import common ci scripts
@@ -25,7 +45,7 @@ LOG_DIR = os.path.join(OUT_PATH, "logs")
 
 
 def prepare_folders():
-    os.makedirs(OUT_PATH, exist_ok=True)
+    os.makedirs(get_out_dir(), exist_ok=True)
 
 
 def __docker_subprocess(args):
@@ -61,3 +81,15 @@ def get_docker_compose_services(docker_compose_file):
             all_services.append(service)
 
     return all_services
+
+
+def create_image_info_header():
+    return "| =Container Name= | =Used Image= | =Date= | =Size= | \n"
+
+
+def create_image_info_line(container, image, date, size):
+    return f"| {container} | {image} | {date} | {size} | \n"
+
+
+def get_tag(container_name):
+    return image_tags.get(container_name, "")

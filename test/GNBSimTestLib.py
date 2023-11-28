@@ -1,7 +1,7 @@
 import ipaddress
-from docker_api import DockerApi
 
 from common import *
+from docker_api import DockerApi
 
 GNBSIM_TEMPLATE = "template/docker-compose-gnbsim.yaml"
 GNBSIM_FIRST_IP = "192.168.79.160"
@@ -29,7 +29,7 @@ class GNBSimTestLib:
     def __get_docker_compose_path(self, gnbsim_name):
         if gnbsim_name not in self.gnbsims:
             raise Exception(f"gnbsim {gnbsim_name} is not in config. You have to call prepare_gnbsim first")
-        return os.path.join(OUT_PATH, f"docker-compose-{gnbsim_name}.yaml")
+        return os.path.join(get_out_dir(), f"docker-compose-{gnbsim_name}.yaml")
 
     def prepare_gnbsim(self):
         """
@@ -63,7 +63,7 @@ class GNBSimTestLib:
         self.docker_api.check_health_status([gnbsim_container])
 
     def collect_all_gnbsim_logs(self):
-        self.docker_api.store_all_logs(LOG_DIR, self.gnbsims)
+        self.docker_api.store_all_logs(get_log_dir(), self.gnbsims)
 
     def check_gnbsim_ongoing(self, container):
         log = self.docker_api.get_log(container)
@@ -92,3 +92,12 @@ class GNBSimTestLib:
 
     def down_gnbsim(self, gnbsim_name):
         down_docker_compose(self.__get_docker_compose_path(gnbsim_name))
+
+    def create_gnbsim_docu(self):
+        if len(self.gnbsims) == 0:
+            return ""
+        docu = " = GNBSIM Tester Image = \n"
+        docu += create_image_info_header()
+        size, date = self.docker_api.get_image_info(image_tags["gnbsim"])
+        docu += create_image_info_line("gnbsim", image_tags["gnbsim"], size, date)
+        return docu

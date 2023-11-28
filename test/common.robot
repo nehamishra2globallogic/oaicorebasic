@@ -50,6 +50,12 @@ Suite Teardown Default
     Collect All Logs
     Stop Trace   core_network
     Down Cn
+    ${docu}=  Create Cn Documentation
+    Set Suite Documentation    ${docu}   append=${TRUE}
+    ${gnbsim_docu} =   Create Gnbsim Docu
+    Set Suite Documentation    ${gnbsim_docu}   append=${TRUE}
+    ${ngap_docu} =    Create Ngap Tester Docu
+    Set Suite Documentation    ${ngap_docu}   append=${TRUE}
 
 Check Core Network Health Status
     Wait Until Keyword Succeeds  60s  1s    Check CN Health Status

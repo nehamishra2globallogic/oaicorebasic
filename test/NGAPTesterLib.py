@@ -1,8 +1,8 @@
 import re
 import shutil
 
-from docker_api import DockerApi
 from common import *
+from docker_api import DockerApi
 
 NGAP_TESTER_TEMPLATE_DOCKER_COMPOSE = "template/docker-compose-ngap-tester.yaml"
 NGAP_TESTER_TEMPLATE_CONFIG = "template/ngap_tester_template_config.yaml"
@@ -21,8 +21,10 @@ class NGAPTesterLib:
     def prepare_ngap_tester(self, tc_name, mt_profile="default"):
         self.tc_name = tc_name
         self.name = f"ngap-tester-{tc_name}-{mt_profile}"
-        self.docker_compose_path = os.path.join(OUT_PATH, f"docker-compose-ngap-tester-{tc_name}-{mt_profile}.yaml")
-        self.conf_path = os.path.join(OUT_PATH, "ngap_tester_config.yaml")  # we only have one config for all the tests
+        self.docker_compose_path = os.path.join(get_out_dir(),
+                                                f"docker-compose-ngap-tester-{tc_name}-{mt_profile}.yaml")
+        self.conf_path = os.path.join(get_out_dir(),
+                                      "ngap_tester_config.yaml")  # we only have one config for all the tests
         shutil.copy(os.path.join(DIR_PATH, NGAP_TESTER_TEMPLATE_CONFIG), self.conf_path)
 
         with open(os.path.join(DIR_PATH, NGAP_TESTER_TEMPLATE_DOCKER_COMPOSE)) as f:
@@ -86,4 +88,13 @@ class NGAPTesterLib:
 
     def collect_all_ngap_tester_logs(self):
         all_services = get_docker_compose_services(self.docker_compose_path)
-        self.docker_api.store_all_logs(LOG_DIR, all_services)
+        self.docker_api.store_all_logs(get_log_dir(), all_services)
+
+    def create_ngap_tester_docu(self):
+        if not self.name:
+            return ""
+        docu = " = NGAP Tester Image = \n"
+        docu += create_image_info_header()
+        size, date = self.docker_api.get_image_info(image_tags["ngap-tester"])
+        docu += create_image_info_line("ngap-tester", image_tags["ngap-tester"], size, date)
+        return docu

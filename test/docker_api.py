@@ -1,3 +1,4 @@
+import datetime
 import os
 import subprocess
 
@@ -125,3 +126,17 @@ class DockerApi:
         if status["ExitCode"] != 0:
             raise Exception(f"Background Task failed: Return code != 0: {res}")
         return res
+
+    def get_image_info(self, image):
+        info = self.client.inspect_image(f"{image}")
+        size = info["Size"]
+
+        if size < 1000000:
+            size = int(size / 1000)
+            image_size = str(size) + ' kB'
+        else:
+            size = int(size / 1000000)
+            image_size = str(size) + ' MB'
+        time = info["Created"].split(".")[0]
+        time = datetime.datetime.fromisoformat(time)
+        return image_size, time.strftime("%Y-%m-%d %H:%M:%S ")
