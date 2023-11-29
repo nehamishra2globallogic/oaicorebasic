@@ -1,6 +1,6 @@
 # Parent Helm Charts for Deploying Advance OAI-5G Core Network
 
-Slicing deployment contains
+Advance deployment contains
 
 1. OAI-AMF
 2. OAI-SMF
@@ -9,10 +9,10 @@ Slicing deployment contains
 5. OAI-AUSF
 6. OAI-UDM
 7. OAI-NSSF
-8. OAI-SPGWU-TINY
+8. OAI-UPF
 9. MYSQL (Subscriber database)
 
-Infra structure related information is present in `values.yaml` and core network configuration is in `config.yaml`.
+**Disclaimer**: Starting version 2.0.0 of OAI 5G Core network functions their configuration will be in `config.yaml` and `nssf_slice_config.yaml`. All infrastructure related information including image definition will be in `values.yaml`.
 
 If the gNB is in a different cluster or different subnet than pod subnet. Then you need to make sure AMF and SPGWU/UPF is reachable from the gNB host machine. You can use AMF and SPGWU/UPF multus interface. In SPGWU/UPF `n3Interface` should be able to reach gNB host machine/pod/container.
 

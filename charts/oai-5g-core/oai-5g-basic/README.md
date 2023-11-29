@@ -8,12 +8,12 @@ Basic deployment contains
 4. OAI-UDR
 5. OAI-AUSF
 6. OAI-UDM
-7. OAI-SPGWU-TINY
+7. OAI-UPF
 8. MYSQL (Subscriber database)
 
-Infra structure related information is present in `values.yaml` and core network configuration is in `config.yaml`.
+**Disclaimer**: Starting version 2.0.0 of OAI 5G Core network functions their configuration will be in `config.yaml` and all infrastructure related information including image definition will be in `values.yaml`.
 
-If the gNB is in a different cluster or different subnet than pod subnet. Then you need to make sure AMF and SPGWU/UPF is reachable from the gNB host machine. You can use AMF and SPGWU/UPF multus interface. In SPGWU/UPF `n3Interface` should be able to reach gNB host machine/pod/container.
+If the gNB is in a different cluster or different subnet than pod subnet. Then you need to make sure AMF and SPGWU/UPF is reachable from the gNB host machine. You can use AMF and UPF multus interface. In SPGWU/UPF `n3Interface` should be able to reach gNB host machine/pod/container.
 
 Once you are sure with the configuration parameters you can deploy these charts following the below steps. 
 

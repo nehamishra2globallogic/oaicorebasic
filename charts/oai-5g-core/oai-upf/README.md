@@ -1,8 +1,12 @@
 # Helm Chart for OAI User Plane Network Function (UPF)
 
-The helm-chart is tested on [Minikube](https://minikube.sigs.k8s.io/docs/) and [Red Hat Openshift](https://www.redhat.com/fr/technologies/cloud-computing/openshift) 4.10 and 4.12. UPF requires eBPF in the kernel if you want to test it in eBPF mode else it can be used with simple switch. In both the modes UPF requires `privileged` flag to be `true`. UPF needs to create tunnel interface for GTP and it creates NAT rules for packets to go towards internet from N6.
+The helm-chart is tested on [Minikube](https://minikube.sigs.k8s.io/docs/) and [Red Hat Openshift](https://www.redhat.com/fr/technologies/cloud-computing/openshift) 4.10, 4.12 and 4.13. UPF requires eBPF in the kernel if you want to test it in eBPF mode else it can be used with simple switch. In both the modes UPF requires `privileged` flag to be `true`. UPF needs to create tunnel interface for GTP and it creates NAT rules for packets to go towards internet from N6.
 
 **NOTE**: All the extra interfaces/multus interfaces created inside the pod are using `macvlan` mode. If your environment does not allow using `macvlan` then you need to change the multus definations. 
+
+# Disclaimer
+
+Starting version 2.0.0 of OAI 5G Core network functions their configuration will be in `config.yaml` and all infrastructure related information including image definition will be in `values.yaml`.
 
 ## Introduction
 

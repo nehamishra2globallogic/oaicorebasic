@@ -1,6 +1,10 @@
 # Helm Chart for OAI Network Registry Function (NRF)
 
-The helm-chart is tested on [Minikube](https://minikube.sigs.k8s.io/docs/) and [Red Hat Openshift](https://www.redhat.com/fr/technologies/cloud-computing/openshift) 4.10 and 4.12. There are no special resource requirements for NRF. 
+The helm-chart is tested on [Minikube](https://minikube.sigs.k8s.io/docs/) and [Red Hat Openshift](https://www.redhat.com/fr/technologies/cloud-computing/openshift) 4.10, 4.12 and 4.13 There are no special resource requirements for NRF. 
+
+## Disclaimer
+
+Starting version 2.0.0 of OAI 5G Core network functions their configuration will be in `config.yaml` and all infrastructure related information including image definition will be in `values.yaml`.
 
 ## Introduction
 
