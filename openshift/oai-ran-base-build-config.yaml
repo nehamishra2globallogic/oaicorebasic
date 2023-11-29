@@ -37,7 +37,7 @@ spec:
     source:
         git:
             uri: "https://gitlab.eurecom.fr/oai/openairinterface5g.git"
-            ref: "develop"
+            ref: "2023.w19"
         secrets:
           - secret:
               name: etc-pki-entitlement
@@ -55,4 +55,4 @@ spec:
     output:
         to:
             kind: "ImageStreamTag"
-            name: "oai-ran-base:develop"
+            name: "oai-ran-base:2023.w19"

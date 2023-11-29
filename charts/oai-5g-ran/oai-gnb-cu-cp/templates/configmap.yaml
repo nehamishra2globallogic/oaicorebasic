@@ -35,13 +35,13 @@ data:
 
           tr_s_preference = "f1";
 
-          local_s_if_name = "e1";         
-          local_s_address = "{{ .Values.multus.e1Interface.IPadd }}";
+          local_s_if_name = "f1c";         
+          local_s_address = "{{ .Values.multus.f1cInterface.IPadd }}";
           remote_s_address = "{{ .Values.config.f1duIpAddress }}";
           local_s_portc   = 501;
-          local_s_portd   = 2153;
+          local_s_portd   = 2152;
           remote_s_portc  = 500;
-          remote_s_portd  = 2153;
+          remote_s_portd  = 2152;
 
           ssb_SubcarrierOffset                                      = 0;
           min_rxtxtime                                              = 6;
@@ -184,7 +184,7 @@ data:
 
           ////////// AMF parameters:
           amf_ip_address      = ( { ipv4       = "{{ .Values.config.amfIpAddress }}";
-                                    ipv6       = "192:168:30::C3";
+                                    ipv6       = "192:168:30::17";
                                     active     = "yes";
                                     preference = "ipv4";
                                   }
@@ -203,8 +203,8 @@ data:
 
           NETWORK_INTERFACES :
           {
-              GNB_INTERFACE_NAME_FOR_NG_AMF            = "e1";
-              GNB_IPV4_ADDRESS_FOR_NG_AMF              = "{{ .Values.multus.e1Interface.IPadd }}";
+              GNB_INTERFACE_NAME_FOR_NG_AMF            = "n2";
+              GNB_IPV4_ADDRESS_FOR_NG_AMF              = "{{ .Values.multus.n2Interface.IPadd }}";
           };
         }
       );

@@ -37,7 +37,7 @@ spec:
     source:
         git:
             uri: "https://gitlab.eurecom.fr/oai/openairinterface5g.git"
-            ref: "develop"
+            ref: "2023.w19"
         secrets:
           - secret:
               name: etc-pki-entitlement
@@ -52,12 +52,12 @@ spec:
     strategy:
         type: Docker
         dockerStrategy:
-            dockerfilePath: "docker/Dockerfile.build.rhel8.2"
+            dockerfilePath: "docker/Dockerfile.build.rhel9"
             from:
                kind: ImageStreamTag          
-               namespace: oai-tutorial
-               name: oai-ran-base:develop        
+               namespace: engage5g
+               name: oai-ran-base:2023.w19        
     output:
         to:
             kind: "ImageStreamTag"
-            name: "oai-ran-build:develop"
+            name: "oai-ran-build:2023.w19"
