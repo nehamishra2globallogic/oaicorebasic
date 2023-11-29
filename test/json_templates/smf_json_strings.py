@@ -3,7 +3,6 @@ import json
 
 smf_config_json = """
 {
-    "curl_timeout":3000,
     "http_version":"1",
     "local_subscription_infos":[
         {
@@ -56,7 +55,25 @@ smf_config_json = """
                 "sst":222
             },
             "ssc_mode":1
+        },
+        {
+            "dnn":"default",
+            "qos_profile":{
+                "5qi":9,
+                "arp_preempt_capability":"NOT_PREEMPT",
+                "arp_preempt_vulnerability":"NOT_PREEMPTABLE",
+                "arp_priority":1,
+                "priority":1,
+                "session_ambr_dl":"100Mbps",
+                "session_ambr_ul":"50Mbps"
+            },
+            "snssai":{
+                "sd":"FFFFFF",
+                "sst":1
+            },
+            "ssc_mode":1
         }
+        
     ],
     "log_level":"debug",
     "register_nf":true,
@@ -71,6 +88,9 @@ smf_config_json = """
                 "dnnSmfInfoList":[
                     {
                         "dnn":"oai"
+                    }, 
+                    {
+                        "dnn":"default"
                     }
                 ],
                 "sNssai":{

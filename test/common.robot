@@ -77,7 +77,7 @@ Run NGAP Tester Test
     Check NGAP Tester Result
 
 Test Setup NGAP Tester
-    Start Trace   ${TEST_NAME}
+    Start Trace   ${TEST_NAME}   signaling_only=${FALSE}
 
 Test Teardown NGAP Tester
      Stop Ngap Tester

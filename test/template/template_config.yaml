@@ -182,6 +182,7 @@ smf:
       - sNssai: *embb_slice1
         dnnSmfInfoList:
           - dnn: "oai"
+          - dnn: "default"
       - sNssai: *embb_slice2
         dnnSmfInfoList:
           - dnn: "oai.ipv4"
@@ -207,6 +208,13 @@ smf:
         5qi: 9
         session_ambr_ul: "50Mbps"
         session_ambr_dl: "100Mbps"
+    - single_nssai: *embb_slice1
+      dnn: "default"
+      qos_profile:
+        5qi: 9
+        session_ambr_ul: "50Mbps"
+        session_ambr_dl: "100Mbps"
+
 
 ## DNN configuration
 dnns:

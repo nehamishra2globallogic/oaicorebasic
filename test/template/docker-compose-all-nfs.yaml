@@ -139,6 +139,9 @@ services:
             - NSSAI_SST_2=222
             - NSSAI_SD_2=123
             - DNN_2=default
+            # Slice 0 with DNN default
+            - NSSAI_SST_3=1
+            - DNN_3=default
         depends_on:
             - oai-nrf
             - oai-smf

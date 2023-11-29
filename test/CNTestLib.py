@@ -59,6 +59,12 @@ class CNTestLib:
                 if nf.get("volumes"):
                     for i, volume in enumerate(nf["volumes"]):
                         nf["volumes"][i] = volume.replace("REPLACE", self.conf_path)
+                # the only dependency we have to add is to oai-nrf for stability reasons
+                if "oai-nrf" in list_of_containers and service != "oai-nrf":
+                    if nf.get("depends_on") and "oai-nrf" not in nf["depends_on"]:
+                        nf["depends_on"].append("oai-nrf")
+                    else:
+                        nf["depends_on"] = ["oai-nrf"]
 
             with open(self.docker_compose_path, "w") as out_file:
                 yaml.dump(parsed, out_file)
