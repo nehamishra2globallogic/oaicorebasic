@@ -10,10 +10,10 @@ GNBSIM_FIRST_MSIN = 31
 
 class GNBSimTestLib:
     ROBOT_LIBRARY_SCOPE = 'SUITE'
-    gnbsims = []
 
     def __init__(self):
         self.docker_api = DockerApi()
+        self.gnbsims = []
         prepare_folders()
 
     def __generate_msin(self):

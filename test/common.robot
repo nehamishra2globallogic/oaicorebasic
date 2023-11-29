@@ -2,6 +2,7 @@
 Library    Process
 Library    CNTestLib.py
 Library    GNBSimTestLib.py
+Library    NGAPTesterLib.py
 
 # This file is intended to define common robot framework keywords that are used in many tests and suites
 
@@ -68,3 +69,20 @@ Check gnbsim IP
     ${ip} =    Get Gnbsim Ip    ${gnbsim_name}    # to get the output we parse again
     [Return]    ${ip}
 
+Run NGAP Tester Test
+    [Arguments]    ${TC_NAME}    ${MT_PROFILE}=default
+    Prepare Ngap Tester    ${TC_NAME}   ${MT_PROFILE}
+    Start Ngap Tester
+    Wait Until Keyword Succeeds   30s   1s    Check Ngap Tester Done
+    Check NGAP Tester Result
+
+Test Setup NGAP Tester
+    Start Trace   ${TEST_NAME}
+
+Test Teardown NGAP Tester
+     Stop Ngap Tester
+     ${doc} =    Get Ngap Tester Description
+     Set Test Documentation    ${doc}
+     Collect All Ngap Tester Logs
+     Down Ngap Tester
+     Stop Trace   ${TEST_NAME}

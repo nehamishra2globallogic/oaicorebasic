@@ -18,15 +18,16 @@ TRACE_FILTER_UP = ""
 
 class CNTestLib:
     ROBOT_LIBRARY_SCOPE = 'SUITE'
-    running_iperf_servers = {}
-    running_iperf_clients = {}
-    last_iperf_result = {}
-    conf_path = ""
-    docker_compose_path = ""
-    running_traces = {}
 
     def __init__(self):
         self.docker_api = DockerApi()
+        self.running_iperf_servers = {}
+        self.running_iperf_clients = {}
+        self.last_iperf_result = {}
+
+        self.conf_path = ""
+        self.docker_compose_path = ""
+        self.running_traces = {}
         prepare_folders()
 
     def prepare_scenario(self, list_of_containers, tc_name):

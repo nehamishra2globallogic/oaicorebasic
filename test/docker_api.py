@@ -17,6 +17,19 @@ class DockerApi:
     def __init__(self):
         self.client = docker.APIClient(base_url='unix://var/run/docker.sock')
 
+    def __get_running_status(self, container):
+        inspect = self.client.inspect_container(container)
+        state = inspect["State"]
+        return state['Running']
+
+    def check_container_running(self, container):
+        if not self.__get_running_status(container):
+            raise Exception(f"Container {container} is not running")
+
+    def check_container_stopped(self, container):
+        if self.__get_running_status(container):
+            raise Exception(f"Container {container} is running")
+
     def check_health_status(self, container_list):
         containers = self.client.containers(all=True)
         count = 0
