@@ -91,4 +91,4 @@ terminationGracePeriodSeconds: 5
 
 nodeSelector: {}
 
-nodeName: 
+nodeName:
