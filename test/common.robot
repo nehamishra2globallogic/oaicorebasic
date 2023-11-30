@@ -12,7 +12,7 @@ Library    NGAPTesterLib.py
 *** Keywords ***
 
 Launch NRF CN with PCF
-    @{list} =    Create List  oai-amf   oai-smf   oai-udm   oai-nrf  oai-udr  oai-ausf  mysql  oai-ext-dn  oai-spgwu  oai-pcf
+    @{list} =    Create List  oai-amf   oai-smf   oai-udm   oai-nrf  oai-udr  oai-ausf  mysql  oai-ext-dn  oai-upf  oai-pcf
     Prepare Scenario    ${list}   nrf-cn-pcf
     @{replace_list} =  Create List  smf  support_features  use_local_pcc_rules
     Replace In Config    ${replace_list}  no
@@ -21,7 +21,7 @@ Launch NRF CN with PCF
     Check Core Network Health Status
 
 Launch NRF CN For QoS
-    @{list} =    Create List  oai-amf   oai-smf   oai-udm   oai-nrf  oai-udr  oai-ausf  mysql  oai-ext-dn  oai-ext-dn-2  oai-ext-dn-3  oai-spgwu  oai-pcf
+    @{list} =    Create List  oai-amf   oai-smf   oai-udm   oai-nrf  oai-udr  oai-ausf  mysql  oai-ext-dn  oai-ext-dn-2  oai-ext-dn-3  oai-upf  oai-pcf
     Prepare Scenario    ${list}   nrf-cn-qos
     @{replace_list} =  Create List  smf  support_features  use_local_pcc_rules
     Replace In Config    ${replace_list}  no
@@ -30,17 +30,16 @@ Launch NRF CN For QoS
     Check Core Network Health Status
 
 Launch NRF CN
-    @{list} =    Create List  oai-amf   oai-smf   oai-udm   oai-nrf  oai-udr  oai-ausf  mysql  oai-ext-dn  oai-spgwu
+    @{list} =    Create List  oai-amf   oai-smf   oai-udm   oai-nrf  oai-udr  oai-ausf  mysql  oai-ext-dn  oai-upf
     Prepare Scenario    ${list}   nrf-cn
     Start Trace    core_network
     Start CN
     Check Core Network Health Status
 
 Launch Non NRF CN
-    @{list} =    Create List  oai-amf   oai-smf   oai-udm   oai-udr  oai-ausf  mysql  oai-ext-dn  oai-spgwu
+    @{list} =    Create List  oai-amf   oai-smf   oai-udm   oai-udr  oai-ausf  mysql  oai-ext-dn  oai-upf
     Prepare Scenario    ${list}   nonnrf-cn
-    @{replace_list} =   Create List  register_nf  general
-    Replace In Config   ${replace_list}  no
+    Deactive NF Registration In CN Config
     Start Trace    core_network
     Start CN
     Check Core Network Health Status
@@ -92,3 +91,9 @@ Test Teardown NGAP Tester
      Collect All Ngap Tester Logs
      Down Ngap Tester
      Stop Trace   ${TEST_NAME}
+
+Deactive NF Registration in CN Config
+    @{replace_list} =  Create List  register_nf  general
+    Replace In Config    ${replace_list}  no
+    @{replace_list} =  Create List  amf  support_features_options  enable_smf_selection
+    Replace In Config    ${replace_list}  no

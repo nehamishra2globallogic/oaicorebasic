@@ -142,7 +142,7 @@ smf_config_json = """
                 "enable_usage_reporting":false,
                 "local_n3_ipv4":""
             },
-            "host":"oai-spgwu",
+            "host":"oai-upf",
             "port":8805,
             "upf_info":{
                 "interfaceUpfInfoList":[

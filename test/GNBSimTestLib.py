@@ -99,5 +99,8 @@ class GNBSimTestLib:
         docu = " = GNBSIM Tester Image = \n"
         docu += create_image_info_header()
         size, date = self.docker_api.get_image_info(image_tags["gnbsim"])
-        docu += create_image_info_line("gnbsim", image_tags["gnbsim"], size, date)
+        docu += create_image_info_line("gnbsim", image_tags["gnbsim"], date, size)
         return docu
+
+    def ping_from_gnbsim(self, gnbsim_name, target_ip, count=4):
+        self.docker_api.exec_on_container(gnbsim_name, f"ping -I {self.get_gnbsim_ip(gnbsim_name)} -c {count} {target_ip}")

@@ -82,7 +82,7 @@ NGAP Tester TC SERVICE_REQUEST_24501_5611e Basic NRF quectelrm500
 
 *** Keywords ***
 NGAP Tester Suite Setup For Quectel
-    @{list} =    Create List  oai-amf   oai-smf   oai-udm   oai-nrf  oai-udr  oai-ausf  mysql  oai-ext-dn  oai-spgwu
+    @{list} =    Create List  oai-amf   oai-smf   oai-udm   oai-nrf  oai-udr  oai-ausf  mysql  oai-ext-dn  oai-upf
     Prepare Scenario    ${list}   nrf-cn
     # Quectel uses integrity algorithms, we have to change priority here
     @{replace_list} =   Create List  amf  supported_integrity_algorithms

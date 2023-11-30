@@ -96,5 +96,5 @@ class NGAPTesterLib:
         docu = " = NGAP Tester Image = \n"
         docu += create_image_info_header()
         size, date = self.docker_api.get_image_info(image_tags["ngap-tester"])
-        docu += create_image_info_line("ngap-tester", image_tags["ngap-tester"], size, date)
+        docu += create_image_info_line("ngap-tester", image_tags["ngap-tester"], date, size)
         return docu

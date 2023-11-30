@@ -103,48 +103,16 @@ services:
         networks:
             public_test_net:
                 ipv4_address: 192.168.79.139
-    # TODO OAI-SPGWU does not support new config, thus its config is fixed for tests for now
-    oai-spgwu:
-        container_name: "oai-spgwu"
-        image: oaisoftwarealliance/oai-spgwu-tiny:develop
+
+    oai-upf:
+        container_name: "oai-upf"
+        image: oaisoftwarealliance/oai-upf:develop
         expose:
-            - 2152/udp
-            - 8805/udp
+            - 80/tcp
             - 8080/tcp
-        #       waiting for the new oai-upf NF
-        environment:
-            - TZ=Europe/Paris
-            - SGW_INTERFACE_NAME_FOR_S1U_S12_S4_UP=eth0
-            - SGW_INTERFACE_NAME_FOR_SX=eth0
-            - PGW_INTERFACE_NAME_FOR_SGI=eth0
-            - NETWORK_UE_NAT_OPTION=yes
-            - NETWORK_UE_IP=12.1.1.0/24
-            - ENABLE_5G_FEATURES=yes
-            - REGISTER_NRF=yes
-            - USE_FQDN_NRF=yes
-            - UPF_FQDN_5G=oai-spgwu
-            - NRF_IPV4_ADDRESS=192.168.79.130
-            - NRF_FQDN=oai-nrf
-            # Mandatory to set the NRF PORT to 8080 (it is set to default to 80 otherwise)
-            - HTTP_VERSION=2
-            - NRF_PORT=8080
-            # Slice 0 (1, 0xFFFFFF)
-            - NSSAI_SST_0=1
-            - DNN_0=oai
-            # Slice 1 (1, 1)
-            - NSSAI_SST_1=1
-            - NSSAI_SD_1=1
-            - DNN_1=oai.ipv4
-            # Slice 2 (222, 123)
-            - NSSAI_SST_2=222
-            - NSSAI_SD_2=123
-            - DNN_2=default
-            # Slice 0 with DNN default
-            - NSSAI_SST_3=1
-            - DNN_3=default
-        depends_on:
-            - oai-nrf
-            - oai-smf
+            - 2152/udp
+        volumes:
+            - REPLACE:/openair-upf/etc/config.yaml
         cap_add:
             - NET_ADMIN
             - SYS_ADMIN
@@ -154,6 +122,7 @@ services:
         networks:
             public_test_net:
                 ipv4_address: 192.168.79.134
+
     oai-ext-dn:
         privileged: true
         init: true

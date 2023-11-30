@@ -77,6 +77,22 @@ class CNTestLib:
                 yaml.dump(parsed, out_file)
         logging.info(f"Successfully prepared scenario for TC {tc_name}")
 
+    def add_dependency(self, container, depends_on):
+        parsed = None
+        with open(self.docker_compose_path, "r") as f:
+            parsed = yaml.safe_load(f)
+            for service in parsed["services"].copy():
+                if service != container:
+                    continue
+                nf = parsed["services"][service]
+                if nf.get("depends_on") and depends_on not in nf["depends_on"]:
+                    nf["depends_on"].append(depends_on)
+                else:
+                    nf["depends_on"] = [depends_on]
+        if parsed:
+            with open(self.docker_compose_path, "w") as f:
+                yaml.dump(parsed, f)
+
     def replace_in_config(self, path, value):
         """
         Sets and replaces YAML values in config. The path only takes keys.
@@ -102,9 +118,12 @@ class CNTestLib:
         all_services.remove(TRACE_DUMMY_CONTAINER_NAME)
         self.docker_api.check_health_status(all_services)
 
-    def collect_all_logs(self):
+    def collect_all_logs(self, folder=None):
         all_services = get_docker_compose_services(self.docker_compose_path)
-        self.docker_api.store_all_logs(get_log_dir(), all_services)
+        log_dir = get_log_dir()
+        if folder:
+            log_dir = os.path.join(log_dir, folder)
+        self.docker_api.store_all_logs(log_dir, all_services)
 
     def configure_default_qos(self, five_qi=9, session_ambr=50):
         print("TODO implement me")
@@ -205,8 +224,16 @@ class CNTestLib:
             if container not in image_tags:
                 continue
             size, date = self.docker_api.get_image_info(image_tags[container])
-            docu += create_image_info_line(container, image_tags[container], size, date)
+            docu += create_image_info_line(container, image_tags[container], date, size)
         return docu
+
+    def log_should_contain(self, container, match):
+        log = self.docker_api.get_log(container)
+        if match not in log:
+            raise Exception(f"Expected string {match} was not found in log of {container}")
+
+    def get_log(self, container):
+        self.docker_api.get_log(container)
 
     def __del__(self):
         logging.info("Stopping CNTestLib. Stop all traces")
