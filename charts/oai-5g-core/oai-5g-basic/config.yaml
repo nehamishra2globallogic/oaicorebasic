@@ -29,7 +29,7 @@ nfs:
       api_version: v1
       interface_name: eth0
     n2:
-      interface_name: eth0
+      interface_name: n2
       port: 38412
   smf:
     host: oai-smf

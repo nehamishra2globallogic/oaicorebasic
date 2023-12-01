@@ -187,8 +187,8 @@ data:
           tr_s_preference  = "local_L1";
           tr_n_preference  = "f1";
           local_n_if_name = "f1";
-          local_n_address = "192.168.20.13";
-          remote_n_address = "192.168.20.12";
+          local_n_address = "192.168.20.23";
+          remote_n_address = "192.168.20.22";
           local_n_portc   = 500;
           local_n_portd   = 2152;
           remote_n_portc  = 501;
