@@ -25,7 +25,7 @@ serviceAccount:
 multus:
   create: true
   #ipadd: "172.21.6.27"  # subnet should be able to reach the gNB
-  ipadd: "192.168.20.27"  # subnet should be able to reach the gNB
+  ipadd: "192.168.20.37"  # subnet should be able to reach the gNB
   netmask: "22"
   # if default route is not needed then leave the field empty
   #defaultGateway: "172.21.7.254"
@@ -42,7 +42,7 @@ config:
   nssaiSd: "16777215" 
   #useAdditionalOptions: "--sa -E --rfsim -r 106 --numerology 1 -C 3319680000 --nokrnmod --log_config.global_log_options level,nocolor,time" 
   #useAdditionalOptions: "--sa --rfsim -r 106 --numerology 1 -C 3619200000 --nokrnmod --log_config.global_log_options level,nocolor,time"
-  useAdditionalOptions: "--sa --rfsim -r 106 --rfsimulator.serveraddr 192.168.20.23 --numerology 1 -C 3619200000 --log_config.global_log_options level,nocolor,time"
+  useAdditionalOptions: "--sa --rfsim -r 106 --rfsimulator.serveraddr 192.168.20.33 --numerology 1 -C 3619200000 --log_config.global_log_options level,nocolor,time"
 
 # in case of du change the command   
 #"--sa --rfsim -r 106 --numerology 1 -C 3619200000 --nokrnmod --log_config.global_log_options level,nocolor,time" 

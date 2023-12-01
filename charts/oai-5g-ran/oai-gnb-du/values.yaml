@@ -31,7 +31,7 @@ multus:
   defaultGateway: ""
   f1Interface:
     create: true
-    IPadd: "192.168.20.23"
+    IPadd: "192.168.20.33"
     Netmask: "22"
     # #name inside the pod is hardcoded right now
     # name: "f1"
@@ -70,8 +70,8 @@ config:
   nssaiSd0: "ffffff"    #values in hexa-decimal format
   snssaiList: "({ sst = 1, sd = 0xffffff })"
   f1IfName: "f1"                # f1 incase multus.f1Interface.create is true
-  f1cuIpAddress: "192.168.20.22"    # replace this value with CU f1 ip-address or CU-CP F1C ip-address if not using multus
-  f1duIpAddress: "192.168.20.23"    # 172.21.16.100 if using multus
+  f1cuIpAddress: "192.168.20.32"    # replace this value with CU f1 ip-address or CU-CP F1C ip-address if not using multus
+  f1duIpAddress: "192.168.20.33"    # 172.21.16.100 if using multus
   f1cuPort: "2152"
   f1duPort: "2152"
   #Not mandatory (leave it as it is)
