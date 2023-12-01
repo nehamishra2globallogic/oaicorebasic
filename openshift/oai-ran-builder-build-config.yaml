@@ -55,7 +55,7 @@ spec:
             dockerfilePath: "docker/Dockerfile.build.rhel9"
             from:
                kind: ImageStreamTag          
-               namespace: engage5g
+               namespace: beyond5g-ercn
                name: oai-ran-base:2023.w45        
     output:
         to:

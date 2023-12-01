@@ -4,7 +4,7 @@ kubernetesType: Openshift  #Vanilla for community kubernetes distribution else O
 ## To know more about them follow this tutorial https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed/-/tree/master/openshift
 nfimage:   # image name either locally present or in a public/private repository
   repository: oai-gnb           ## dockerhub oaisoftwarealliance/oai-gnb
-  version: e1ncuup # image tag or develop
+  version: 2023.w45 # image tag or develop
   # pullPolicy: IfNotPresent or Never or Always
   pullPolicy: IfNotPresent
 
@@ -31,7 +31,7 @@ multus:
   defaultGateway: ""
   f1Interface:
     create: true
-    IPadd: "192.168.20.13"
+    IPadd: "192.168.20.23"
     Netmask: "22"
     # #name inside the pod is hardcoded right now
     # name: "f1"
@@ -70,8 +70,8 @@ config:
   nssaiSd0: "ffffff"    #values in hexa-decimal format
   snssaiList: "({ sst = 1, sd = 0xffffff })"
   f1IfName: "f1"                # f1 incase multus.f1Interface.create is true
-  f1cuIpAddress: "192.168.20.12"    # replace this value with CU f1 ip-address or CU-CP F1C ip-address if not using multus
-  f1duIpAddress: "192.168.20.13"    # 172.21.16.100 if using multus
+  f1cuIpAddress: "192.168.20.22"    # replace this value with CU f1 ip-address or CU-CP F1C ip-address if not using multus
+  f1duIpAddress: "192.168.20.23"    # 172.21.16.100 if using multus
   f1cuPort: "2152"
   f1duPort: "2152"
   #Not mandatory (leave it as it is)
@@ -129,8 +129,7 @@ affinity: {}
 
 terminationGracePeriodSeconds: 5
 
-nodeSelector: {
+nodeSelector:
   worker: telco
-}
 
 nodeName: 

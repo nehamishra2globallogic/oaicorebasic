@@ -26,11 +26,6 @@ UE=`oc get pods -o custom-columns=POD:.metadata.name --no-headers | grep oai-nr-
 echo "UE=$UE"
 oc logs $UE > ue-start.log
 
-# helm install -f ../oai-nr-ue2/Chart.yaml ue2 ../oai-nr-ue2
-# while [[ $(kubectl get pods -l app=oai-nr-ue2 -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}') != "True" ]]; do echo "waiting for pod oai-nr-ue2" && sleep 1; done
-# UE2=`oc get pods -o custom-columns=POD:.metadata.name --no-headers | grep oai-nr-ue2`
-# echo "UE2=$UE2"
-
 UPF=`oc get pods -o custom-columns=POD:.metadata.name --no-headers | grep oai-spgwu-tiny`
 
 
