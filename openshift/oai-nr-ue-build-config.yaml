@@ -42,9 +42,9 @@ spec:
     type: Docker
   source: 
     dockerfile: |
-        FROM image-registry.openshift-image-registry.svc:5000/beyond5g-ercn/oai-ran-base:2023.w45 AS nr-ue-base
+        FROM image-registry.openshift-image-registry.svc:5000/beyond5g-tsp/oai-ran-base:2023.w45 AS nr-ue-base
 
-        FROM image-registry.openshift-image-registry.svc:5000/beyond5g-ercn/oai-ran-build:2023.w45 AS nr-ue-build
+        FROM image-registry.openshift-image-registry.svc:5000/beyond5g-tsp/oai-ran-build:2023.w45 AS nr-ue-build
 
         RUN cp /oai-ran/docker/scripts/nr_ue_entrypoint.sh /oai-ran/docker/scripts/entrypoint.sh
 

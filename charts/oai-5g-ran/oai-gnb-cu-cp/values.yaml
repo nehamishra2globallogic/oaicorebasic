@@ -30,7 +30,7 @@ multus:
   defaultGateway: ""
   e1Interface:
     create: true
-    IPadd: "192.168.18.22"
+    IPadd: "192.168.18.32"
     Netmask: "24"
     # #name inside the pod is hardcoded right now
     # name: "e1"
@@ -40,7 +40,7 @@ multus:
     hostInterface: "bond0"      # Interface of the host machine on which this pod will be scheduled
   n2Interface:
     create: true
-    IPadd: "172.21.6.208"
+    IPadd: "172.21.6.218"
     Netmask: "22"
     # #name inside the pod is hardcoded right now
     # name: "n2"
@@ -50,7 +50,7 @@ multus:
     hostInterface: "bond0"      # Interface of the host machine on which this pod will be scheduled
   f1cInterface:
     create: true
-    IPadd: "192.168.20.22"
+    IPadd: "192.168.20.32"
     Netmask: "22"
     # #name inside the pod is hardcoded right now
     # name: "f1c"
@@ -69,10 +69,10 @@ config:
   mncLength: "2" # check the information with AMF, SMF, UPF/SPGWU
   tac: "1"     # check the information with AMF
   snssaiList: "({ sst = 1, sd = 0xffffff })"
-  amfIpAddress: "172.21.6.206"  # amf ip-address
-  e1IpAddress: "192.168.18.23"  ## CU-UP ip-address 
+  amfIpAddress: "172.21.6.216"  # amf ip-address
+  e1IpAddress: "192.168.18.33"  ## CU-UP ip-address 
   #Normally you don't have to set this but at the moment it is required
-  f1duIpAddress: "192.168.20.23"
+  f1duIpAddress: "192.168.20.33"
  
 # Debugging section
 podSecurityContext:
