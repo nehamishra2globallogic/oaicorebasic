@@ -26,36 +26,3 @@ UE=`oc get pods -o custom-columns=POD:.metadata.name --no-headers | grep oai-nr-
 echo "UE=$UE"
 oc logs $UE > ue-start.log
 
-UPF=`oc get pods -o custom-columns=POD:.metadata.name --no-headers | grep oai-spgwu-tiny`
-
-
-oc logs $DU -c gnbdu > du1.log
-oc logs $CUCP -c gnbcucp > cucp.log
-oc logs $CUUP -c gnbcuup > cuup.log
-oc logs $UE > ue1.log
-sleep 1
-oc logs $DU -c gnbdu > du2.log
-oc logs $UE > ue2.log
-sleep 2
-oc logs $UE > ue3.log
-sleep 4
-oc rsh -c nr-ue $UE ping -c 10 8.8.8.8 -I oaitun_ue1
-oc logs $UE > ue4.log
-
-
-# Get only pod names
-oc get pods -o custom-columns=POD:.metadata.name --no-headers
-sleep 20
-oc rsync -c tcpdump $CUCP:/tmp/pcap .
-oc rsync -c tcpdump $CUUP:/tmp/pcap .
-oc rsync -c tcpdump $DU:/tmp/pcap .
-oc rsync -c tcpdump $UPF:/tmp/pcap .
-mv pcap/*.pcap  /tmp/pcap
-rmdir pcap
-
-#export NR_UE_POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ include "oai-nr-ue.name" . }},app.kubernetes.io/instance={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
-#echo "NR_UE_POD_NAME=$NR_UE_POD_NAME"
-
-# kubectl exec -it $UE -- bash
-# ping 8.8.8.8 -I oaitun_ue1 
-
