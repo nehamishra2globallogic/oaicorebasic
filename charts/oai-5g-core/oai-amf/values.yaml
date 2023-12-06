@@ -55,7 +55,7 @@ multus:
 
 start:
   amf: true #If false the network function container will run in sleep mode for manually testing
-  tcpdump: false
+  tcpdump: true
 
 includeTcpDumpContainer: false #If true it will add a tcpdump container inside network function pod for debugging
 

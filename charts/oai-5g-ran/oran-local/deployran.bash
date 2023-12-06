@@ -1,5 +1,10 @@
 #!/bin/bash
 mkdir -p /tmp/pcap
+while [[ $(kubectl get pods -l app=oai-amf -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}') != "True" ]]; do echo "waiting for pod oai-amf" && sleep 1; done
+while [[ $(kubectl get pods -l app=oai-smf -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}') != "True" ]]; do echo "waiting for pod oai-smf" && sleep 1; done
+while [[ $(kubectl get pods -l app=oai-upf -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}') != "True" ]]; do echo "waiting for pod oai-upf" && sleep 1; done
+sleep 5
+
 helm install -f ../oai-gnb-cu-cp/Chart.yaml cucp ../oai-gnb-cu-cp
 while [[ $(kubectl get pods -l app=oai-gnb-cu-cp-cp -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}') != "True" ]]; do echo "waiting for pod oai-gnb-cu-cp" && sleep 1; done
 CUCP=`oc get pods -o custom-columns=POD:.metadata.name --no-headers | grep oai-gnb-cu-cp`
@@ -18,7 +23,7 @@ DU=`oc get pods -o custom-columns=POD:.metadata.name --no-headers | grep oai-gnb
 echo "DU=$DU"
 oc logs $DU  -c gnbdu > du-start.log
 
-sleep 4
+sleep 5
 
 helm install -f ../oai-nr-ue/Chart.yaml ue1 ../oai-nr-ue
 while [[ $(kubectl get pods -l app=oai-nr-ue -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}') != "True" ]]; do echo "waiting for pod oai-nr-ue" && sleep 1; done

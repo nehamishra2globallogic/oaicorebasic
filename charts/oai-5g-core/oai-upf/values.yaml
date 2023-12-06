@@ -37,7 +37,7 @@ multus:
   ## If you don't want to add a default route in your pod then leave this field empty
   defaultGateway: ""
   n3Interface:
-    create: true
+    create: false
     #Ipadd: "172.21.12.95"
     Ipadd: "192.168.25.3"
     Netmask: "22"

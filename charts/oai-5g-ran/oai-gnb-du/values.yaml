@@ -89,7 +89,7 @@ podSecurityContext:
 
 start:
   gnbdu: true #If false the network function container will run in sleep mode for manually testing
-  tcpdump: true
+  tcpdump: false
 
 includeTcpDumpContainer: true #If true it will add a tcpdump container inside network function pod for debugging
 

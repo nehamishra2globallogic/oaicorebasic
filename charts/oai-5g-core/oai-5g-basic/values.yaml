@@ -76,7 +76,7 @@ oai-amf:
     version: develop                                    ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
-  includeTcpDumpContainer: false #only for taking pcaps inside network function pod
+  includeTcpDumpContainer: true #only for taking pcaps inside network function pod
   imagePullSecrets:
     - name: "regcred"
   multus:
@@ -103,7 +103,9 @@ oai-upf:
     version: develop                                    ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
-  includeTcpDumpContainer: false #only for taking pcaps inside network function pod
+  start:
+    tcpdump: true    
+  includeTcpDumpContainer: true #only for taking pcaps inside network function pod
   imagePullSecrets:
     - name: "regcred"
   # create an extra interface for N3 incase the gNB is outside the cluster network or there is a need to have dedicated interface for N3

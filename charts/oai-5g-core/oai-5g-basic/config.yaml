@@ -2,7 +2,7 @@
 
 # Log level for all the NFs
 log_level:
-  general: info
+  general: debug
 
 # If you enable registration, the other NFs will use the NRF discovery mechanism
 register_nf:
@@ -17,7 +17,7 @@ snssais:
     sst: 1
   - &embb_slice2
     sst: 1
-    sd: FFFFFF # in hex
+    sd: 000001 # in hex
 
 ############## SBI Interfaces
 ### Each NF takes its local SBI interfaces and remote interfaces from here, unless it gets them using NRF discovery mechanisms
@@ -43,7 +43,7 @@ nfs:
   upf:
     host: oai-upf
     sbi:
-      port: 80
+      port_http1: 80
       api_version: v1
       interface_name: eth0
     n3:
@@ -174,14 +174,14 @@ upf:
     enable_snat: yes           # If "on": Source natting is done for UE, DEFAULT= off
   remote_n6_gw: "127.0.0.1"      # Dummy host since simple-switch does not use N6 GW
   upf_info:
-    - sst: 1
-      sd: 0xFFFFFF
-      dnnList:
-        - dnn: oai
-    - sst: 1
-      sd: 0x000001
-      dnnList:
-        - dnn: ims
+    sNssaiUpfInfoList:
+      - sNssai: *embb_slice1
+        dnnUpfInfoList:
+          - dnn: "oai"
+      - sNssai: *embb_slice2
+        dnnUpfInfoList:
+          - dnn: "ims"
+
 
 ## DNN configuration
 dnns:

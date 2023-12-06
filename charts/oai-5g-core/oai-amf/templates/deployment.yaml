@@ -14,6 +14,7 @@ spec:
   template:
     metadata:
       labels:
+        app: oai-amf
         {{- include "oai-amf.selectorLabels" . | nindent 8 }}
     {{- if .Values.multus.n2Interface.create }}
       annotations:
@@ -71,7 +72,7 @@ spec:
         command:
           - /bin/sh
           - -c
-          - /usr/sbin/tcpdump -i any -w /tmp/pcap/{{ .Chart.Name }}_`date +%Y-%m-%d_%H_%M-%S-%Z`.pcap
+          - 'mkdir -p /tmp/pcap && /usr/sbin/tcpdump -i any -w /tmp/pcap/{{ .Chart.Name }}_`date +%Y-%m-%d_%H_%M-%S-%Z`.pcap'
         {{- else}}
         command:
           - /bin/sleep

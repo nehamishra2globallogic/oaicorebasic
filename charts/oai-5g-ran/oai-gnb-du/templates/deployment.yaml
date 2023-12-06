@@ -4,6 +4,8 @@ metadata:
   name: {{ .Chart.Name }}
   labels:
     {{- include "oai-gnb-du.labels" . | nindent 4 }}
+    duUeAffinity: ""
+
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
