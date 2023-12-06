@@ -81,9 +81,9 @@ podSecurityContext:
 
 start:
   gnbcucp: true
-  tcpdump: true
+  tcpdump: false
 
-includeTcpDumpContainer: true #If true it will add a tcpdump container inside network function pod for debugging
+includeTcpDumpContainer: false #If true it will add a tcpdump container inside network function pod for debugging
 
 ## For openshift you can use rhel8/support-tools:8.7-13
 tcpdumpimage:

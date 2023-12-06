@@ -55,7 +55,7 @@ data:
 
           NETWORK_INTERFACES :
           {
-              GNB_INTERFACE_NAME_FOR_NG_AMF            = "n3";
+              GNB_INTERFACE_NAME_FOR_NG_AMF            = "eth";
               GNB_IPV4_ADDRESS_FOR_NG_AMF              = "{{ .Values.multus.n3Interface.IPadd }}";
               GNB_INTERFACE_NAME_FOR_NGU               = "n3";
               GNB_IPV4_ADDRESS_FOR_NGU                 = "{{ .Values.multus.n3Interface.IPadd }}";
