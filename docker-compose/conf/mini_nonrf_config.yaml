@@ -66,6 +66,7 @@ nfs:
 #### Common for UDR and AMF
 database:
   host: mysql
+  port: 3306
   user: test
   type: mysql
   password: test

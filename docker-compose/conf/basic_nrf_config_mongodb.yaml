@@ -90,6 +90,7 @@ nfs:
 #### Common for UDR and AMF
 database:
   host: mongodb
+  port: 27017
   user: test
   type: mongodb
   password: test
