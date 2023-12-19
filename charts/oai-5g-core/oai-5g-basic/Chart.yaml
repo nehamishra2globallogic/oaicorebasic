@@ -16,7 +16,7 @@ keywords:
   - UDM
   - UDR
   - AUSF
-  - Traffic_server
+  #- Traffic_server
 
 maintainers:
   - name:  OPENAIRINTERFACE
@@ -51,12 +51,9 @@ dependencies:
   name: oai-smf
   repository: "file://../oai-smf"
   version: v1.5.1
-- condition: oai-spgwu-tiny.enabled
-  name: oai-spgwu-tiny
-  repository: "file://../oai-spgwu-tiny"
-  version: v1.5.1
-- condition: oai-traffic-server.enabled
-  name: oai-traffic-server
-  repository: "file://../oai-traffic-server"
-  version: v1
+# - condition: oai-spgwu-tiny.enabled
+#   name: oai-spgwu-tiny
+#   repository: "file://../oai-spgwu-tiny"
+#   version: v1.5.1
+
 
