@@ -16,17 +16,17 @@ keywords:
   - UDM
   - UDR
   - AUSF
-#  - Traffic_server
+  - Traffic_server
 
 maintainers:
   - name:  OPENAIRINTERFACE
     email: contact@openairinterface.org
 
 dependencies:
-# - condition: mysql.enabled
-#   name: mysql
-#   repository: "file://../mysql"
-#   version: 8.0.31
+- condition: mysql.enabled
+  name: mysql
+  repository: "file://../mysql"
+  version: 8.0.31
 - condition: oai-nrf.enabled
   name: oai-nrf
   repository: "file://../oai-nrf"
@@ -55,8 +55,8 @@ dependencies:
   name: oai-spgwu-tiny
   repository: "file://../oai-spgwu-tiny"
   version: v1.5.1
-#- condition: oai-traffic-server.enabled
-#  name: oai-traffic-server
-#  repository: "file://../oai-traffic-server"
-#  version: v1
+- condition: oai-traffic-server.enabled
+ name: oai-traffic-server
+ repository: "file://../oai-traffic-server"
+ version: v1
 
