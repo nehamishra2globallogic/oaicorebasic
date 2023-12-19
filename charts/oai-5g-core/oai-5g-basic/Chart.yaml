@@ -23,10 +23,10 @@ maintainers:
     email: contact@openairinterface.org
 
 dependencies:
-- condition: mysql.enabled
-  name: mysql
-  repository: "file://../mysql"
-  version: 8.0.31
+# - condition: mysql.enabled
+#   name: mysql
+#   repository: "file://../mysql"
+#   version: 8.0.31
 - condition: oai-nrf.enabled
   name: oai-nrf
   repository: "file://../oai-nrf"
